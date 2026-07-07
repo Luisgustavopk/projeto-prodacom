@@ -21,7 +21,7 @@ export default function HeroSection() {
 
       <motion.div style={{ y: textY, opacity }} className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-16 md:pb-24">
         <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="mb-6">
-          <span className="text-xs font-mono tracking-widest text-white/40 uppercase">01 // Controle de Ponto & Acesso</span>
+    
         </motion.div>
 
         <div className="overflow-hidden">

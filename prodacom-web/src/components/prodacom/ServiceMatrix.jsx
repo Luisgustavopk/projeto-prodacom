@@ -36,7 +36,7 @@ export default function ServiceMatrix({ onSelectCategory }) {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16 md:mb-24">
-          <span className="text-xs font-mono tracking-widest text-obsidian/30 uppercase block mb-4">02 // Capability_Matrix</span>
+        
           <h2 className="font-display font-bold text-3xl md:text-5xl lg:text-6xl text-obsidian tracking-tight">Nossas Soluções</h2>
         </motion.div>
 

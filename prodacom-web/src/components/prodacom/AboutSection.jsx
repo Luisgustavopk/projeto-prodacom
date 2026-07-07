@@ -22,7 +22,7 @@ export default function AboutSection() {
     <section id="sobre" className="relative py-24 md:py-32">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16 md:mb-24">
-          <span className="text-xs font-mono tracking-widest text-obsidian/30 uppercase block mb-4">04 // About_Prodacom</span>
+          
           <h2 className="font-display font-bold text-3xl md:text-5xl lg:text-6xl text-obsidian tracking-tight max-w-3xl">Tecnologia que transforma a gestão do seu negócio</h2>
         </motion.div>
 
