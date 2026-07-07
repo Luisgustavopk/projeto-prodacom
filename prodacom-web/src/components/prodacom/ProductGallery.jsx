@@ -9,11 +9,16 @@ import { productsData } from "../../data/products";
 // Basta colocar os IDs exatos que você cadastrou no products.js.
 // Você pode colocar até uns 10 aqui, a ordem que você colocar é a ordem que vai aparecer!
 const featuredProductIds = [
-  "inner-rep-plus", 
-  "catraca-flap",
-  "controle-de-acesso", 
-  "ronda",
-  "software"
+  "leitor-facial-f4",
+  "inner-rep-plus",
+  "idface",
+  "idface-max",
+  "idlock-bio",
+  "idlock",
+  "catraca-revolution",
+  "idblock-next",
+  "idblock-pne",
+  "bastao-viggia"
 ];
 
 export default function ProductGallery({ onSelectProduct }) {
@@ -58,6 +63,7 @@ export default function ProductGallery({ onSelectProduct }) {
     <section id="produtos" className="relative py-24 md:py-32 bg-obsidian overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-16">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <h2 className="font-display font-bold text-3xl md:text-5xl lg:text-6xl text-white tracking-tight">Produtos</h2>
             <a href="#contato" onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} className="flex items-center gap-2 text-xs font-medium tracking-wider uppercase text-white/40 hover:text-cobalt transition-colors group">

@@ -60,11 +60,11 @@ export default function ProductPage({ product, onBackToHome }) {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative flex justify-center">
               <div className="absolute w-72 h-72 bg-cobalt/20 blur-[120px] rounded-full pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
               <motion.img 
-                animate={{ y: [0, -12, 0] }} 
+                animate={{ y: [0, -6, 0] }} 
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                 src={product.image} 
                 alt={product.title} 
-                className="relative z-10 max-h-96 w-auto object-contain drop-shadow-2xl invert mix-blend-screen"
+                className="relative z-10 max-h-96 w-auto object-contain drop-shadow-2xl mix-blend-screen"
               />
             </motion.div>
 
