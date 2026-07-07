@@ -2,6 +2,8 @@ import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 
+import logoProdacom from "../../assets/images/logo-prodacom-6.jpg";
+
 const quickLinks = [
   { label: "Início", href: "#hero" },
   { label: "Soluções", href: "#solucoes" },
@@ -19,6 +21,9 @@ const productLinks = [
   { label: "Crachás", href: "#solucoes" },
 ];
 
+
+
+
 const scrollTo = (e, href) => {
   e.preventDefault();
   document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
@@ -30,7 +35,11 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
-            <span className="font-display font-bold text-sm tracking-widest text-white uppercase">PRODACOM</span>
+            <img 
+              src={logoProdacom} 
+              alt="Prodacom Tecnologia" 
+              className="h-20 w-auto object-contain invert mix-blend-screen opacity-90"
+            />
             <p className="mt-4 text-sm text-white/30 leading-relaxed">Soluções integradas de controle de ponto e acesso. Tecnologia e confiabilidade há mais de 10 anos no mercado.</p>
             <div className="mt-6 flex items-center gap-3">
               <a href="https://www.facebook.com/prodacom.tecnologia.3" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center bg-white/5 text-white/40 hover:bg-cobalt hover:text-white transition-all duration-300">

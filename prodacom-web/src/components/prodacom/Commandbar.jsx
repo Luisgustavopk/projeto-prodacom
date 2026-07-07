@@ -10,7 +10,7 @@ const navItems = [
   { label: "Contato", href: "#contato" },
 ];
 
-export default function CommandBar() {
+export default function CommandBar({ onNavigateHome }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -22,8 +22,17 @@ export default function CommandBar() {
 
   const scrollTo = (href) => {
     setMenuOpen(false);
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    
+    // Se o usuário estiver na tela de um produto, força o retorno para a Home
+    if (onNavigateHome) {
+      onNavigateHome();
+    }
+
+    // Pequeno intervalo para dar tempo da Home renderizar antes de rolar
+    setTimeout(() => {
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 120);
   };
 
   return (
@@ -40,7 +49,7 @@ export default function CommandBar() {
           <a
             href="#hero"
             onClick={(e) => { e.preventDefault(); scrollTo("#hero"); }}
-            className="font-display font-bold text-sm tracking-widest text-obsidian uppercase"
+            className="font-display font-bold text-sm tracking-widest text-obsidian uppercase cursor-pointer"
           >
             PRODACOM
           </a>
@@ -64,10 +73,9 @@ export default function CommandBar() {
               (31) 3245-1265
             </a>
             <a
-              href="https://web.whatsapp.com/send?phone=5531993092473"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-1.5 hover:bg-obsidian transition-colors duration-300"
+              href="#contato"
+              onClick={(e) => { e.preventDefault(); scrollTo("#contato"); }}
+              className="text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-1.5 hover:bg-obsidian transition-colors duration-300 text-center cursor-pointer"
             >
               Orçamento
             </a>
@@ -81,42 +89,17 @@ export default function CommandBar() {
 
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center">
             <div className="flex flex-col items-center gap-8">
               {navItems.map((item, i) => (
-                <motion.a
-                  key={item.label}
-                  href={item.href}
-                  onClick={(e) => { e.preventDefault(); scrollTo(item.href); }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                  className="text-2xl font-display font-semibold tracking-wider uppercase text-obsidian hover:text-cobalt transition-colors"
-                >
+                <motion.a key={item.label} href={item.href} onClick={(e) => { e.preventDefault(); scrollTo(item.href); }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="text-2xl font-display font-semibold tracking-wider uppercase text-obsidian hover:text-cobalt transition-colors">
                   {item.label}
                 </motion.a>
               ))}
               <div className="flex flex-col items-center gap-3 mt-6 pt-6 border-t border-slate_mist">
-                <a href="tel:+553132451265" className="flex items-center gap-2 text-sm text-obsidian/60">
-                  <Phone size={14} strokeWidth={1} /> (31) 3245-1265
-                </a>
-                <a href="mailto:comercial@prodacom.com.br" className="flex items-center gap-2 text-sm text-obsidian/60">
-                  <Mail size={14} strokeWidth={1} /> comercial@prodacom.com.br
-                </a>
-                <a
-                  href="https://web.whatsapp.com/send?phone=5531993092473"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 bg-cobalt text-white px-8 py-3 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors"
-                >
-                  Solicite seu Orçamento
-                </a>
+                <a href="tel:+553132451265" className="flex items-center gap-2 text-sm text-obsidian/60"><Phone size={14} strokeWidth={1} /> (31) 3245-1265</a>
+                <a href="mailto:comercial@prodacom.com.br" className="flex items-center gap-2 text-sm text-obsidian/60"><Mail size={14} strokeWidth={1} /> comercial@prodacom.com.br</a>
+                <button onClick={() => scrollTo("#contato")} className="mt-4 bg-cobalt text-white px-8 py-3 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors">Solicite seu Orçamento</button>
               </div>
             </div>
           </motion.div>
