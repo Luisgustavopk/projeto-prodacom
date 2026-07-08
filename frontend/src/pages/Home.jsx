@@ -7,6 +7,7 @@ import AboutSection from "../components/prodacom/AboutSection";
 import PartnersBar from "../components/prodacom/PartnersBar";
 import ContactSection from "../components/prodacom/ContactSection";
 import Footer from "../components/prodacom/Footer";
+import ChatWidget from "../components/prodacom/ChatWidget";
 
 // Importando as Páginas Secundárias
 import CategoryPage from "./CategoryPage";
@@ -71,35 +72,32 @@ export default function Home() {
 
   // --- LÓGICA DE RENDERIZAÇÃO DAS TELAS ---
 
-  if (activeProductSlug && productsData[activeProductSlug]) {
-    return (
-      <ProductPage 
-        product={productsData[activeProductSlug]} 
-        onBackToHome={activeCategorySlug ? handleBackToCategory : handleBackToHome} 
-      />
-    );
-  }
-
-  if (activeCategorySlug && catalogData[activeCategorySlug]) {
-    return (
-      <CategoryPage 
-        category={catalogData[activeCategorySlug]} 
-        onBackToHome={handleBackToHome} 
-        onSelectModel={handleSelectProduct} 
-      />
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-ghost">
-      <CommandBar onNavigateHome={handleBackToHome} />
-      <HeroSection />
-      <ServiceMatrix onSelectCategory={handleSelectCategory} />
-      <ProductGallery onSelectProduct={handleSelectProduct} />
-      <AboutSection />
-      <PartnersBar />
-      <ContactSection />
-      <Footer />
-    </div>
+ return (
+    <>
+      {activeProductSlug && productsData[activeProductSlug] ? (
+        <ProductPage 
+          product={productsData[activeProductSlug]} 
+          onBackToHome={activeCategorySlug ? handleBackToCategory : handleBackToHome} 
+        />
+      ) : activeCategorySlug && catalogData[activeCategorySlug] ? (
+        <CategoryPage 
+          category={catalogData[activeCategorySlug]} 
+          onBackToHome={handleBackToHome} 
+          onSelectModel={handleSelectProduct} 
+        />
+      ) : (
+        <div className="min-h-screen bg-ghost">
+          <CommandBar onNavigateHome={handleBackToHome} />
+          <HeroSection />
+          <ServiceMatrix onSelectCategory={handleSelectCategory} />
+          <ProductGallery onSelectProduct={handleSelectProduct} />
+          <AboutSection />
+          <PartnersBar />
+          <ContactSection />
+          <Footer />
+        </div>
+      )}
+      <ChatWidget />
+    </>
   );
 }
