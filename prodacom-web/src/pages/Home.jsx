@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CommandBar from "../components/prodacom/CommandBar";
 import HeroSection from "../components/prodacom/HeroSection";
 import ServiceMatrix from "../components/prodacom/ServiceMatrix";
@@ -20,13 +20,11 @@ export default function Home() {
   const [activeCategorySlug, setActiveCategorySlug] = useState(null);
   const [activeProductSlug, setActiveProductSlug] = useState(null);
 
-  // Abre a Página de CATEGORIA (Vindo do ServiceMatrix)
   const handleSelectCategory = (categoryId) => {
     setActiveCategorySlug(categoryId);
     setActiveProductSlug(null);
   };
 
-  // Abre direto a Página do PRODUTO (Vindo do Carrossel ou de dentro da Categoria)
   const handleSelectProduct = (productId) => {
     if (productsData[productId]) {
       setActiveProductSlug(productId);
@@ -35,31 +33,53 @@ export default function Home() {
     }
   };
 
-  // Zera tudo e volta para a tela inicial
   const handleBackToHome = () => {
     setActiveCategorySlug(null);
     setActiveProductSlug(null);
   };
 
-  // Se estiver num produto, volta para a Categoria (se houver uma ativa)
   const handleBackToCategory = () => {
     setActiveProductSlug(null);
   };
 
+  // ========================================================
+  // OUVINTES DE EVENTOS (Conecta com os cliques do Footer)
+  // ========================================================
+  useEffect(() => {
+    const handleHashNavigation = (e) => {
+      const href = e.detail;
+      handleBackToHome(); // Retorna à Home principal
+      // Dá um tempo mínimo para a tela inicial renderizar, e então rola para a seção
+      setTimeout(() => {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    };
+
+    const handleCategoryNavigation = (e) => {
+      const categoryId = e.detail;
+      handleSelectCategory(categoryId); // Abre a categoria selecionada direto
+    };
+
+    window.addEventListener('navigate-hash', handleHashNavigation);
+    window.addEventListener('navigate-category', handleCategoryNavigation);
+
+    return () => {
+      window.removeEventListener('navigate-hash', handleHashNavigation);
+      window.removeEventListener('navigate-category', handleCategoryNavigation);
+    };
+  }, []);
+
   // --- LÓGICA DE RENDERIZAÇÃO DAS TELAS ---
 
-  // 1. Se tem um PRODUTO ativo (Nível 3)
   if (activeProductSlug && productsData[activeProductSlug]) {
     return (
       <ProductPage 
         product={productsData[activeProductSlug]} 
-        // Se a pessoa veio da categoria, volta pra categoria. Se veio da Home, volta pra Home.
         onBackToHome={activeCategorySlug ? handleBackToCategory : handleBackToHome} 
       />
     );
   }
 
-  // 2. Se tem uma CATEGORIA ativa (Nível 2)
   if (activeCategorySlug && catalogData[activeCategorySlug]) {
     return (
       <CategoryPage 
@@ -70,16 +90,12 @@ export default function Home() {
     );
   }
 
-  // 3. HOME (Nível 1)
   return (
     <div className="min-h-screen bg-ghost">
       <CommandBar onNavigateHome={handleBackToHome} />
       <HeroSection />
-      
-      {/* Aqui é o pulo do gato: A matriz abre a Categoria, a Galeria abre o Produto */}
       <ServiceMatrix onSelectCategory={handleSelectCategory} />
       <ProductGallery onSelectProduct={handleSelectProduct} />
-      
       <AboutSection />
       <PartnersBar />
       <ContactSection />

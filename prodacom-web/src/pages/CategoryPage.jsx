@@ -31,9 +31,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
           </motion.button>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="max-w-2xl">
-            <span className="text-xs font-mono tracking-widest text-white/30 uppercase block mb-4">
-              {category.tag}
-            </span>
+          
             <h1 className="font-display font-bold text-5xl md:text-7xl text-white tracking-tight mb-6">
               {category.title}
             </h1>
@@ -57,9 +55,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
       <section className="py-24 bg-white text-obsidian">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
-            <span className="text-xs font-mono tracking-widest text-obsidian/30 uppercase block mb-3">
-              // Benefícios
-            </span>
+            
             <h2 className="font-display font-bold text-3xl md:text-5xl tracking-tight">
               Por que escolher
             </h2>
@@ -84,9 +80,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
       <section id="linha-produtos" className="py-24 bg-obsidian">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
-            <span className="text-xs font-mono tracking-widest text-white/20 uppercase block mb-3">
-              // Modelos Disponíveis
-            </span>
+        
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight">
               Linha de produtos
             </h2>

@@ -29,7 +29,7 @@ export default function ContactSection() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <span className="text-xs font-mono tracking-widest text-white/20 uppercase block mb-4">05 // Contact_Protocol</span>
+           
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight mb-6">Vamos Conversar</h2>
             <p className="text-base text-white/40 leading-relaxed mb-12 max-w-md">Solicite seu orçamento sem compromisso. Nossa equipe de consultores está pronta para encontrar a solução ideal para sua empresa.</p>
 

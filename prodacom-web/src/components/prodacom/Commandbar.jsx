@@ -10,7 +10,7 @@ const navItems = [
   { label: "Contato", href: "#contato" },
 ];
 
-export default function CommandBar({ onNavigateHome }) {
+export default function CommandBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -20,19 +20,12 @@ export default function CommandBar({ onNavigateHome }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = (href) => {
+  // ESSA É A FUNÇÃO INTELIGENTE! Ela se comunica com a Home de qualquer página.
+  const handleNavigation = (e, href) => {
+    e.preventDefault();
     setMenuOpen(false);
-    
-    // Se o usuário estiver na tela de um produto, força o retorno para a Home
-    if (onNavigateHome) {
-      onNavigateHome();
-    }
-
-    // Pequeno intervalo para dar tempo da Home renderizar antes de rolar
-    setTimeout(() => {
-      const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 120);
+    // Dispara o evento global para a Home ouvir e trocar de tela
+    window.dispatchEvent(new CustomEvent('navigate-hash', { detail: href }));
   };
 
   return (
@@ -42,13 +35,13 @@ export default function CommandBar({ onNavigateHome }) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 h-12 flex items-center transition-all duration-500 ${
-          scrolled ? "bg-white/80 backdrop-blur-xl border-b border-slate_mist shadow-sm" : "bg-transparent"
+          scrolled ? "bg-white/90 backdrop-blur-xl border-b border-slate_mist shadow-sm" : "bg-transparent"
         }`}
       >
         <div className="w-full max-w-7xl mx-auto px-6 flex items-center justify-between">
           <a
             href="#hero"
-            onClick={(e) => { e.preventDefault(); scrollTo("#hero"); }}
+            onClick={(e) => handleNavigation(e, "#hero")}
             className="font-display font-bold text-sm tracking-widest text-obsidian uppercase cursor-pointer"
           >
             PRODACOM
@@ -59,7 +52,7 @@ export default function CommandBar({ onNavigateHome }) {
               <a
                 key={item.label}
                 href={item.href}
-                onClick={(e) => { e.preventDefault(); scrollTo(item.href); }}
+                onClick={(e) => handleNavigation(e, item.href)}
                 className="text-xs font-medium tracking-wider uppercase text-obsidian/60 hover:text-cobalt transition-colors duration-300 relative group"
               >
                 {item.label}
@@ -74,7 +67,7 @@ export default function CommandBar({ onNavigateHome }) {
             </a>
             <a
               href="#contato"
-              onClick={(e) => { e.preventDefault(); scrollTo("#contato"); }}
+              onClick={(e) => handleNavigation(e, "#contato")}
               className="text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-1.5 hover:bg-obsidian transition-colors duration-300 text-center cursor-pointer"
             >
               Orçamento
@@ -92,14 +85,14 @@ export default function CommandBar({ onNavigateHome }) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center">
             <div className="flex flex-col items-center gap-8">
               {navItems.map((item, i) => (
-                <motion.a key={item.label} href={item.href} onClick={(e) => { e.preventDefault(); scrollTo(item.href); }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="text-2xl font-display font-semibold tracking-wider uppercase text-obsidian hover:text-cobalt transition-colors">
+                <motion.a key={item.label} href={item.href} onClick={(e) => handleNavigation(e, item.href)} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="text-2xl font-display font-semibold tracking-wider uppercase text-obsidian hover:text-cobalt transition-colors">
                   {item.label}
                 </motion.a>
               ))}
               <div className="flex flex-col items-center gap-3 mt-6 pt-6 border-t border-slate_mist">
                 <a href="tel:+553132451265" className="flex items-center gap-2 text-sm text-obsidian/60"><Phone size={14} strokeWidth={1} /> (31) 3245-1265</a>
                 <a href="mailto:comercial@prodacom.com.br" className="flex items-center gap-2 text-sm text-obsidian/60"><Mail size={14} strokeWidth={1} /> comercial@prodacom.com.br</a>
-                <button onClick={() => scrollTo("#contato")} className="mt-4 bg-cobalt text-white px-8 py-3 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors">Solicite seu Orçamento</button>
+                <button onClick={(e) => handleNavigation(e, "#contato")} className="mt-4 bg-cobalt text-white px-8 py-3 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors">Solicite seu Orçamento</button>
               </div>
             </div>
           </motion.div>

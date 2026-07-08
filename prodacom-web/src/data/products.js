@@ -1,6 +1,6 @@
 import { 
   ShieldCheck, Fingerprint, Wifi, FileText, Lock, Users, Eye, Zap, 
-  HardDrive,Monitor,Printer, Cpu, Layers, Radio, Sparkles, Accessibility, ScanFace 
+  HardDrive,Monitor,Printer, Box,Cpu, Layers, Radio, Sparkles, Accessibility, ScanFace 
 } from "lucide-react";
 
 // --- IMPORTAÇÃO DAS IMAGENS LOCAIS (Evita bloqueio de servidores externos) ---
@@ -15,6 +15,8 @@ import imgRevolution from "../../src/assets/images/catraca-revolution.png";
 import imgIdBlockNext from "../../src/assets/images/idblock-next.jpg";
 import imgIdBlockPne from "../../src/assets/images/idblock-pne.jpg";
 import imgViggia from "../../src/assets/images/bastao-viggia.jpg";
+import imgFit from "../assets/images/catraca-fit.png";
+import imgBox from "../assets/images/catraca-box.jpg";
 
 export const productsData = {
   // ==========================================================================
@@ -286,6 +288,54 @@ export const productsData = {
       { label: "Autonomia Estimada", value: "Capacidade de carga projetada para realizar até 350.000 leituras de postos de checagem" },
       { label: "Peso do Equipamento", value: "Apenas 165 gramas (Desenho cilíndrico altamente portátil e ergonômico para o vigilante)" },
       { label: "Acessórios Compatíveis", value: "Suporta fixação de iButtons em bases de parede, tags de identificação de vigias e coldres de nylon" }
+    ]
+  },
+
+  // ==========================================================================
+  // NOVAS CATRACAS ADICIONADAS (TOPDATA)
+  // ==========================================================================
+
+  "catraca-fit": {
+    id: "catraca-fit",
+    tag: "11 // CATRACAS // TOPDATA // ACESSO COMPACTO",
+    title: "Catraca Fit",
+    subtitle: "Catraca de Acesso Compacta e Versátil",
+    description: "Com seu design atual e dimensões super compactas, a catraca Fit se adapta perfeitamente a qualquer ambiente, mesmo com restrição de espaço na portaria. É a solução de entrada com excelente custo-benefício para gerenciar e organizar o fluxo de pessoas em academias, escolas, clubes e condomínios com alta segurança.",
+    image: imgFit,
+    features: [
+      { icon: Layers, title: "Design Otimizado", desc: "Estrutura inteligente tipo pedestal que ocupa pouquíssimo espaço, ideal para recepções menores sem perder a eficiência de bloqueio." },
+      { icon: Wifi, title: "Operação Autônoma", desc: "Funciona perfeitamente de forma integrada (online) ao seu sistema, ou de forma totalmente offline (stand-alone) mantendo as regras de acesso se a rede cair." },
+      { icon: Fingerprint, title: "Múltiplas Tecnologias", desc: "Altamente customizável, podendo ser equipada de fábrica com leitores de impressão digital, cartões de aproximação RFID ou leitor de QR Code." },
+      { icon: Box, title: "Acessórios Opcionais", desc: "Mesmo sendo compacta, suporta a instalação de urna coletora de crachás e braço articulado antipânico para rotas de saída de emergência." }
+    ],
+    specs: [
+      { label: "Material da Estrutura", value: "Pedestal e braços tubulares fabricados em aço carbono reforçado com pintura epóxi anticorrosiva" },
+      { label: "Modos de Operação", value: "Online via rede TCP/IP ou Offline mantendo o banco de regras e biometrias na memória interna" },
+      { label: "Leitores de Autenticação", value: "Suporta Módulo Biométrico, Cartões de Proximidade (125kHz), Smart Card (Mifare) ou Código de Barras/QR Code" },
+      { label: "Mecanismo de Bloqueio", value: "Sistema clássico de 3 braços com giro mecânico direcional de fluxo" },
+      { label: "Tempo de Liberação", value: "Processamento rápido com liberação em aproximadamente 1 segundo e travamento imediato do eixo pós-giro" }
+    ]
+  },
+
+  "catraca-box": {
+    id: "catraca-box",
+    tag: "12 // CATRACAS // TOPDATA // ALTO PADRÃO INOX",
+    title: "Catraca Box (Inox)",
+    subtitle: "Catraca Balcão de Alta Segurança e Estética Premium",
+    description: "A catraca Box une a estética sofisticada do aço inoxidável à confiabilidade mecânica extrema. Construída no formato balcão (tipo cofre), o seu visual imponente transmite uma forte percepção de segurança aos usuários, inibindo invasões. É a escolha definitiva para recepções corporativas de alto padrão, universidades, estádios e ambientes diferenciados.",
+    image: imgBox,
+    features: [
+      { icon: ShieldCheck, title: "Estrutura Tipo Cofre", desc: "Gabinete fechado de formato alongado que oferece uma barreira física mais robusta, inibindo com eficácia as tentativas de pular a catraca." },
+      { icon: Eye, title: "Acabamento Premium", desc: "Linhas modernas que valorizam a arquitetura do local, contando com tampo em aço inox e opções de gabinete 100% inoxidável." },
+      { icon: Layers, title: "Amplo Espaço Interno", desc: "Acomoda facilmente placas controladoras de terceiros, cabeamento pesado de rede e urna coletora de grande volume." },
+      { icon: Lock, title: "Mecânica Inteligente", desc: "Sistema avançado de amortecimento do giro e travamento anti-carona desenvolvido para suportar tráfego agressivo e massivo." }
+    ],
+    specs: [
+      { label: "Acabamento Estrutural", value: "Tampo superior sempre em Aço Inox. Gabinete inferior disponível em Aço Carbono ou 100% Inox AISI 304" },
+      { label: "Formatos de Identificação", value: "Módulo nativo para Reconhecimento Facial, Biometria Digital, Cartões RFID, QR Code ou Teclado Numérico" },
+      { label: "Cenário de Aplicação", value: "Ambientes com arquitetura de alto padrão ou áreas de fluxo muito pesado que exigem barreira física robusta" },
+      { label: "Sistema de Segurança", value: "Bloqueio eletromecânico anti-carona integrado que impede múltiplas passagens com uma única liberação" },
+      { label: "Módulo para Visitantes", value: "Pode receber uma urna coletora frontal de alta capacidade para o recolhimento e validação de crachás na saída" }
     ]
   }
 };

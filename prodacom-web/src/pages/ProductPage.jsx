@@ -25,16 +25,14 @@ export default function ProductPage({ product, onBackToHome }) {
             
             {/* Texto */}
             <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-              <span className="text-xs font-mono tracking-widest text-white/30 uppercase block mb-4">
-                {product.tag}
-              </span>
+            
               <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight mb-4 leading-tight">
                 {product.title}
               </h1>
               <h2 className="text-xl text-cobalt font-medium mb-6">
                 {product.subtitle}
               </h2>
-              <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg">
+              <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg text-justify">
                 {product.description}
               </p>
               
@@ -57,10 +55,10 @@ export default function ProductPage({ product, onBackToHome }) {
             </motion.div>
 
             {/* Imagem Flutuante */}
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative flex justify-center">
+            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative flex justify-center">
               <div className="absolute w-72 h-72 bg-cobalt/20 blur-[120px] rounded-full pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
               <motion.img 
-                animate={{ y: [0, -6, 0] }} 
+                animate={{ y: [0, -3, 0] }} 
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                 src={product.image} 
                 alt={product.title} 
@@ -132,7 +130,7 @@ export default function ProductPage({ product, onBackToHome }) {
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <span className="text-xs font-mono tracking-widest text-white/20 uppercase block mb-3">
-                  // Vamos Conversar
+                 // Vamos Conversar
                 </span>
                 <h2 className="font-display font-bold text-4xl md:text-5xl text-white tracking-tight mb-6">
                   Interesse nesse Produto?
