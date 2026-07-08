@@ -17,10 +17,26 @@ export default function ContactSection() {
   const [form, setForm] = useState({ nome: "", empresa: "", email: "", telefone: "", segmento: "", qtdFuncionarios: "", mensagem: "" });
 
   const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
+  
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const msg = encodeURIComponent(`Olá! Meu nome é ${form.nome} da empresa ${form.empresa}. ${form.mensagem}`);
-    window.open(`https://web.whatsapp.com/send?phone=5531993092473&text=${msg}`, "_blank");
+    e.preventDefault(); // Impede a página de recarregar
+
+    // 1. Puxando os dados da SUA variável de estado "form"
+    const { nome, empresa, email, telefone, segmento, mensagem } = form; 
+
+    // 2. Montando um texto super profissional para o WhatsApp
+    const texto = `Olá! Meu nome é *${nome}*${empresa ? ` da empresa *${empresa}*` : ''}.\n\n*Meus contatos:*\n- Telefone: ${telefone || 'Não informado'}\n- E-mail: ${email}\n${segmento ? `- Segmento: ${segmento}` : ''}\n\n*Gostaria de conversar sobre:*\n"${mensagem}"`;
+
+    // 3. Converte o texto para o formato de link de internet
+    const textoCodificado = encodeURIComponent(texto);
+
+    // 4. O número oficial da Prodacom
+    const numeroProdacom = "5531993092473";
+
+    // 5. Abre o WhatsApp na nova aba
+    window.open(`https://wa.me/${numeroProdacom}?text=${textoCodificado}`, '_blank');
+    
+    // 6. Mostra a tela de "Mensagem Enviada" no site
     setSubmitted(true);
   };
 
@@ -29,7 +45,7 @@ export default function ContactSection() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-           
+            
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight mb-6">Vamos Conversar</h2>
             <p className="text-base text-white/40 leading-relaxed mb-12 max-w-md">Solicite seu orçamento sem compromisso. Nossa equipe de consultores está pronta para encontrar a solução ideal para sua empresa.</p>
 
@@ -40,7 +56,7 @@ export default function ContactSection() {
                   <span className="text-xs text-white/30 uppercase tracking-wider block mb-1">Telefone</span>
                   <a href="tel:+553132451265" className="text-sm text-white/70 hover:text-cobalt transition-colors">(31) 3245-1265</a>
                   <span className="text-white/20 mx-2">|</span>
-                  <a href="tel:+5531993092473" className="text-sm text-white/70 hover:text-cobalt transition-colors">(31) 99309-2473</a>
+                  <a href="https://wa.me/5531993092473" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-cobalt transition-colors">(31) 99309-2473</a>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -73,8 +89,8 @@ export default function ContactSection() {
                 <div className="w-16 h-16 bg-cobalt/20 flex items-center justify-center mb-6">
                   <Check size={28} strokeWidth={1} className="text-cobalt" />
                 </div>
-                <h3 className="font-display font-semibold text-2xl text-white mb-3">Mensagem Enviada</h3>
-                <p className="text-sm text-white/40 max-w-sm">Sua solicitação foi encaminhada via WhatsApp. Nossa equipe retornará em breve.</p>
+                <h3 className="font-display font-semibold text-2xl text-white mb-3">Solicitação Gerada!</h3>
+                <p className="text-sm text-white/40 max-w-sm">Os detalhes foram enviados para o WhatsApp. Envie a mensagem na nova aba para iniciarmos o atendimento.</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit}>

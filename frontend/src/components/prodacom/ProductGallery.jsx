@@ -111,7 +111,7 @@ export default function ProductGallery({ onSelectProduct }) {
       <div className="max-w-7xl mx-auto px-6 mt-16">
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-sm text-white/30">Equipamentos homologados e certificados. Garantia e suporte técnico especializado.</p>
-          <a href="https://web.whatsapp.com/send?phone=5531993092473" target="_blank" rel="noopener noreferrer" className="bg-cobalt text-white px-6 py-2.5 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 shrink-0">
+          <a href="https://wa.me/5531993092473" target="_blank" rel="noopener noreferrer" className="bg-cobalt text-white px-6 py-2.5 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 shrink-0">
             Fale com um Consultor
           </a>
         </div>
