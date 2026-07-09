@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { MessageSquare, Send, User, Phone, Clock, Monitor } from "lucide-react";
-// Importamos a MESMA instância do socket
+import { MessageSquare, Send, User, Phone, Clock, Monitor, X, ChevronRight, ChevronLeft } from "lucide-react";
 import { socket } from "../services/socket";
 
 export default function AdminChat() {
@@ -15,24 +14,26 @@ export default function AdminChat() {
   }, [chats, clienteAtivo]);
 
   useEffect(() => {
-    // 1. Conecta o socket
     socket.connect();
-    
-    // 2. Avisa que é o admin
     socket.emit("entrar_como_admin");
 
-    // 3. Função para lidar com novas mensagens
+    socket.on("sincronizar_conversas_existentes", (historicoDoServidor) => {
+      setChats(historicoDoServidor);
+    });
+
     const handleNovaMensagem = (dados) => {
       setChats((prevChats) => {
-        const chatAtual = prevChats[dados.idDoCliente] || {
+        const chatId = dados.contato;
+        const chatAtual = prevChats[chatId] || {
           nome: dados.autor,
           contato: dados.contato,
+          idDoCliente: dados.contato,
           mensagens: []
         };
 
         return {
           ...prevChats,
-          [dados.idDoCliente]: {
+          [chatId]: {
             ...chatAtual,
             mensagens: [...chatAtual.mensagens, { role: "user", content: dados.texto, hora: dados.hora }]
           }
@@ -40,13 +41,12 @@ export default function AdminChat() {
       });
     };
 
-    // Fica escutando
     socket.on("nova_mensagem_cliente", handleNovaMensagem);
 
-    // Limpeza ao sair da tela
     return () => {
+      socket.off("sincronizar_conversas_existentes");
       socket.off("nova_mensagem_cliente", handleNovaMensagem);
-      socket.disconnect(); // Desconecta o admin se ele fechar a aba
+      socket.disconnect(); 
     };
   }, []);
 
@@ -57,7 +57,6 @@ export default function AdminChat() {
     const texto = input.trim();
     const hora = new Date().toLocaleTimeString();
 
-    // Envia direto pelo socket limpo
     socket.emit("enviar_mensagem", {
       autor: "Admin",
       texto: texto,
@@ -79,107 +78,151 @@ export default function AdminChat() {
   const conversasAtivas = Object.entries(chats);
 
   return (
-    <div className="flex h-screen bg-ghost font-sans">
+    <div className="flex h-screen bg-ghost font-sans selection:bg-cobalt selection:text-white overflow-hidden">
       
-      {/* BARRA LATERAL */}
-      <div className="w-1/3 max-w-sm bg-obsidian flex flex-col border-r border-white/10">
-        <div className="p-6 bg-obsidian border-b border-white/10 flex items-center gap-3">
-          <Monitor className="text-cobalt" size={24} />
+      {/* BARRA LATERAL (Esconde no mobile se houver cliente ativo) */}
+      <div className={`${clienteAtivo ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 md:max-w-sm bg-obsidian flex-col border-r border-slate_mist/10 shadow-2xl z-20`}>
+        <div className="p-4 md:p-6 bg-obsidian border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
+            <Monitor className="text-white" size={18} strokeWidth={1.5} />
+          </div>
           <div>
-            <h1 className="text-white font-display font-bold uppercase tracking-wider text-sm">Painel de Atendimento</h1>
-            <p className="text-emerald-400 text-xs flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> Online
+            <h1 className="text-white font-display font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs">Painel de Atendimento</h1>
+            <p className="text-emerald-400 text-[9px] md:text-[10px] font-mono flex items-center gap-2 mt-1 uppercase tracking-widest">
+              <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-400 rounded-full animate-pulse" /> Sistema Online
             </p>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {conversasAtivas.length === 0 ? (
-            <div className="text-white/40 text-center text-sm p-10 mt-10">
-              Nenhum cliente na fila no momento.
+            <div className="text-white/20 text-center text-[10px] uppercase tracking-widest p-10 mt-10 font-medium">
+              Aguardando novas conexões...
             </div>
           ) : (
             conversasAtivas.map(([id, dados]) => (
               <button
                 key={id}
                 onClick={() => setClienteAtivo(id)}
-                className={`w-full text-left p-4 border-b border-white/5 transition-colors flex flex-col gap-1 ${
-                  clienteAtivo === id ? "bg-cobalt/20 border-l-4 border-l-cobalt" : "hover:bg-white/5 border-l-4 border-l-transparent"
+                className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 group ${
+                  clienteAtivo === id ? "bg-cobalt" : "hover:bg-white/5"
                 }`}
               >
-                <div className="flex justify-between items-center w-full">
-                  <span className="text-white font-medium text-sm">{dados.nome}</span>
-                  {dados.mensagens.length > 0 && (
-                    <span className="text-white/40 text-[10px]">{dados.mensagens[dados.mensagens.length - 1].hora}</span>
-                  )}
+                <div className="flex justify-between items-start w-full">
+                  <span className={`font-display font-bold text-xs uppercase tracking-wider ${clienteAtivo === id ? "text-white" : "text-white/90"}`}>
+                    {dados.nome}
+                  </span>
+                  <span className={`text-[9px] font-mono ${clienteAtivo === id ? "text-white/60" : "text-white/30"}`}>
+                    {dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1].hora : "--:--"}
+                  </span>
                 </div>
-                <span className="text-white/50 text-xs truncate w-full">
-                  {dados.mensagens.length > 0 ? dados.mensagens[dados.mensagens.length - 1].content : "Nova conversa"}
-                </span>
+                <div className="flex items-center justify-between w-full">
+                  <span className={`text-[10px] md:text-[11px] truncate pr-4 ${clienteAtivo === id ? "text-white/80" : "text-white/40"}`}>
+                    {dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1].content : "Nova solicitação"}
+                  </span>
+                  <ChevronRight size={12} className={clienteAtivo === id ? "text-white" : "text-white/10"} />
+                </div>
               </button>
             ))
           )}
         </div>
       </div>
 
-      {/* ÁREA PRINCIPAL */}
-      <div className="flex-1 flex flex-col bg-white">
+      {/* ÁREA PRINCIPAL DO CHAT (Esconde no mobile se NÃO houver cliente ativo) */}
+      <div className={`${!clienteAtivo ? 'hidden md:flex' : 'flex'} flex-1 flex-col bg-ghost z-10 w-full`}>
         {clienteAtivo && chats[clienteAtivo] ? (
           <>
-            <div className="p-6 bg-white border-b border-slate_mist flex items-center justify-between shadow-sm z-10">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-ghost rounded-full flex items-center justify-center text-obsidian/40">
-                  <User size={20} />
+            {/* Header do Chat Ativo */}
+            <div className="px-4 md:px-8 py-4 md:py-5 bg-white border-b border-slate_mist flex items-center justify-between shadow-sm shrink-0">
+              <div className="flex items-center gap-3 md:gap-4">
+                {/* Botão de voltar (Apenas Mobile) */}
+                <button 
+                  onClick={() => setClienteAtivo(null)}
+                  className="md:hidden flex items-center justify-center w-10 h-10 bg-ghost text-obsidian border border-slate_mist hover:bg-slate_mist/30 transition-colors"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+
+                <div className="hidden md:flex w-10 h-10 md:w-12 md:h-12 bg-obsidian text-white items-center justify-center">
+                  <User size={20} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h2 className="text-obsidian font-bold text-sm uppercase tracking-wider">{chats[clienteAtivo].nome}</h2>
-                  <a href={`https://wa.me/${chats[clienteAtivo].contato.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="text-cobalt text-xs flex items-center gap-1 hover:underline mt-0.5">
-                    <Phone size={12} /> {chats[clienteAtivo].contato}
-                  </a>
+                  <h2 className="text-obsidian font-display font-bold text-xs md:text-sm uppercase tracking-[0.15em] line-clamp-1">{chats[clienteAtivo].nome}</h2>
+                  <div className="flex items-center gap-2 md:gap-3 mt-0.5 md:mt-1">
+                    <span className="text-cobalt text-[9px] md:text-[10px] font-mono font-bold flex items-center gap-1">
+                      <Phone size={10} /> {chats[clienteAtivo].contato}
+                    </span>
+                    <span className="hidden sm:inline text-obsidian/30 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">ID: {clienteAtivo.slice(-6)}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-ghost/30">
-              {chats[clienteAtivo].mensagens.map((msg, i) => (
+            {/* Mensagens */}
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-4 md:space-y-6 bg-ghost custom-scrollbar">
+              {chats[clienteAtivo].mensagens?.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "admin" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-[70%] px-5 py-3 text-sm leading-relaxed relative ${
-                      msg.role === "admin"
-                        ? "bg-cobalt text-white rounded-l-xl rounded-tr-xl"
-                        : "bg-white border border-slate_mist text-obsidian rounded-r-xl rounded-tl-xl shadow-sm"
-                    }`}
-                  >
-                    {msg.content}
-                    <div className={`text-[10px] mt-1 text-right flex items-center justify-end gap-1 ${msg.role === "admin" ? "text-white/60" : "text-obsidian/40"}`}>
-                      <Clock size={10} /> {msg.hora}
+                  {msg.role !== "admin" && (
+                    <div className="w-6 h-6 md:w-8 md:h-8 bg-obsidian text-white flex items-center justify-center mr-2 md:mr-3 mt-1 shadow-md shrink-0">
+                      <MessageSquare size={12} className="md:w-3.5 md:h-3.5" />
                     </div>
+                  )}
+                  <div className="flex flex-col gap-1 max-w-[85%] md:max-w-[65%]">
+                    <div
+                      className={`px-4 md:px-5 py-2.5 md:py-3 text-xs md:text-sm leading-relaxed shadow-sm ${
+                        msg.role === "admin"
+                          ? "bg-cobalt text-white border border-cobalt"
+                          : "bg-white border border-slate_mist text-obsidian"
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
+                    <span className={`text-[8px] md:text-[12px] font-mono uppercase tracking-tighter ${msg.role === "admin" ? "text-right text-obsidian/40" : "text-left text-obsidian/40"}`}>
+                      {msg.hora}
+                    </span>
                   </div>
                 </div>
               ))}
               <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate_mist flex items-center gap-3">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={`Responder ${chats[clienteAtivo].nome}...`}
-                className="flex-1 bg-ghost border border-slate_mist px-5 py-3 text-sm text-obsidian placeholder:text-obsidian/40 focus:outline-none focus:border-cobalt transition-colors rounded-full"
-              />
-              <button type="submit" className="bg-cobalt text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-obsidian transition-colors shadow-md">
-                <Send size={18} className="ml-1" />
-              </button>
-            </form>
+            {/* Input de Mensagem */}
+            <div className="p-3 md:p-6 bg-white border-t border-slate_mist shrink-0">
+              <form onSubmit={handleSend} className="flex items-center gap-2 md:gap-3 max-w-5xl mx-auto">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="RESPONDER..."
+                  className="flex-1 bg-ghost border border-slate_mist px-4 md:px-6 py-3 md:py-4 text-[10px] md:text-xs font-medium text-obsidian placeholder:text-obsidian/30 focus:outline-none focus:border-cobalt transition-all uppercase tracking-widest"
+                />
+                <button type="submit" className="bg-cobalt text-white w-12 h-12 md:w-14 md:h-14 flex items-center justify-center hover:bg-obsidian transition-all shadow-xl active:scale-95 shrink-0">
+                  <Send size={18} className="md:w-5 md:h-5" />
+                </button>
+              </form>
+            </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-obsidian/30 bg-ghost/30">
-            <MessageSquare size={48} className="mb-4 opacity-50" />
-            <p className="text-sm uppercase tracking-widest font-medium">Selecione uma conversa para iniciar</p>
+          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-obsidian/10">
+            <div className="w-24 h-24 border-2 border-dashed border-obsidian/10 flex items-center justify-center mb-6">
+              <MessageSquare size={40} strokeWidth={1} />
+            </div>
+            <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-center px-4">Selecione um cliente para atendimento</p>
           </div>
         )}
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; }
+        .bg-ghost { background-color: #f8fafc; }
+        .bg-obsidian { background-color: #1a1a1a; }
+        .bg-cobalt { background-color: #2563eb; }
+        .border-slate_mist { border-color: #e2e8f0; }
+        .text-obsidian { color: #1a1a1a; }
+        .text-cobalt { color: #2563eb; }
+      `}} />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Maximize2, Minimize2, Send, ChevronRight } from "lucide-react";
-// Importamos o nosso Singleton limpo!
 import { socket } from "../../services/socket";
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
@@ -9,23 +8,59 @@ const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  
-  const [messages, setMessages] = useState([
-    { role: "assistant", content: "Olá! Bem-vindo à Prodacom. Como podemos ajudar com a sua infraestrutura de ponto e acesso hoje?" }
-  ]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  const [isIdentified, setIsIdentified] = useState(false);
+  
+  // 1. Memória das Mensagens: Se já existirem mensagens guardadas, carrega elas. Se não, mostra a saudação.
+  const [messages, setMessages] = useState(() => {
+    const salvas = localStorage.getItem("prodacom_chat_messages");
+    return salvas ? JSON.parse(salvas) : [
+      { role: "assistant", content: "Olá! Bem-vindo à Prodacom. Como podemos ajudar com a sua infraestrutura de ponto e acesso hoje?" }
+    ];
+  });
+
+  // 2. Memória de Identificação: Lembra se o cliente já preencheu o formulário antes
+  const [isIdentified, setIsIdentified] = useState(() => {
+    return localStorage.getItem("prodacom_chat_is_identified") === "true";
+  });
+
+  // 3. Memória dos Dados: Lembra o Nome e o WhatsApp do cliente
+  const [leadForm, setLeadForm] = useState(() => {
+    const salvos = localStorage.getItem("prodacom_chat_lead_form");
+    return salvos ? JSON.parse(salvos) : { nome: "", contato: "" };
+  });
+
   const [isAskingContact, setIsAskingContact] = useState(false);
   const [pendingMessage, setPendingMessage] = useState("");
-  const [leadForm, setLeadForm] = useState({ nome: "", contato: "" });
+
+  // --- SALVANDO AS ALTERAÇÕES AUTOMATICAMENTE ---
+
 
   useEffect(() => {
+    localStorage.setItem("prodacom_chat_messages", JSON.stringify(messages));
     if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open, isAskingContact]);
+  }, [messages, open]);
 
-  // Listener para receber mensagens quando já estiver conectado
+
+  useEffect(() => {
+    localStorage.setItem("prodacom_chat_is_identified", isIdentified);
+    localStorage.setItem("prodacom_chat_lead_form", JSON.stringify(leadForm));
+  }, [isIdentified, leadForm]);
+
+  // --- RECONEXÃO AUTOMÁTICA NO F5 ---
+  useEffect(() => {
+    if (isIdentified) {
+      socket.connect();
+      // Avisamos ao servidor que esse cliente antigo acabou de acordar (dar F5)
+      socket.emit("cliente_reconectado", {
+        contato: leadForm.contato,
+        nome: leadForm.nome
+      });
+    }
+  }, [isIdentified]);
+
+  
   useEffect(() => {
     const handleReceberMensagem = (dados) => {
       if (dados.autor !== leadForm.nome) {
@@ -34,11 +69,7 @@ export default function ChatWidget() {
     };
 
     socket.on("receber_mensagem", handleReceberMensagem);
-
-    // Limpa a escuta se o componente for desmontado
-    return () => {
-      socket.off("receber_mensagem", handleReceberMensagem);
-    };
+    return () => socket.off("receber_mensagem", handleReceberMensagem);
   }, [leadForm.nome]);
 
   const handleFirstMessage = (texto) => {
@@ -65,10 +96,8 @@ export default function ChatWidget() {
       }]);
     }, 600);
 
-    // 1. Conecta o socket de forma limpa
     socket.connect();
 
-    // 2. Avisa ao servidor
     socket.emit("enviar_mensagem", {
       autor: leadForm.nome,
       contato: leadForm.contato,
@@ -88,9 +117,9 @@ export default function ChatWidget() {
     setMessages((prev) => [...prev, { role: "user", content: texto }]);
     setInput("");
 
-    // Envia usando a mesma instância
     socket.emit("enviar_mensagem", {
       autor: leadForm.nome,
+      contato: leadForm.contato, 
       texto: texto,
       hora: new Date().toLocaleTimeString()
     });
@@ -142,11 +171,11 @@ export default function ChatWidget() {
             {/* Mensagens */}
             <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-ghost">
               {messages.map((msg, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.role === "user" || msg.role === "admin" ? "justify-end" : "justify-start"}`}>
                   {msg.role === "assistant" && (
                     <div className="w-7 h-7 bg-obsidian text-white flex items-center justify-center mr-2 mt-1"><MessageSquare size={12} /></div>
                   )}
-                  <div className={`max-w-[78%] px-4 py-2.5 text-sm leading-relaxed ${msg.role === "user" ? "bg-cobalt text-white" : "bg-white border border-slate_mist text-obsidian"}`}>
+                  <div className={`max-w-[78%] px-4 py-2.5 text-sm leading-relaxed ${msg.role === "user" || msg.role === "admin" ? "bg-cobalt text-white" : "bg-white border border-slate_mist text-obsidian"}`}>
                     {msg.content}
                   </div>
                 </motion.div>
@@ -165,7 +194,7 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {/* FORMULÁRIO DE CAPTURA RESPONSIVO */}
+            {/* FORMULÁRIO OU BARRA DE DIGITAÇÃO */}
             {isAskingContact ? (
               <form onSubmit={handleStartChat} className="p-4 border-t border-slate_mist bg-white flex flex-col gap-3">
                 <p className="text-xs text-obsidian/60 font-medium">Por favor, informe seus dados para iniciarmos:</p>
