@@ -80,8 +80,8 @@ export default function AdminChat() {
   return (
     <div className="flex h-screen bg-ghost font-sans selection:bg-cobalt selection:text-white overflow-hidden">
       
-      {/* BARRA LATERAL (Esconde no mobile se houver cliente ativo) */}
-      <div className={`${clienteAtivo ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 md:max-w-sm bg-obsidian flex-col border-r border-slate_mist/10 shadow-2xl z-20`}>
+      {/* BARRA LATERAL */}
+      <div className={`${clienteAtivo ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 md:max-w-sm bg-obsidian flex-col border-r border-white/5 shadow-2xl z-20`}>
         <div className="p-4 md:p-6 bg-obsidian border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
           <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
             <Monitor className="text-white" size={18} strokeWidth={1.5} />
@@ -128,31 +128,42 @@ export default function AdminChat() {
         </div>
       </div>
 
-      {/* ÁREA PRINCIPAL DO CHAT (Esconde no mobile se NÃO houver cliente ativo) */}
+      {/* ÁREA PRINCIPAL DO CHAT */}
       <div className={`${!clienteAtivo ? 'hidden md:flex' : 'flex'} flex-1 flex-col bg-ghost z-10 w-full`}>
         {clienteAtivo && chats[clienteAtivo] ? (
           <>
-            {/* Header do Chat Ativo */}
-            <div className="px-4 md:px-8 py-4 md:py-5 bg-white border-b border-slate_mist flex items-center justify-between shadow-sm shrink-0">
+            {/* NOVO HEADER DO CHAT ATIVO - Estilo ChatWidget */}
+            <div className="px-4 md:px-8 py-4 md:py-5 bg-obsidian border-b border-white/10 flex items-center justify-between shadow-md shrink-0">
               <div className="flex items-center gap-3 md:gap-4">
-                {/* Botão de voltar (Apenas Mobile) */}
+                {/* Botão de voltar (Apenas Mobile - Adaptado pro tema escuro) */}
                 <button 
                   onClick={() => setClienteAtivo(null)}
-                  className="md:hidden flex items-center justify-center w-10 h-10 bg-ghost text-obsidian border border-slate_mist hover:bg-slate_mist/30 transition-colors"
+                  className="md:hidden flex items-center justify-center w-10 h-10 bg-white/5 text-white hover:bg-white/10 transition-colors"
                 >
                   <ChevronLeft size={20} />
                 </button>
 
-                <div className="hidden md:flex w-10 h-10 md:w-12 md:h-12 bg-obsidian text-white items-center justify-center">
+                {/* Ícone do Cliente - Azul Cobalt */}
+                <div className="flex w-10 h-10 md:w-12 md:h-12 bg-cobalt text-white items-center justify-center shadow-lg">
                   <User size={20} strokeWidth={1.5} />
                 </div>
+                
+                {/* Informações do Cliente */}
                 <div>
-                  <h2 className="text-obsidian font-display font-bold text-xs md:text-sm uppercase tracking-[0.15em] line-clamp-1">{chats[clienteAtivo].nome}</h2>
-                  <div className="flex items-center gap-2 md:gap-3 mt-0.5 md:mt-1">
-                    <span className="text-cobalt text-[9px] md:text-[10px] font-mono font-bold flex items-center gap-1">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-white font-display font-bold text-xs md:text-sm uppercase tracking-[0.15em] line-clamp-1">
+                      {chats[clienteAtivo].nome}
+                    </h2>
+                    {/* Status Online Pulsante */}
+                    <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-400 rounded-full animate-pulse" title="Online" />
+                  </div>
+                  <div className="flex items-center gap-2 md:gap-4 mt-0.5 md:mt-1">
+                    <a href={`https://wa.me/${chats[clienteAtivo].contato.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="text-cobalt hover:text-white transition-colors text-[9px] md:text-[10px] font-mono font-bold flex items-center gap-1">
                       <Phone size={10} /> {chats[clienteAtivo].contato}
+                    </a>
+                    <span className="hidden sm:inline text-white/30 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">
+                      ID: {clienteAtivo.slice(-6)}
                     </span>
-                    <span className="hidden sm:inline text-obsidian/30 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">ID: {clienteAtivo.slice(-6)}</span>
                   </div>
                 </div>
               </div>
@@ -177,7 +188,7 @@ export default function AdminChat() {
                     >
                       {msg.content}
                     </div>
-                    <span className={`text-[8px] md:text-[12px] font-mono uppercase tracking-tighter ${msg.role === "admin" ? "text-right text-obsidian/40" : "text-left text-obsidian/40"}`}>
+                    <span className={`text-[10px] md:text-[74%] font-mono uppercase tracking-tighter ${msg.role === "admin" ? "text-right text-obsidian/40" : "text-left text-obsidian/40"}`}>
                       {msg.hora}
                     </span>
                   </div>

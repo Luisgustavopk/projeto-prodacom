@@ -137,8 +137,13 @@ export default function ChatWidget() {
     }
   };
 
-  const panelWidth = expanded ? "md:w-[520px] lg:w-[640px]" : "w-[360px]";
-  const panelHeight = expanded ? "h-[600px] md:h-[640px]" : "h-[480px]";
+  const panelWidth = expanded 
+    ? "w-[calc(100vw-2.5rem)] md:w-[520px] lg:w-[640px]" 
+    : "w-[calc(100vw-2.5rem)] sm:w-[360px]";
+    
+  const panelHeight = expanded 
+    ? "h-[calc(100dvh-7rem)] md:h-[640px]" 
+    : "h-[calc(100dvh-7rem)] sm:h-[480px] sm:max-h-[80vh]";
 
   return (
     <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3">
