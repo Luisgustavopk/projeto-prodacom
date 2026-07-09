@@ -17,6 +17,14 @@ import imgIdBlockPne from "../../src/assets/images/idblock-pne.jpg";
 import imgViggia from "../../src/assets/images/bastao-viggia.jpg";
 import imgFit from "../assets/images/catraca-fit.png";
 import imgBox from "../assets/images/catraca-box.jpg";
+import imgCrachaPvc from "../../src/assets/images/crachas-pvc.png";
+import imgCrachaRfid from "../../src/assets/images/crachas-rfid.jpg";
+import imgIponto from "../../src/assets/images/software-iponto.jpg";
+import imgIfitness from "../../src/assets/images/software-ifitness.jpg";
+import imgIcontrol from "../../src/assets/images/software-icontrol.jpg";
+import imgIclube from "../../src/assets/images/software-iclube.jpg";
+import imgSchool from "../../src/assets/images/software-school.jpg";
+import imgRefcontrol from "../../src/assets/images/software-refcontrol.jpg";
 
 export const productsData = {
   // ==========================================================================
@@ -336,6 +344,183 @@ export const productsData = {
       { label: "Cenário de Aplicação", value: "Ambientes com arquitetura de alto padrão ou áreas de fluxo muito pesado que exigem barreira física robusta" },
       { label: "Sistema de Segurança", value: "Bloqueio eletromecânico anti-carona integrado que impede múltiplas passagens com uma única liberação" },
       { label: "Módulo para Visitantes", value: "Pode receber uma urna coletora frontal de alta capacidade para o recolhimento e validação de crachás na saída" }
+    ]
+  },
+  // ==========================================================================
+  // CRACHÁS E CARTÕES DE PROXIMIDADE (PRODACOM)
+  // ==========================================================================
+  
+  "crachas-pvc": {
+    id: "crachas-pvc",
+    tag: "13 // HARDWARE // PRODACOM // IDENTIFICAÇÃO",
+    title: "Crachás PVC e Cartões de Proximidade",
+    subtitle: "Identificação Visual Corporativa e Chave de Acesso Eletrônico",
+    description: "A linha de crachás e cartões em PVC da Prodacom une alta qualidade de acabamento gráfico com o que há de mais confiável em tecnologia de radiofrequência (RFID). Ideais para transmitir profissionalismo e seriedade, eles atuam como a identidade física do colaborador dentro da empresa e servem como chave de liberação eletrônica para relógios de ponto, catracas e fechaduras digitais, garantindo auditoria e controle de fluxo.",
+    image: imgCrachaPvc,
+    features: [
+      { icon: ShieldCheck, title: "PVC de Alta Durabilidade", desc: "Material resistente a dobras, umidade e atritos cotidianos, garantindo longa vida útil e menor taxa de reposição." },
+      { icon: Radio, title: "Chips RF-ID de Aproximação", desc: "Integração nativa com antenas de rádio frequência nas frequências 125 kHz ou 13,56 MHz (Mifare) para leitura sem contato." },
+      { icon: Users, title: "Modelos para Visitantes", desc: "Estruturação de layouts genéricos reutilizáveis com códigos em série para triagem rápida em recepções e portarias corporativas." }
+    ],
+    specs: [
+      { label: "Material de Construção", value: "PVC (Cloreto de Polivinila) Virgem Premium com laminação de proteção anti-riscos" },
+      { label: "Tecnologias de Proximidade", value: "Disponível com chip RFID 125 kHz (ASK/Smart) ou Smart Card Mifare 13,56 MHz" },
+      { label: "Formatos de Customização", value: "Impressão térmica colorida de alta resolução (frente ou frente/verso) para fotos e logos" },
+      { label: "Elementos de Código", value: "Compatível com inserção de Código de Barras (25, 39, 128), QR Code ou Numeração em Série" },
+      { label: "Dimensões do Cartão", value: "Padrão Financeiro ISO CR-80 (86 mm × 54 mm) com espessura padrão de 0,76 mm" },
+      { label: "Opções de Perfuração", value: "Opção de furo ovoide (vertical ou horizontal) direto na matriz para fixação de presilhas" },
+      { label: "Acessórios Disponíveis", value: "Compatível com cordões personalizados, porta-crachás rígidos (Protetores) e clipes jacaré" }
+    ]
+  },
+  "crachas-rfid": {
+    id: "crachas-rfid",
+    tag: "14 // HARDWARE // PRODACOM // ACESSO SEM CONTATO",
+    title: "Cartões de Proximidade RFID",
+    subtitle: "Tags, Chaveiros e Cartões Inteligentes de Radiofrequência",
+    description: "Os cartões e tags de proximidade RFID (Radio-Frequency Identification) são os dispositivos de liberação mais práticos e seguros para o controle de tráfego diário. Diferente dos sistemas de tarja magnética ou código de barras, a tecnologia RFID realiza a leitura dos dados por indução eletromagnética sem a necessidade de contato físico com o leitor. Isso elimina o desgaste mecânico dos equipamentos e dos próprios cartões, garantindo uma operação ultra veloz em portarias, condomínios e almoxarifados.",
+    image: imgCrachaRfid, // Pode usar a mesma imagem de crachás ou criar um import específico para tags/chaveiros
+    features: [
+      { icon: Radio, title: "Leitura Sem Contato Físico", desc: "Aproximação rápida a uma distância de até 10cm do leitor para liberação mecânica imediata de catracas e fechaduras." },
+      { icon: Lock, title: "Código Único Inviolável", desc: "Cada chip sai de fábrica com um número de ID exclusivo gravado em sua memória interna, impedindo clonagens e falsificações." },
+      { icon: Box, title: "Formatos Customizáveis", desc: "Disponível no formato clássico de cartão ISO (branco ou impresso), chaveiros em resina (Tags) ou pulseiras de silicone." }
+    ],
+    specs: [
+      { label: "Frequências de Operação", value: "Disponível em Baixa Frequência (125 kHz ASK/Smart) ou Alta Frequência (13,56 MHz Mifare)" },
+      { label: "Distância Operacional", value: "Captação estável por indução magnética variando de 2 cm a 10 cm de distância do sensor" },
+      { label: "Memória Interna (Mifare)", value: "Módulo Smart Card com memória EEPROM de 1K Byte dividida em 16 setores protegidos por senha" },
+      { label: "Vida Útil do Chip", value: "Mecanismo eletrônico passivo (sem bateria) projetado para suportar mais de 100.000 ciclos de leitura" },
+      { label: "Formatos de Gabinete", value: "Cartão Clássico CR-80, Chaveiro Clamshell rígido ou Tag Resinada com argola metálica" },
+      { label: "Compatibilidade de Rede", value: "Homologado para funcionamento nativo com toda a linha Topdata, Control iD e Inspell Softwares" },
+      { label: "Temperatura de Operação", value: "Resistência térmica industrial testada para funcionar de -10°C até 55°C" }
+    ]
+  },
+
+  // ==========================================================================
+  // LINHA DE SOFTWARES DE GESTÃO (INSPELL)
+  // ==========================================================================
+
+  "software-iponto": {
+    id: "software-iponto",
+    tag: "15 // SOFTWARE // INSPELL // CONTROLE DE PONTO",
+    title: "iPonto Plus",
+    subtitle: "Sistema de Tratamento de Ponto Eletrônico e Gestão de Jornada",
+    description: "O iPonto Plus oferece o mais alto nível de automação jurídica e operacional para o fechamento de folhas de ponto. Desenvolvido em total conformidade com a CLT e as exigências fiscais da Portaria 671 do MTE, o sistema simplifica o tratamento de exceções do dia a dia, automatiza cálculos complexos de horas extras e adicionais noturnos, e gera relatórios de auditoria transparentes para resguardar a empresa contra passivos trabalhistas.",
+    image: imgIponto,
+    features: [
+      { icon: FileText, title: "Tratamento de Exceções Fácil", desc: "Painel intuitivo e centralizado para lançamentos rápidos de abonos, justificativas de faltas, atestados médicos e dispensas." },
+      { icon: Sparkles, title: "Banco de Horas Avançado", desc: "Cálculo e compensação automatizada de saldos de créditos e débitos de horas com base nas regras do acordo sindical." },
+      { icon: ScanFace, title: "Módulo iPonto Mobile", desc: "Suporte para marcação de ponto externa por aplicativo via smartphone com validação por geolocalização e reconhecimento facial." }
+    ],
+    specs: [
+      { label: "Legislação Atendida", value: "Homologado sob a Portaria MTE 671 (Modelos REP-C, REP-A e REP-P)" },
+      { label: "Mecanismo de Banco", value: "Arquitetura baseada em Firebird SQL Relacional (Sem custos adicionais de licença)" },
+      { label: "Formatos de Importação", value: "Leitura automática de arquivos fiscais AFD gerados por qualquer relógio de ponto homologado" },
+      { label: "Regras de Escala", value: "Suporte a escalas complexas (12x36, 6x2, regimes de revezamento, horários flexíveis e móveis)" },
+      { label: "Integração de Folha", value: "Exportação nativa de arquivos de eventos configurados para os principais sistemas de folha de pagamento" },
+      { label: "Rotina de Segurança", value: "Gerenciamento estrito de permissões de usuários com logs internos de auditoria para cada alteração" }
+    ]
+  },
+
+  "software-ifitness": {
+    id: "software-ifitness",
+    tag: "16 // SOFTWARE // INSPELL // GESTÃO FITNESS",
+    title: "iFitness",
+    subtitle: "Gerenciamento Completo de Academias, Studios e Boxes de Crossfit",
+    description: "O iFitness é uma solução completa desenvolvida para profissionalizar a gestão de negócios fitness. O software integra ferramentas financeiras avançadas com um controle de acesso rigoroso via catracas, automatizando tarefas administrativas e focando no aumento de receitas através de rotinas de retenção, controle de inadimplência e renovações de matrículas.",
+    image: imgIfitness,
+    features: [
+      { icon: Users, title: "Controle de Acesso Inteligente", desc: "Restrição automática baseada em planos de horários, modalidades contratadas ou mensagens de alerta no visor da catraca." },
+      { icon: FileText, title: "Avaliação e Treinos", desc: "Módulo integrado para prescrição de fichas de musculação e avaliações físicas com envio automatizado por e-mail." },
+      { icon: Zap, title: "Gestão Antiinadimplência", desc: "Bloqueio automático de passagem física na barreira caso o aluno possua parcelas ou mensalidades vencidas." }
+    ],
+    specs: [
+      { label: "Módulos Financeiros", value: "Controle de Caixa diário, contas a pagar/receber, cheques, cartões de crédito e controle de estoque de produtos" },
+      { label: "Integração com Catracas", value: "Comunicação nativa bidirecional com catracas Topdata e Control iD em tempo real" },
+      { label: "Layout de Crachás", value: "Ferramenta interna integrada para criação e emissão de cartões com código de barras para alunos" },
+      { label: "Gestão de Planos", value: "Configuração flexível de pacotes (Mensal, Trimestral, Anual), trancamento de matrículas e taxas de adesão" },
+      { label: "Infraestrutura Mínima", value: "Instalação local em sistema operacional Windows 10 ou superior com backup local automatizado" }
+    ]
+  },
+
+  "software-icontrol": {
+    id: "software-icontrol",
+    tag: "17 // SOFTWARE // INSPELL // SEGURANÇA AMBIENTES",
+    title: "iControl",
+    subtitle: "Software de Segurança e Controle de Acesso de Pedestres e Veículos",
+    description: "Focado em segurança de perímetros e alta velocidade de resposta, o iControl gerencia o fluxo de pessoas em ambientes de acesso restrito, tais como condomínios empresariais, indústrias e estacionamentos privados. O sistema realiza sincronizações biométricas on-line instantâneas, garantindo que cadastros efetuados na secretaria se reflitam nos terminais de barreira no mesmo segundo.",
+    image: imgIcontrol,
+    features: [
+      { icon: Fingerprint, title: "Biometria On-line Direta", desc: "Envio e exclusão de digitais e dados faciais direto para a memória das catracas sem necessidade de comandos manuais." },
+      { icon: Users, title: "Cadastro Geral Unificado", desc: "Fichas completas com captura de fotos por webcam, documentos e agrupamento por empresas ou blocos." },
+      { icon: Lock, title: "Controle de Visitantes", desc: "Módulo ágil para liberação de prestadores de serviços com definição estrita de data e horários de validade." }
+    ],
+    specs: [
+      { label: "Sincronização de Dispositivos", value: "Gerenciamento simultâneo e em rede de múltiplas catracas, cancelas de veículos e portas" },
+      { label: "Monitoramento de Fluxo", value: "Painel operacional na tela exibe a foto, nome e local de passagem no exato momento do acesso" },
+      { icon: Lock, label: "Módulo Estacionamento", desc: "Controle de vagas associadas e fluxo de veículos não tarifado integrado à ficha de usuários" },
+      { label: "Módulo Web Auxiliar", value: "Acesso opcional via navegador de internet para consultas de relatórios e manutenções cadastrais básicas" },
+      { label: "Segurança de Arquivos", value: "Base de dados Firebird SQL estável contra quedas repentinas de energia e corrupção de arquivos" }
+    ]
+  },
+
+  "software-iclube": {
+    id: "software-iclube",
+    tag: "18 // SOFTWARE // INSPELL // CLUBES E ASSOCIAÇÕES",
+    title: "iClube",
+    subtitle: "Sistema Integrado de Gestão para Clubes, Agremiações e Associações",
+    description: "O iClube foi meticulosamente desenhado para gerenciar os complexos fluxos administrativos de associações e agremiações de qualquer escala. Centraliza desde o controle de cotas de sócios e cobranças de mensalidades até a segurança rigorosa de portarias, impedindo o acesso de pessoas inadimplentes ou não autorizadas sem gerar atritos no fluxo social.",
+    image: imgIclube,
+    features: [
+      { icon: Layers, title: "Gestão de Cotas e Títulos", desc: "Controle patrimonial completo de títulos, joias, transferências de propriedade e árvore de dependentes." },
+      { icon: Monitor, title: "Validação Visual na Portaria", desc: "Interface gráfica de guarita que projeta instantaneamente a foto e a situação financeira do sócio ao girar a catraca." },
+      { icon: Users, title: "Emissão de Convites Rápidos", desc: "Gerenciamento estrito de convidados com limites de cotas por sócio e controle de acessos em eventos específicos." }
+    ],
+    specs: [
+      { label: "Controle Financeiro", value: "Emissão de mensalidades, integração bancária para boletos, taxas de serviços e controle de caixas de pontos de venda" },
+      { label: "Gestão Médica / Exames", value: "Módulo de bloqueio na catraca para acessos a áreas restritas (ex: piscinas) baseado na validade do exame médico" },
+      { label: "Comunicação em Rede", value: "Suporte a funcionamento multi-estações (Secretaria, Portaria, Diretoria compartilhando o mesmo banco)" },
+      { label: "Extração de Relatórios", value: "Filtros gerenciais de inadimplência, frequência por faixa horária, estatísticas de convidados e auditorias" }
+    ]
+  },
+
+  "software-school": {
+    id: "software-school",
+    tag: "19 // SOFTWARE // INSPELL // AUTOMAÇÃO ESCOLAR",
+    title: "School Control",
+    subtitle: "Software de Gestão Pedagógica, Administrativa e Segurança Escolar",
+    description: "O School Control oferece uma abordagem de 360 graus para instituições de ensino. O sistema unifica a gestão escolar tradicional (notas, faltas e boletins) com um ecossistema rígido de controle de portaria por catracas biométricas, trazendo tranquilidade aos gestores e gerando um diferencial competitivo de segurança percebida altamente valorizado pelos pais.",
+    image: imgSchool,
+    features: [
+      { icon: Wifi, title: "Notificação de Fluxo aos Pais", desc: "Disparo automatizado de alertas de SMS ou e-mail notificando os responsáveis sobre o horário exato de entrada ou saída." },
+      { icon: Lock, title: "Saída Restrita e Validada", desc: "Bloqueio inteligente que impede a saída de alunos menores de idade, liberando a catraca apenas com a digital do responsável." },
+      { icon: FileText, title: "Painel Coordenador Eletrônico", desc: "Sistema integrado para organizar e agilizar as filas de saída na portaria no momento de pico de chegada dos veículos." }
+    ],
+    specs: [
+      { label: "Escopo Pedagógico", value: "Lançamento de diários de classe, controle de notas, faltas, histórico escolar, disciplinas e boletins" },
+      { label: "Gestão de Matrículas", value: "Controle de contratos, faturamento de mensalidades, taxas de material e controle de renegociações de débitos" },
+      { label: "Segurança de Acesso", value: "Configuração de bloqueio por turnos e dias letivos, impedindo o trânsito de alunos fora do horário de aula" },
+      { label: "Tecnologia de Conexão", value: "Conexão direta com módulos de catracas mecânicas e totens faciais instalados nos portões escolares" }
+    ]
+  },
+
+  "software-refcontrol": {
+    id: "software-refcontrol",
+    tag: "20 // SOFTWARE // INSPELL // CONTROLE REFEITÓRIOS",
+    title: "RefControl",
+    subtitle: "Software de Gerenciamento e Controle de Refeitórios Industriais",
+    description: "O RefControl é o sistema líder de mercado para auditoria e controle de consumo em refeitórios corporativos. Desenvolvido para empresas que fornecem refeições subsidiadas aos seus colaboradores, ele elimina desperdícios, fraudes de consumo duplo e erros de contagem, realizando a gestão através de restrições rígidas baseadas em escalas de trabalho, turnos e créditos pré-carregados.",
+    image: imgRefcontrol,
+    features: [
+      { icon: ShieldCheck, title: "Bloqueio por Turnos e Férias", desc: "Lógica automatizada que impede o acesso ao refeitório caso o funcionário esteja de folga, férias ou fora do horário de refeição." },
+      { icon: Box, title: "Controle Regressivo de Vendas", desc: "Subtração automática e em tempo real de créditos de refeições pré-carregados na ficha ou crachá do usuário a cada giro." },
+      { icon: Monitor, title: "Gestão Multi-Catracas", desc: "Um único servidor central gerencia simultaneamente várias barreiras físicas instaladas em diferentes pontos de distribuição." }
+    ],
+    specs: [
+      { label: "Métodos de Validação", value: "Suporte a leitores de Reconhecimento Facial, Impressão Digital (LFD antifraude) ou Crachás RFID" },
+      { label: "Auditoria de Consumo", value: "Registro estrito com logs permanentes para conferência de notas fiscais de empresas terceirizadas de catering" },
+      { label: "Modo Emergencial Manual", value: "Permite o lançamento manual de refeições via teclado do operador com justificativa obrigatória para auditoria" },
+      { label: "Relatórios Exportáveis", value: "Geração de balanços de consumo por centro de custo, relatórios por período e exportações para desconto em folha" },
+      { label: "Estabilidade do Sistema", value: "Suporte a contingência offline (As catracas continuam validando o turno caso falte rede com o servidor)" }
     ]
   }
 };

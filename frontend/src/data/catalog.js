@@ -77,5 +77,40 @@ export const catalogData = {
     models: [
       { id: "bastao-viggia", num: "01", title: "Bastão de Ronda Viggia", desc: "O bastão oficial da Topdata. Coleta por iButtons inteligentes por contato e comunicação via cabo USB magnético." }
     ]
-  }
+  },
+  
+    "softwares": {
+      id: "softwares",
+      tag: "05 // LINHA INSPELL // ECOSSISTEMA DE GESTÃO",
+      title: "Softwares de Gestão",
+      description: "Sistemas completos, robustos e totalmente parametrizáveis para controle de jornada, segurança de acesso, automação escolar, clubes e gestão fitness.",
+      benefits: [
+        { icon: HardDrive, title: "Banco de Dados Firebird", desc: "Arquitetura com banco de dados gratuito, seguro, leve e otimizado para alto desempenho local." },
+        { icon: FileText, title: "Backup Automatizado", desc: "Rotina inteligente integrada nativamente para cópias de segurança locais ou salvamento automático na nuvem." },
+        { icon: Cpu, title: "Infraestrutura Simplificada", desc: "Instalação otimizada em estações de trabalho Windows, dispensando servidores dedicados complexos." }
+      ],
+      models: [
+        { id: "software-iponto", num: "01", title: "iPonto Plus (Controle de Ponto)", desc: "Tratamento de ponto completo de acordo com as regras da CLT, acordos sindicais e Portaria 671." },
+        { id: "software-ifitness", num: "02", title: "iFitness (Gestão de Academias)", desc: "Gerenciamento de studios, boxes e academias focado em retenção de alunos e acesso integrado." },
+        { id: "software-icontrol", num: "03", title: "iControl (Ambientes e Acesso)", desc: "Segurança de perímetros restritos com biometria on-line e monitoramento em tempo real." },
+        { id: "software-iclube", num: "04", title: "iClube (Clubes e Associações)", desc: "Controle financeiro de cotas, dependentes e validação visual de associados na portaria." },
+        { id: "software-school", num: "05", title: "School Control (Gestão Escolar)", desc: "Gestão pedagógica aliada à segurança com alertas automatizados de entrada e saída aos pais." },
+        { id: "software-refcontrol", num: "06", title: "RefControl (Refeitórios Corporativos)", desc: "Controle regressivo de consumo e bloqueios por escalas para refeitórios industriais." }
+      ]
+    },
+  "crachas": {
+    id: "crachas",
+    tag: "06 // PRODACOM HARDWARE // IDENTIFICAÇÃO SEGURA",
+    title: "Crachás e Cartões PVC",
+    description: "Soluções completas de identificação visual e proximidade RF-ID em PVC de alta durabilidade para colaboradores, prestadores de serviços e controle de portarias.",
+    benefits: [
+      { icon: ShieldCheck, title: "Alta Durabilidade", desc: "Impressões em PVC de alta qualidade que não desbotam e resistem ao desgaste do uso diário." },
+      { icon: Radio, title: "Tecnologia RF-ID", desc: "Chips internos de aproximação integrados nativamente com todas as catracas e fechaduras do mercado." },
+      { icon: Users, title: "Gestão de Visitantes", desc: "Modelos provisórios reutilizáveis para agilizar o fluxo e triagem em recepções corporativas." }
+    ],
+    models: [
+      { id: "crachas-pvc", num: "01", title: "Crachás PVC Customizados", desc: "Impressão de crachás com layouts personalizados, fotos em alta definição e dados funcionais." },
+      { id: "crachas-rfid", num: "02", title: "Cartões de Proximidade RFID", desc: "Cartões e tags inteligentes com chips de radiofrequência para liberação mecânica de barreiras." }
+    ]
+  },
 };

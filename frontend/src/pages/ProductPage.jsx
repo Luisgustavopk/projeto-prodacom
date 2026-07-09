@@ -101,9 +101,6 @@ export default function ProductPage({ product, onBackToHome }) {
         <div className="max-w-7xl mx-auto px-6">
           
           <div className="mb-16">
-            <span className="text-xs font-mono tracking-widest text-obsidian/30 uppercase block mb-3">
-              // Especificações Técnicas
-            </span>
             <h3 className="font-display font-bold text-3xl md:text-4xl text-obsidian tracking-tight">
               Dados técnicos
             </h3>
