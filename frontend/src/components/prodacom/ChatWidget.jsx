@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Maximize2, Minimize2, Send, Phone, Mail, ChevronRight } from "lucide-react";
-// 1. Importamos o cliente do Socket.io
 import { io } from "socket.io-client";
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
@@ -10,35 +9,31 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   
-  // O Chat começa limpo, sem mensagens falsas
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Olá! Bem-vindo à Prodacom. Como podemos ajudar com a sua infraestrutura de ponto e acesso hoje?" }
   ]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  // ESTADOS NOVOS PARA O FLUXO INTELIGENTE
-  const [isIdentified, setIsIdentified] = useState(false); // O cliente já deu o nome?
-  const [isAskingContact, setIsAskingContact] = useState(false); // Estamos na tela de pedir contato?
-  const [pendingMessage, setPendingMessage] = useState(""); // Guarda a 1ª dúvida do cliente
-  const [leadForm, setLeadForm] = useState({ nome: "", contato: "" }); // Guarda os dados do form
 
-  // Conexão com o servidor (ainda não conecta automaticamente)
+  const [isIdentified, setIsIdentified] = useState(false); 
+  const [isAskingContact, setIsAskingContact] = useState(false); 
+  const [pendingMessage, setPendingMessage] = useState(""); 
+  const [leadForm, setLeadForm] = useState({ nome: "", contato: "" }); 
+
+
   const socketRef = useRef(null);
 
   useEffect(() => {
     if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, isAskingContact]);
 
-  // FUNÇÃO 1: Quando o cliente envia a PRIMEIRA dúvida
+
   const handleFirstMessage = (texto) => {
-    // 1. Mostra a mensagem dele na tela
+  
     setMessages((prev) => [...prev, { role: "user", content: texto }]);
-    // 2. Guarda a dúvida na memória
     setPendingMessage(texto);
-    // 3. Muda a interface para pedir o contato
     setIsAskingContact(true);
-    // 4. O assistente responde pedindo os dados
     setTimeout(() => {
       setMessages((prev) => [...prev, { 
         role: "assistant", 
@@ -47,15 +42,15 @@ export default function ChatWidget() {
     }, 600);
   };
 
-  // FUNÇÃO 2: Quando o cliente preenche o Nome/Whats e clica em Iniciar
+
   const handleStartChat = (e) => {
     e.preventDefault();
     if (!leadForm.nome || !leadForm.contato) return;
 
-    // 1. Conecta de verdade ao nosso servidor Backend (Porta 3001)
+
     socketRef.current = io("http://localhost:3001");
 
-    // 2. Avisa ao servidor quem acabou de entrar e manda a dúvida guardada
+ 
     socketRef.current.emit("enviar_mensagem", {
       autor: leadForm.nome,
       contato: leadForm.contato,
@@ -63,20 +58,19 @@ export default function ChatWidget() {
       hora: new Date().toLocaleTimeString()
     });
 
-    // 3. Ouve se o servidor mandar resposta
+   
     socketRef.current.on("receber_mensagem", (dados) => {
-      // Se a mensagem não for minha, mostro como assistente
       if (dados.autor !== leadForm.nome) {
         setMessages((prev) => [...prev, { role: "assistant", content: dados.texto }]);
       }
     });
 
-    // 4. Esconde o form e libera o chat normal
+   
     setIsAskingContact(false);
     setIsIdentified(true);
   };
 
-  // FUNÇÃO 3: Chat normal (após já estar identificado)
+
   const handleSendNormal = (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -85,7 +79,7 @@ export default function ChatWidget() {
     setMessages((prev) => [...prev, { role: "user", content: texto }]);
     setInput("");
 
-    // Envia direto pro servidor pelo tubo aberto
+ 
     if (socketRef.current) {
       socketRef.current.emit("enviar_mensagem", {
         autor: leadForm.nome,
@@ -175,17 +169,16 @@ export default function ChatWidget() {
                     placeholder="Seu nome" 
                     value={leadForm.nome} 
                     onChange={(e) => setLeadForm({...leadForm, nome: e.target.value})} 
-                    // Adicionamos min-w-0 e w-full aqui:
+                  
                     className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" 
                   />
                   <input 
                     type="text" 
                     required 
                     placeholder="WhatsApp" 
-                    maxLength={15} // Bônus: Impede que o usuário digite mais do que o tamanho de um celular
+                    maxLength={15} 
                     value={leadForm.contato} 
                     onChange={(e) => setLeadForm({...leadForm, contato: e.target.value})} 
-                    // Adicionamos min-w-0 e w-full aqui também:
                     className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" 
                   />
                 </div>
