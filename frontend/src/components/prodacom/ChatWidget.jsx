@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Maximize2, Minimize2, Send, Phone, Mail, ChevronRight } from "lucide-react";
-import { io } from "socket.io-client";
+import { MessageSquare, X, Maximize2, Minimize2, Send, ChevronRight } from "lucide-react";
+// Importamos o nosso Singleton limpo!
+import { socket } from "../../services/socket";
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
 
@@ -15,22 +16,32 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-
-  const [isIdentified, setIsIdentified] = useState(false); 
-  const [isAskingContact, setIsAskingContact] = useState(false); 
-  const [pendingMessage, setPendingMessage] = useState(""); 
-  const [leadForm, setLeadForm] = useState({ nome: "", contato: "" }); 
-
-
-  const socketRef = useRef(null);
+  const [isIdentified, setIsIdentified] = useState(false);
+  const [isAskingContact, setIsAskingContact] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState("");
+  const [leadForm, setLeadForm] = useState({ nome: "", contato: "" });
 
   useEffect(() => {
     if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, isAskingContact]);
 
+  // Listener para receber mensagens quando já estiver conectado
+  useEffect(() => {
+    const handleReceberMensagem = (dados) => {
+      if (dados.autor !== leadForm.nome) {
+        setMessages((prev) => [...prev, { role: "assistant", content: dados.texto }]);
+      }
+    };
+
+    socket.on("receber_mensagem", handleReceberMensagem);
+
+    // Limpa a escuta se o componente for desmontado
+    return () => {
+      socket.off("receber_mensagem", handleReceberMensagem);
+    };
+  }, [leadForm.nome]);
 
   const handleFirstMessage = (texto) => {
-  
     setMessages((prev) => [...prev, { role: "user", content: texto }]);
     setPendingMessage(texto);
     setIsAskingContact(true);
@@ -47,29 +58,27 @@ export default function ChatWidget() {
     e.preventDefault();
     if (!leadForm.nome || !leadForm.contato) return;
 
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { 
+        role: "assistant", 
+        content: "Obrigado pelos dados! Um de nossos consultores entrará em contato com você em breve para dar continuidade ao atendimento." 
+      }]);
+    }, 600);
 
-    socketRef.current = io("http://localhost:3001");
+    // 1. Conecta o socket de forma limpa
+    socket.connect();
 
- 
-    socketRef.current.emit("enviar_mensagem", {
+    // 2. Avisa ao servidor
+    socket.emit("enviar_mensagem", {
       autor: leadForm.nome,
       contato: leadForm.contato,
       texto: pendingMessage,
       hora: new Date().toLocaleTimeString()
     });
 
-   
-    socketRef.current.on("receber_mensagem", (dados) => {
-      if (dados.autor !== leadForm.nome) {
-        setMessages((prev) => [...prev, { role: "assistant", content: dados.texto }]);
-      }
-    });
-
-   
     setIsAskingContact(false);
     setIsIdentified(true);
   };
-
 
   const handleSendNormal = (e) => {
     e.preventDefault();
@@ -79,14 +88,12 @@ export default function ChatWidget() {
     setMessages((prev) => [...prev, { role: "user", content: texto }]);
     setInput("");
 
- 
-    if (socketRef.current) {
-      socketRef.current.emit("enviar_mensagem", {
-        autor: leadForm.nome,
-        texto: texto,
-        hora: new Date().toLocaleTimeString()
-      });
-    }
+    // Envia usando a mesma instância
+    socket.emit("enviar_mensagem", {
+      autor: leadForm.nome,
+      texto: texto,
+      hora: new Date().toLocaleTimeString()
+    });
   };
 
   const handleSend = (e) => {
@@ -147,7 +154,7 @@ export default function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Sugestões Rápidas (some após a primeira mensagem) */}
+            {/* Sugestões Rápidas */}
             {messages.length === 1 && !isAskingContact && (
               <div className="px-5 py-3 border-t border-slate_mist bg-white flex flex-wrap gap-2">
                 {quickReplies.map((q) => (
@@ -158,35 +165,19 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {/* BARRA DE DIGITAÇÃO OU FORMULÁRIO DE CAPTURA */}
+            {/* FORMULÁRIO DE CAPTURA RESPONSIVO */}
             {isAskingContact ? (
               <form onSubmit={handleStartChat} className="p-4 border-t border-slate_mist bg-white flex flex-col gap-3">
                 <p className="text-xs text-obsidian/60 font-medium">Por favor, informe seus dados para iniciarmos:</p>
                 <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    required 
-                    placeholder="Seu nome" 
-                    value={leadForm.nome} 
-                    onChange={(e) => setLeadForm({...leadForm, nome: e.target.value})} 
-                  
-                    className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" 
-                  />
-                  <input 
-                    type="text" 
-                    required 
-                    placeholder="WhatsApp" 
-                    maxLength={15} 
-                    value={leadForm.contato} 
-                    onChange={(e) => setLeadForm({...leadForm, contato: e.target.value})} 
-                    className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" 
-                  />
+                  <input type="text" required placeholder="Seu nome" value={leadForm.nome} onChange={(e) => setLeadForm({...leadForm, nome: e.target.value})} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
+                  <input type="text" required placeholder="WhatsApp" maxLength={15} value={leadForm.contato} onChange={(e) => setLeadForm({...leadForm, contato: e.target.value})} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
                 </div>
                 <button type="submit" className="w-full bg-cobalt text-white py-2 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors">
                   Iniciar Atendimento
                 </button>
               </form>
-            ) :  (
+            ) : (
               <form onSubmit={handleSend} className="p-3 border-t border-slate_mist bg-white flex items-center gap-2">
                 <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escreva sua mensagem..." className="flex-1 bg-ghost border border-slate_mist px-4 py-2.5 text-sm focus:outline-none focus:border-cobalt" />
                 <button type="submit" className="bg-cobalt text-white p-2.5 hover:bg-obsidian"><Send size={16} /></button>
@@ -196,7 +187,6 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
 
-      {/* Botão Flutuante */}
       <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setOpen(!open)} className="bg-obsidian text-white w-14 h-14 flex items-center justify-center shadow-2xl">
         {open ? <X size={22} /> : <MessageSquare size={22} />}
       </motion.button>

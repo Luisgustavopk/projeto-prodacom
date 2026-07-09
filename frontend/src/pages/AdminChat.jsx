@@ -1,33 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
-import { io } from "socket.io-client";
 import { MessageSquare, Send, User, Phone, Clock, Monitor } from "lucide-react";
+// Importamos a MESMA instância do socket
+import { socket } from "../services/socket";
 
 export default function AdminChat() {
-  // Estado para armazenar todas as conversas. 
-  // Formato: { "idDoCliente": { nome, contato, mensagens: [] } }
   const [chats, setChats] = useState({});
-  const [clienteAtivo, setClienteAtivo] = useState(null); // Qual cliente o admin está visualizando
+  const [clienteAtivo, setClienteAtivo] = useState(null);
   const [input, setInput] = useState("");
   
-  const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Faz a rolagem automática sempre que chegam mensagens
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats, clienteAtivo]);
 
   useEffect(() => {
-    // 1. Conecta ao servidor backend
-    socketRef.current = io("http://localhost:3001");
+    // 1. Conecta o socket
+    socket.connect();
+    
+    // 2. Avisa que é o admin
+    socket.emit("entrar_como_admin");
 
-    // 2. Avisa que este é o painel de Admin
-    socketRef.current.emit("entrar_como_admin");
-
-    // 3. Fica escutando novas mensagens dos clientes
-    socketRef.current.on("nova_mensagem_cliente", (dados) => {
+    // 3. Função para lidar com novas mensagens
+    const handleNovaMensagem = (dados) => {
       setChats((prevChats) => {
-        // Pega o histórico do cliente ou cria um novo se for a primeira vez
         const chatAtual = prevChats[dados.idDoCliente] || {
           nome: dados.autor,
           contato: dados.contato,
@@ -42,10 +38,16 @@ export default function AdminChat() {
           }
         };
       });
-    });
+    };
 
-    // Limpa a conexão se o admin fechar a tela
-    return () => socketRef.current.disconnect();
+    // Fica escutando
+    socket.on("nova_mensagem_cliente", handleNovaMensagem);
+
+    // Limpeza ao sair da tela
+    return () => {
+      socket.off("nova_mensagem_cliente", handleNovaMensagem);
+      socket.disconnect(); // Desconecta o admin se ele fechar a aba
+    };
   }, []);
 
   const handleSend = (e) => {
@@ -55,15 +57,14 @@ export default function AdminChat() {
     const texto = input.trim();
     const hora = new Date().toLocaleTimeString();
 
-    // 1. Envia a resposta para o servidor, indicando a "salaDestino" (ID do cliente)
-    socketRef.current.emit("enviar_mensagem", {
+    // Envia direto pelo socket limpo
+    socket.emit("enviar_mensagem", {
       autor: "Admin",
       texto: texto,
       hora: hora,
-      salaDestino: clienteAtivo // O pulo do gato!
+      salaDestino: clienteAtivo 
     });
 
-    // 2. Atualiza a tela do admin para mostrar a mensagem que ele mesmo enviou
     setChats((prev) => ({
       ...prev,
       [clienteAtivo]: {
@@ -80,7 +81,7 @@ export default function AdminChat() {
   return (
     <div className="flex h-screen bg-ghost font-sans">
       
-      {/* BARRA LATERAL - LISTA DE CLIENTES */}
+      {/* BARRA LATERAL */}
       <div className="w-1/3 max-w-sm bg-obsidian flex flex-col border-r border-white/10">
         <div className="p-6 bg-obsidian border-b border-white/10 flex items-center gap-3">
           <Monitor className="text-cobalt" size={24} />
@@ -121,11 +122,10 @@ export default function AdminChat() {
         </div>
       </div>
 
-      {/* ÁREA PRINCIPAL DO CHAT */}
+      {/* ÁREA PRINCIPAL */}
       <div className="flex-1 flex flex-col bg-white">
         {clienteAtivo && chats[clienteAtivo] ? (
           <>
-            {/* Header do Chat Ativo */}
             <div className="p-6 bg-white border-b border-slate_mist flex items-center justify-between shadow-sm z-10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-ghost rounded-full flex items-center justify-center text-obsidian/40">
@@ -140,7 +140,6 @@ export default function AdminChat() {
               </div>
             </div>
 
-            {/* Mensagens */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-ghost/30">
               {chats[clienteAtivo].mensagens.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "admin" ? "justify-end" : "justify-start"}`}>
@@ -161,7 +160,6 @@ export default function AdminChat() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Área de Digitação */}
             <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate_mist flex items-center gap-3">
               <input
                 type="text"
