@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import dns from "dns";
 
-// Se a variável estiver como true no .env, ele aplica o DNS do Google
+
 if (process.env.USE_CUSTOM_DNS === "true") {
   dns.setServers(["8.8.8.8", "8.8.4.4"]);
 }
 
-// Busca a URI do .env. Se não encontrar, usa uma string vazia para o Mongoose disparar o erro correto
+
 const MONGO_URI = process.env.MONGO_URI || "";
 
 export async function connectDatabase() {

@@ -1,8 +1,8 @@
 import { Schema, model } from "mongoose";
 
-// Interface para o TypeScript saber os tipos de dados
+
 interface IMessage {
-  clienteId: string;   // O contacto/WhatsApp serve como ID único do chat
+  clienteId: string;   
   clienteNome: string;
   role: "user" | "admin";
   content: string;
@@ -11,12 +11,12 @@ interface IMessage {
 }
 
 const MessageSchema = new Schema<IMessage>({
-  clienteId: { type: String, required: true, index: true }, // Index ajuda na velocidade de busca
+  clienteId: { type: String, required: true, index: true },
   clienteNome: { type: String, required: true },
   role: { type: String, enum: ["user", "admin"], required: true },
   content: { type: String, required: true },
   hora: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now } // Guarda a data real para ordenação futura
+  createdAt: { type: Date, default: Date.now } 
 });
 
 export const MessageModel = model<IMessage>("Message", MessageSchema);
