@@ -10,9 +10,6 @@ export default function App() {
         {/* A Rota Principal: Quando o cliente acessar prodacom.com.br/ */}
         <Route path="/" element={<Home />} />
 
-        {/* A Rota do Painel: Quando o vendedor acessar prodacom.com.br/admin */}
-        <Route path="/admin" element={<AdminChat />} />
-
         {/* Bônus: Rota de Erro (Opcional, para links quebrados) */}
         <Route path="*" element={<div className="h-screen flex items-center justify-center text-xl">Página não encontrada 😕</div>} />
       </Routes>
