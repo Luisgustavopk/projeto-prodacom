@@ -1,8 +1,9 @@
 
 import { Server, Socket } from 'socket.io';
-import { chatService } from '../services/chatService';
+import { chatService } from '../services/chatService';  
+import { ClientToServerEvents, ServerToClientEvents } from '../config/socket/types';
 
-export function configurarEventosChat(io: Server, socket: Socket) {
+export function configurarEventosChat(io: Server<ClientToServerEvents, ServerToClientEvents>, socket: Socket) {
   
   // 1. ADMIN ENTROU
   socket.on('entrar_como_admin', async function () {
