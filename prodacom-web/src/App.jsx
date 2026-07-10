@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import AdminChat from './pages/AdminChat';
 
 export default function App() {
   return (
