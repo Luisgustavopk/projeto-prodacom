@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Target, Eye, Gem } from "lucide-react";
-
-const ABOUT_IMAGE = "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/0e2da34b3_generated_100f781b.png";
+import aboutImage from "../../assets/images/about-image.png";
+const ABOUT_IMAGE = aboutImage;
 
 const pillars = [
   { icon: Target, title: "Missão", text: "Comercializar, implantar, manter e gerir soluções integradas de Controle de Ponto e Acesso com excelência e comprometimento." },
@@ -11,9 +11,7 @@ const pillars = [
 ];
 
 const stats = [
-  { value: "10+", label: "Anos de Mercado" },
   { value: "500+", label: "Empresas Atendidas" },
-  { value: "24/7", label: "Suporte Técnico" },
   { value: "100%", label: "Equipamentos Homologados" },
 ];
 
@@ -38,10 +36,10 @@ export default function AboutSection() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="flex flex-col justify-center">
-            <p className="text-base md:text-lg text-obsidian/60 leading-relaxed mb-8">
-              A <strong className="text-obsidian font-semibold">Prodacom Tecnologia</strong> é uma empresa especializada em prover soluções para Controle de Acesso e Ponto informatizado. Atuamos no mercado há mais de 10 anos, especializados em sistemas para gestão de academias, clubes, escolas e empresas de todos os portes.
+            <p className="text-base md:text-lg text-obsidian/60 leading-relaxed mb-6 text-justify">
+              A <strong className="text-obsidian font-semibold">Prodacom Tecnologia</strong> é uma empresa localizada em Belo Horizonte, especializada em prover soluções para Controle de Acesso e Ponto informatizado. Atuamos no mercado há mais de 10 anos, especializados em sistemas para gestão de academias, clubes, escolas e empresas de todos os portes.
             </p>
-            <p className="text-base md:text-lg text-obsidian/60 leading-relaxed mb-10">
+            <p className="text-base md:text-lg text-obsidian/60 leading-relaxed mb-8 text-justify">
               Contamos com parceiros consolidados no mercado nacional e internacional, oferecendo equipamentos homologados, suporte técnico especializado e soluções sob medida para cada necessidade.
             </p>
 

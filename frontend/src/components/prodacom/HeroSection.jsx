@@ -1,9 +1,8 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-
-const HERO_IMAGE = "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/3e20c6951_generated_6a07d945.png";
-
+import heroImage from "../../assets/images/hero-image.png";
+const HERO_IMAGE = heroImage;
 export default function HeroSection() {
   const { scrollY } = useScroll();
   const imgY = useTransform(scrollY, [0, 600], [0, 120]);

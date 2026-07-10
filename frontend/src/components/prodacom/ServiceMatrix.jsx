@@ -4,12 +4,12 @@ import { Clock, Shield, Fence, Radio, Monitor, CreditCard, ArrowRight } from "lu
 
 // Lista de Categorias Principais
 const services = [
-  { id: "relogio-de-ponto", num: "01", title: "Relógio de Ponto", desc: "Sistemas REP homologados pelo MTE com biometria, cartão e senha.", icon: Clock, image: "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/7f30343e8_generated_cdc1095e.png" },
-  { id: "controle-de-acesso", num: "02", title: "Controle de Acesso", desc: "Soluções biométricas e RFID para gerenciamento de acesso.", icon: Shield, image: "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/aba616e9b_generated_4ec5bffc.png" },
-  { id: "catracas", num: "03", title: "Catracas", desc: "Catracas de pedestal, flap e torniquete com integração biométrica.", icon: Fence, image: "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/30ed482e7_generated_40703af9.png" },
-  { id: "ronda", num: "04", title: "Bastão de Ronda", desc: "Controle eletrônico de rondas de vigilância.", icon: Radio, image: "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/82bf69a93_generated_aa707a7d.png" },
-  { id: "softwares", num: "05", title: "Softwares", desc: "Plataformas completas para gestão de ponto, acesso e segurança.", icon: Monitor, image: "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/544bfd891_generated_3040d10b.png" },
-  { id: "crachas", num: "06", title: "Crachás", desc: "Confecção de crachás em PVC com tecnologia RFID.", icon: CreditCard, image: "https://media.base44.com/images/public/6a4d2719c2a64d5a6895b440/6903d7954_generated_de96904b.png" },
+  { id: "relogio-de-ponto", num: "01", title: "Relógio de Ponto", desc: "Sistemas REP homologados pelo MTE com biometria, cartão e senha.", icon: Clock },
+  { id: "controle-de-acesso", num: "02", title: "Controle de Acesso", desc: "Soluções biométricas e RFID para gerenciamento de acesso.", icon: Shield  },
+  { id: "catracas", num: "03", title: "Catracas", desc: "Catracas de pedestal, flap e torniquete com integração biométrica.", icon: Fence  },
+  { id: "ronda", num: "04", title: "Bastão de Ronda", desc: "Controle eletrônico de rondas de vigilância.", icon: Radio},
+  { id: "softwares", num: "05", title: "Softwares", desc: "Plataformas completas para gestão de ponto, acesso e segurança.", icon: Monitor },
+  { id: "crachas", num: "06", title: "Crachás", desc: "Confecção de crachás em PVC com tecnologia RFID.", icon: CreditCard },
 ];
 
 export default function ServiceMatrix({ onSelectCategory }) {
@@ -18,21 +18,6 @@ export default function ServiceMatrix({ onSelectCategory }) {
 
   return (
     <section id="solucoes" className="relative py-24 md:py-32 overflow-hidden">
-      
-      {/* Efeito da imagem de fundo aparecendo ao passar o mouse */}
-      <AnimatePresence>
-        {activeService && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 0.08 }} 
-            exit={{ opacity: 0 }} 
-            transition={{ duration: 0.5 }} 
-            className="absolute inset-0 pointer-events-none"
-          >
-            <img src={activeService.image} alt="" className="w-full h-full object-cover" />
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16 md:mb-24">
