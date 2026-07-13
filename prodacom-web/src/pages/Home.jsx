@@ -1,19 +1,16 @@
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
-import CommandBar from "../components/prodacom/CommandBar";
 import HeroSection from "../components/prodacom/HeroSection";
 import ServiceMatrix from "../components/prodacom/ServiceMatrix";
 import ProductGallery from "../components/prodacom/ProductGallery";
 import AboutSection from "../components/prodacom/AboutSection";
 import PartnersBar from "../components/prodacom/PartnersBar";
 import ContactSection from "../components/prodacom/ContactSection";
-import Footer from "../components/prodacom/Footer";
-import ChatWidget from "../components/prodacom/ChatWidget";
 
-// Importando as Páginas Secundárias
 import CategoryPage from "./CategoryPage";
 import ProductPage from "./ProductPage";
+import { SiteLayout } from "../layouts/SiteLayout"; 
 
-// Importando os Dados Reais
 import { catalogData } from "../data/catalog";
 import { productsData } from "../data/products";
 
@@ -43,14 +40,10 @@ export default function Home() {
     setActiveProductSlug(null);
   };
 
-  // ========================================================
-  // OUVINTES DE EVENTOS (Conecta com os cliques do Footer)
-  // ========================================================
   useEffect(() => {
     const handleHashNavigation = (e) => {
       const href = e.detail;
-      handleBackToHome(); // Retorna à Home principal
-      // Dá um tempo mínimo para a tela inicial renderizar, e então rola para a seção
+      handleBackToHome();
       setTimeout(() => {
         document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
       }, 150);
@@ -58,7 +51,7 @@ export default function Home() {
 
     const handleCategoryNavigation = (e) => {
       const categoryId = e.detail;
-      handleSelectCategory(categoryId); // Abre a categoria selecionada direto
+      handleSelectCategory(categoryId);
     };
 
     window.addEventListener('navigate-hash', handleHashNavigation);
@@ -70,34 +63,39 @@ export default function Home() {
     };
   }, []);
 
-  // --- LÓGICA DE RENDERIZAÇÃO DAS TELAS ---
+  // --- RENDERS COM ENVELOPAMENTO DE LAYOUT ---
 
- return (
-    <>
-      {activeProductSlug && productsData[activeProductSlug] ? (
+  if (activeProductSlug && productsData[activeProductSlug]) {
+    return (
+      <SiteLayout onNavigateHome={activeCategorySlug ? handleBackToCategory : handleBackToHome}>
         <ProductPage 
           product={productsData[activeProductSlug]} 
           onBackToHome={activeCategorySlug ? handleBackToCategory : handleBackToHome} 
         />
-      ) : activeCategorySlug && catalogData[activeCategorySlug] ? (
+      </SiteLayout>
+    );
+  }
+
+  if (activeCategorySlug && catalogData[activeCategorySlug]) {
+    return (
+      <SiteLayout onNavigateHome={handleBackToHome}>
         <CategoryPage 
           category={catalogData[activeCategorySlug]} 
           onBackToHome={handleBackToHome} 
           onSelectModel={handleSelectProduct} 
         />
-      ) : (
-        <div className="min-h-screen bg-ghost">
-          <CommandBar onNavigateHome={handleBackToHome} />
-          <HeroSection />
-          <ServiceMatrix onSelectCategory={handleSelectCategory} />
-          <ProductGallery onSelectProduct={handleSelectProduct} />
-          <AboutSection />
-          <PartnersBar />
-          <ContactSection />
-          <Footer />
-        </div>
-      )}
-      <ChatWidget />
-    </>
+      </SiteLayout>
+    );
+  }
+
+  return (
+    <SiteLayout onNavigateHome={handleBackToHome}>
+      <HeroSection />
+      <ServiceMatrix onSelectCategory={handleSelectCategory} />
+      <ProductGallery onSelectProduct={handleSelectProduct} />
+      <AboutSection />
+      <PartnersBar />
+      <ContactSection />
+    </SiteLayout>
   );
 }
