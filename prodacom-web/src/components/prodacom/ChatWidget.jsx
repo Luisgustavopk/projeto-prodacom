@@ -1,141 +1,26 @@
-import React, { useState, useRef, useEffect } from "react";
+// src/components/prodacom/ChatWidget.jsx
+import React, { useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Maximize2, Minimize2, Send, ChevronRight } from "lucide-react";
-import { socket } from "../../services/socket";
+import { WebChatContext } from "../../context/WebChatContext"; 
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
 
 export default function ChatWidget() {
-  const [open, setOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [input, setInput] = useState("");
-  const messagesEndRef = useRef(null);
 
-  
-  // 1. Memória das Mensagens: Se já existirem mensagens guardadas, carrega elas. Se não, mostra a saudação.
-  const [messages, setMessages] = useState(() => {
-    const salvas = localStorage.getItem("prodacom_chat_messages");
-    return salvas ? JSON.parse(salvas) : [
-      { role: "assistant", content: "Olá! Bem-vindo à Prodacom. Como podemos ajudar com a sua infraestrutura de ponto e acesso hoje?" }
-    ];
-  });
-
-  // 2. Memória de Identificação: Lembra se o cliente já preencheu o formulário antes
-  const [isIdentified, setIsIdentified] = useState(() => {
-    return localStorage.getItem("prodacom_chat_is_identified") === "true";
-  });
-
-  // 3. Memória dos Dados: Lembra o Nome e o WhatsApp do cliente
-  const [leadForm, setLeadForm] = useState(() => {
-    const salvos = localStorage.getItem("prodacom_chat_lead_form");
-    return salvos ? JSON.parse(salvos) : { nome: "", contato: "" };
-  });
-
-  const [isAskingContact, setIsAskingContact] = useState(false);
-  const [pendingMessage, setPendingMessage] = useState("");
-
-  // --- SALVANDO AS ALTERAÇÕES AUTOMATICAMENTE ---
-
-
-  useEffect(() => {
-    localStorage.setItem("prodacom_chat_messages", JSON.stringify(messages));
-    if (open) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, open]);
-
-
-  useEffect(() => {
-    localStorage.setItem("prodacom_chat_is_identified", isIdentified);
-    localStorage.setItem("prodacom_chat_lead_form", JSON.stringify(leadForm));
-  }, [isIdentified, leadForm]);
-
-  // --- RECONEXÃO AUTOMÁTICA NO F5 ---
-  useEffect(() => {
-    if (isIdentified) {
-      socket.connect();
-      // Avisamos ao servidor que esse cliente antigo acabou de acordar (dar F5)
-      socket.emit("cliente_reconectado", {
-        contato: leadForm.contato,
-        nome: leadForm.nome
-      });
-    }
-  }, [isIdentified]);
-
-  
-  useEffect(() => {
-    const handleReceberMensagem = (dados) => {
-      if (dados.autor !== leadForm.nome) {
-        setMessages((prev) => [...prev, { role: "assistant", content: dados.texto }]);
-      }
-    };
-
-    socket.on("receber_mensagem", handleReceberMensagem);
-    return () => socket.off("receber_mensagem", handleReceberMensagem);
-  }, [leadForm.nome]);
-
-  const handleFirstMessage = (texto) => {
-    setMessages((prev) => [...prev, { role: "user", content: texto }]);
-    setPendingMessage(texto);
-    setIsAskingContact(true);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { 
-        role: "assistant", 
-        content: "Antes de responder sua pergunta, para dar continuidade a este atendimento, por favor insira seus dados abaixo" 
-      }]);
-    }, 600);
-  };
-
-
-  const handleStartChat = (e) => {
-    e.preventDefault();
-    if (!leadForm.nome || !leadForm.contato) return;
-
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { 
-        role: "assistant", 
-        content: "Obrigado pelos dados! Um de nossos consultores entrará em contato com você em breve para dar continuidade ao atendimento." 
-      }]);
-    }, 600);
-
-    socket.connect();
-
-    socket.emit("enviar_mensagem", {
-      autor: leadForm.nome,
-      contato: leadForm.contato,
-      texto: pendingMessage,
-      hora: new Date().toLocaleTimeString()
-    });
-
-    setIsAskingContact(false);
-    setIsIdentified(true);
-  };
-
-  const handleSendNormal = (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    const texto = input.trim();
-    setMessages((prev) => [...prev, { role: "user", content: texto }]);
-    setInput("");
-
-    socket.emit("enviar_mensagem", {
-      autor: leadForm.nome,
-      contato: leadForm.contato, 
-      texto: texto,
-      hora: new Date().toLocaleTimeString()
-    });
-  };
-
-  const handleSend = (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    
-    if (!isIdentified && !isAskingContact) {
-      handleFirstMessage(input.trim());
-      setInput("");
-    } else {
-      handleSendNormal(e);
-    }
-  };
+  const {
+    open, setOpen,
+    expanded, setExpanded,
+    input, setInput,
+    messages,
+    isAskingContact,
+    isIdentified,
+    leadForm, setLeadForm,
+    messagesEndRef,
+    handleFirstMessage,
+    handleStartChat,
+    handleSend
+  } = useContext(WebChatContext);
 
   const panelWidth = expanded 
     ? "w-[calc(100vw-2.5rem)] md:w-[520px] lg:w-[640px]" 
@@ -164,10 +49,10 @@ export default function ChatWidget() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <button onClick={() => setExpanded(!expanded)} className="p-2 hover:bg-white/10">
+                <button onClick={function () { setExpanded(!expanded); }} className="p-2 hover:bg-white/10">
                   {expanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
                 </button>
-                <button onClick={() => setOpen(false)} className="p-2 hover:bg-white/10">
+                <button onClick={function () { setOpen(false); }} className="p-2 hover:bg-white/10">
                   <X size={16} />
                 </button>
               </div>
@@ -175,27 +60,31 @@ export default function ChatWidget() {
 
             {/* Mensagens */}
             <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-ghost">
-              {messages.map((msg, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.role === "user" || msg.role === "admin" ? "justify-end" : "justify-start"}`}>
-                  {msg.role === "assistant" && (
-                    <div className="w-7 h-7 bg-obsidian text-white flex items-center justify-center mr-2 mt-1"><MessageSquare size={12} /></div>
-                  )}
-                  <div className={`max-w-[78%] px-4 py-2.5 text-sm leading-relaxed ${msg.role === "user" || msg.role === "admin" ? "bg-cobalt text-white" : "bg-white border border-slate_mist text-obsidian"}`}>
-                    {msg.content}
-                  </div>
-                </motion.div>
-              ))}
+              {messages.map(function (msg, i) {
+                return (
+                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.role === "user" || msg.role === "admin" ? "justify-end" : "justify-start"}`}>
+                    {msg.role === "assistant" && (
+                      <div className="w-7 h-7 bg-obsidian text-white flex items-center justify-center mr-2 mt-1"><MessageSquare size={12} /></div>
+                    )}
+                    <div className={`max-w-[78%] px-4 py-2.5 text-sm leading-relaxed ${msg.role === "user" || msg.role === "admin" ? "bg-cobalt text-white" : "bg-white border border-slate_mist text-obsidian"}`}>
+                      {msg.content}
+                    </div>
+                  </motion.div>
+                );
+              })}
               <div ref={messagesEndRef} />
             </div>
 
             {/* Sugestões Rápidas */}
             {messages.length === 1 && !isAskingContact && (
               <div className="px-5 py-3 border-t border-slate_mist bg-white flex flex-wrap gap-2">
-                {quickReplies.map((q) => (
-                  <button key={q} onClick={() => { handleFirstMessage(q); setInput(""); }} className="text-xs text-obsidian/70 border border-slate_mist px-3 py-1.5 hover:bg-cobalt hover:text-white flex items-center gap-1">
-                    {q} <ChevronRight size={12} />
-                  </button>
-                ))}
+                {quickReplies.map(function (q) {
+                  return (
+                    <button key={q} onClick={function () { handleFirstMessage(q); setInput(""); }} className="text-xs text-obsidian/70 border border-slate_mist px-3 py-1.5 hover:bg-cobalt hover:text-white flex items-center gap-1">
+                      {q} <ChevronRight size={12} />
+                    </button>
+                  );
+                })}
               </div>
             )}
 
@@ -204,8 +93,8 @@ export default function ChatWidget() {
               <form onSubmit={handleStartChat} className="p-4 border-t border-slate_mist bg-white flex flex-col gap-3">
                 <p className="text-xs text-obsidian/60 font-medium">Por favor, informe seus dados para iniciarmos:</p>
                 <div className="flex gap-2">
-                  <input type="text" required placeholder="Seu nome" value={leadForm.nome} onChange={(e) => setLeadForm({...leadForm, nome: e.target.value})} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
-                  <input type="text" required placeholder="WhatsApp" maxLength={15} value={leadForm.contato} onChange={(e) => setLeadForm({...leadForm, contato: e.target.value})} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
+                  <input type="text" required placeholder="Seu nome" value={leadForm.nome} onChange={function (e) { setLeadForm({ ...leadForm, nome: e.target.value }); }} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
+                  <input type="text" required placeholder="WhatsApp" maxLength={15} value={leadForm.contato} onChange={function (e) { setLeadForm({ ...leadForm, contato: e.target.value }); }} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
                 </div>
                 <button type="submit" className="w-full bg-cobalt text-white py-2 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors">
                   Iniciar Atendimento
@@ -213,7 +102,7 @@ export default function ChatWidget() {
               </form>
             ) : (
               <form onSubmit={handleSend} className="p-3 border-t border-slate_mist bg-white flex items-center gap-2">
-                <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escreva sua mensagem..." className="flex-1 bg-ghost border border-slate_mist px-4 py-2.5 text-sm focus:outline-none focus:border-cobalt" />
+                <input type="text" value={input} onChange={function (e) { setInput(e.target.value); }} placeholder="Escreva sua mensagem..." className="flex-1 bg-ghost border border-slate_mist px-4 py-2.5 text-sm focus:outline-none focus:border-cobalt" />
                 <button type="submit" className="bg-cobalt text-white p-2.5 hover:bg-obsidian"><Send size={16} /></button>
               </form>
             )}
@@ -221,7 +110,7 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
 
-      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setOpen(!open)} className="bg-obsidian text-white w-14 h-14 flex items-center justify-center shadow-2xl">
+      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={function () { setOpen(!open); }} className="bg-obsidian text-white w-14 h-14 flex items-center justify-center shadow-2xl">
         {open ? <X size={22} /> : <MessageSquare size={22} />}
       </motion.button>
     </div>
