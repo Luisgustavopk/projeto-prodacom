@@ -2,11 +2,14 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
+import routes from './routes';
 import { iniciarSocket } from './socket';
 import { connectDatabase } from "./config/database";
 
 const app = express();
 app.use(cors());
+app.use(express.json()); 
+app.use(routes);
 
 // Cria o servidor HTTP do Node
 const server = http.createServer(app);
