@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 
 export default function ProductPage({ product, onBackToHome }) {
   // Rola para o topo sempre que o produto mudar
@@ -138,7 +138,7 @@ export default function ProductPage({ product, onBackToHome }) {
                   Solicitar Orçamento <ArrowRight size={14} />
                 </a>
                 <a href="tel:+553132451265" className="w-full border border-white/10 text-white/60 py-4 text-xs font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300 text-center flex items-center justify-center gap-2">
-                  📞 (31) 3245-1265
+                  <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" /> (31) 3245-1265
                 </a>
                 <button onClick={onBackToHome} className="text-xs text-white/30 uppercase tracking-wider hover:text-white transition-colors mt-4">
                   Ver todas as soluções
