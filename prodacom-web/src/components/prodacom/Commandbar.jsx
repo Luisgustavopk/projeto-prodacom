@@ -21,7 +21,6 @@ export default function CommandBar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ESSA É A FUNÇÃO INTELIGENTE! Ela se comunica com a Home de qualquer página.
   const handleNavigation = (e, href) => {
     e.preventDefault();
     setMenuOpen(false);
@@ -32,65 +31,72 @@ export default function CommandBar() {
   return (
     <>
       <motion.nav
-        initial={{ y: -48 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 h-12 flex items-center transition-all duration-500 ${
-          scrolled ? "bg-white/90 backdrop-blur-xl border-b border-slate_mist shadow-sm" : "bg-transparent"
-        }`}
-      >
-        <div className="w-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <a
-            href="#hero"
-            onClick={(e) => handleNavigation(e, "#hero")}
-            className="font-display font-bold text-sm tracking-widest text-obsidian uppercase cursor-pointer"
-          >
-             <img 
-                src={logoProdacom} 
-                alt="Prodacom Tecnologia" 
-                className="h-10 w-auto object-contain opacity-90"
-              />
-          </a>
+      initial={{ y: -48 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 flex items-center transition-all duration-500 py-3.5 ${
+        scrolled 
+          ? "bg-white/90 backdrop-blur-xl border-b border-slate_mist shadow-sm" 
+          : "bg-transparent"
+      }`}
+    >
+      <div className="w-full max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <a
+          href="#hero"
+          onClick={(e) => handleNavigation(e, "#hero")}
+          className="font-display font-bold text-sm tracking-widest text-obsidian uppercase cursor-pointer flex items-center shrink-0"
+        >
+          <img 
+            src={logoProdacom} 
+            alt="Prodacom Tecnologia" 
+            className={`h-11 md:h-12 w-auto object-contain transition-opacity duration-500 ${
+              scrolled ? "opacity-100" : "opacity-30"
+            }`}
+          />
+        </a>
 
-          <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => handleNavigation(e, item.href)}
-                className="text-xs font-medium tracking-wider uppercase text-obsidian/60 hover:text-cobalt transition-colors duration-300 relative group"
-              >
-                {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-cobalt transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-          </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+553132451265" className="text-xs font-mono text-obsidian/50 hover:text-cobalt transition-colors">
-              (31) 3245-1265
-            </a>
+        <div className="hidden md:flex items-center gap-8">
+          {navItems.map((item) => (
             <a
-              href="#contato"
-              onClick={(e) => handleNavigation(e, "#contato")}
-              className="text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-1.5 hover:bg-obsidian transition-colors duration-300 text-center cursor-pointer"
+              key={item.label}
+              href={item.href}
+              onClick={(e) => handleNavigation(e, item.href)}
+              className="text-xs font-medium tracking-wider uppercase text-obsidian/60 hover:text-cobalt transition-colors duration-300 relative group"
             >
-              Orçamento
+              {item.label}
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-cobalt transition-all duration-300 group-hover:w-full" />
             </a>
-          </div>
-
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-obsidian">
-            {menuOpen ? <X size={20} strokeWidth={1} /> : <Menu size={20} strokeWidth={1} />}
-          </button>
+          ))}
         </div>
-      </motion.nav>
+
+        <div className="hidden md:flex items-center gap-4">
+          <a href="tel:+553132451265" className="text-xs font-mono text-obsidian/50 hover:text-cobalt transition-colors">
+            (31) 3245-1265
+          </a>
+          
+          <a
+            href="#contato"
+            onClick={(e) => handleNavigation(e, "#contato")}
+            className={`text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-1.5 hover:bg-obsidian hover:opacity-100 transition-all duration-500 text-center cursor-pointer ${
+              scrolled ? "opacity-100" : "opacity-35"
+            }`}
+          >
+            Orçamento
+          </a>
+        </div>
+
+        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-obsidian">
+          {menuOpen ? <X size={20} strokeWidth={1} /> : <Menu size={20} strokeWidth={1} />}
+        </button>
+      </div>
+    </motion.nav>
 
       <AnimatePresence>
         {menuOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center">
             <div className="flex flex-col items-center gap-8">
               {navItems.map((item, i) => (
-                <motion.a key={item.label} href={item.href} onClick={(e) => handleNavigation(e, item.href)} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="text-2xl font-display font-semibold tracking-wider uppercase text-obsidian hover:text-cobalt transition-colors">
+                <motion.a key={item.label} href={item.href} onClick={(e) => handleNavigation(e, item.href)} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="text-xl font-display font-semibold tracking-wider uppercase text-slate-800 hover:text-sky-600 transition-colors">
                   {item.label}
                 </motion.a>
               ))}

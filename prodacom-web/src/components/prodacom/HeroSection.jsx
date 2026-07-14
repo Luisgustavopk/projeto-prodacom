@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import heroImage from "../../assets/images/hero-image.png";
+import heroImage from "../../assets/images/hero-image-2.png";
 const HERO_IMAGE = heroImage;
 export default function HeroSection() {
   const { scrollY } = useScroll();
@@ -13,7 +13,7 @@ export default function HeroSection() {
     <section id="hero" className="relative min-h-screen flex flex-col justify-end overflow-hidden">
       <motion.div style={{ y: imgY }} className="absolute inset-0">
         <img src={HERO_IMAGE} alt="Scanner biométrico" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/70 to-transparent" />
       </motion.div>
 
       <div className="absolute inset-0 grid-overlay opacity-10" />
