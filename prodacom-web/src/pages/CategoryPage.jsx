@@ -26,7 +26,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
             onClick={onBackToHome}
             className="text-white/40 hover:text-white text-xs font-mono tracking-widest uppercase mb-12 flex items-center gap-2 transition-colors"
           >
-            &larr; Voltar ao Início
+            &larr; Voltar 
           </motion.button>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="max-w-2xl">
