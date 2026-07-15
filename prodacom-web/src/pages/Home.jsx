@@ -1,15 +1,18 @@
-// src/pages/Home.jsx
+
 import React, { useState, useEffect } from "react";
 import HeroSection from "../components/prodacom/HeroSection";
+import CommandBar from "../components/prodacom/CommandBar";
 import ServiceMatrix from "../components/prodacom/ServiceMatrix";
 import ProductGallery from "../components/prodacom/ProductGallery";
 import AboutSection from "../components/prodacom/AboutSection";
 import PartnersBar from "../components/prodacom/PartnersBar";
 import ContactSection from "../components/prodacom/ContactSection";
+import Footer from "../components/prodacom/Footer";
+import ChatWidget from "../components/prodacom/ChatWidget";
 
 import CategoryPage from "./CategoryPage";
 import ProductPage from "./ProductPage";
-import { SiteLayout } from "../layouts/SiteLayout"; 
+
 
 import { catalogData } from "../data/catalog";
 import { productsData } from "../data/products";
@@ -65,37 +68,32 @@ export default function Home() {
 
   // --- RENDERS COM ENVELOPAMENTO DE LAYOUT ---
 
-  if (activeProductSlug && productsData[activeProductSlug]) {
-    return (
-      <SiteLayout onNavigateHome={activeCategorySlug ? handleBackToCategory : handleBackToHome}>
+  return (
+    <>
+      {activeProductSlug && productsData[activeProductSlug] ? (
         <ProductPage 
           product={productsData[activeProductSlug]} 
           onBackToHome={activeCategorySlug ? handleBackToCategory : handleBackToHome} 
         />
-      </SiteLayout>
-    );
-  }
-
-  if (activeCategorySlug && catalogData[activeCategorySlug]) {
-    return (
-      <SiteLayout onNavigateHome={handleBackToHome}>
+      ) : activeCategorySlug && catalogData[activeCategorySlug] ? (
         <CategoryPage 
           category={catalogData[activeCategorySlug]} 
           onBackToHome={handleBackToHome} 
           onSelectModel={handleSelectProduct} 
         />
-      </SiteLayout>
-    );
-  }
-
-  return (
-    <SiteLayout onNavigateHome={handleBackToHome}>
-      <HeroSection />
-      <ServiceMatrix onSelectCategory={handleSelectCategory} />
-      <ProductGallery onSelectProduct={handleSelectProduct} />
-      <AboutSection />
-      <PartnersBar />
-      <ContactSection />
-    </SiteLayout>
+      ) : (
+        <div className="min-h-screen bg-ghost">
+          <CommandBar onNavigateHome={handleBackToHome} />
+          <HeroSection />
+          <ServiceMatrix onSelectCategory={handleSelectCategory} />
+          <ProductGallery onSelectProduct={handleSelectProduct} />
+          <AboutSection />
+          <PartnersBar />
+          <ContactSection />
+          <Footer />
+        </div>
+      )}
+      <ChatWidget />
+    </>
   );
 }

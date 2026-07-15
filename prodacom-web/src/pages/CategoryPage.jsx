@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Box } from "lucide-react";
+import CommandBar from "../components/prodacom/CommandBar";
+import Footer from "../components/prodacom/Footer";
 
 export default function CategoryPage({ category, onBackToHome, onSelectModel }) {
   useEffect(() => {
@@ -12,6 +14,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
   return (
     <div className="min-h-screen bg-obsidian font-sans text-white">
 
+     <CommandBar onNavigateHome={onBackToHome} />
       {/* 1. HERO SECTION (DARK) */}
       <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
@@ -146,6 +149,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
