@@ -1,5 +1,5 @@
 import React from "react";
-import CommandBar from "../components/prodacom/CommandBar";
+import CommandBar from "../components/prodacom/CommandBar.jsx";
 import Footer from "../components/prodacom/Footer";
 import ChatWidget from "../components/prodacom/ChatWidget";
 
