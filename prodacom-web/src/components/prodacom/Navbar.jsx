@@ -11,7 +11,7 @@ const navItems = [
   { label: "Contato", href: "#contato" },
 ];
 
-export default function CommandBar() {
+export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
