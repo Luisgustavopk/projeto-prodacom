@@ -13,7 +13,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
 
   return (
     <div className="min-h-screen bg-obsidian font-sans text-white">
-      <NavBar onNavigateHome={handleBackToHome} />
+      <NavBar onNavigateHome={onBackToHome} />
       {/* 1. HERO SECTION (DARK) */}
       <section className="relative pt-32 pb-24 md:pt-48 md:pb-32 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
