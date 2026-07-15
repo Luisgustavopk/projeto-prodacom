@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
-
+import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
 
 export default function ProductPage({ product, onBackToHome }) {
@@ -14,7 +14,7 @@ export default function ProductPage({ product, onBackToHome }) {
 
   return (
     <div className="min-h-screen bg-ghost animate-fadeIn">
-    
+      <NavBar onNavigateHome={handleBackToHome} />
       {/* SEÇÃO 1: HERO (Visual Escuro Premium) */}
       <section className="relative pt-24 pb-20 md:pt-36 md:pb-28 bg-obsidian overflow-hidden">
         <div className="absolute inset-0 grid-overlay opacity-10 pointer-events-none" />

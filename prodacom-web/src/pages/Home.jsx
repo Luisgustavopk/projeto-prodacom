@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import HeroSection from "../components/prodacom/HeroSection";
+import NavBar from "../components/prodacom/NavBar";
 import ServiceMatrix from "../components/prodacom/ServiceMatrix";
 import ProductGallery from "../components/prodacom/ProductGallery";
 import AboutSection from "../components/prodacom/AboutSection";
@@ -82,6 +82,7 @@ export default function Home() {
         />
       ) : (
         <div className="min-h-screen bg-ghost">
+          <NavBar onNavigateHome={handleBackToHome} />
           <HeroSection />
           <ServiceMatrix onSelectCategory={handleSelectCategory} />
           <ProductGallery onSelectProduct={handleSelectProduct} />
