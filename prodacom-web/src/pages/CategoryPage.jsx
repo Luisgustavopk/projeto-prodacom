@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Box, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Box, Phone, ChevronLeft, ChevronRight } from "lucide-react";
 import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
 
@@ -62,7 +62,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
             initial={{ opacity: 0, x: -20 }} 
             animate={{ opacity: 1, x: 0 }}
             onClick={onBackToHome}
-            className="text-white/40 hover:text-white text-xs font-mono tracking-widest uppercase mb-8 flex items-center gap-2 transition-colors"
+            className="text-white/90 hover:text-white text-2xs font-mono tracking-widest uppercase mb-8 flex items-center gap-2 transition-colors"
           >
             &larr; Voltar ao início
           </motion.button>
@@ -195,7 +195,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
           </div>
 
           {/* Grid expandido para melhor visualização em tela cheia */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
             {category.models.map((model, i) => {
               const productInfo = productsData[model.id];
               const productImage = productInfo?.image || model.image;
@@ -209,7 +209,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                 >
                   {/* Container da Imagem do Produto Expandido no Grid */}
                   {productImage && (
-                    <div className="w-28 h-28 md:w-36 md:h-36 shrink-0 flex items-center justify-center bg-obsidian rounded-xl p-3 border border-white/5 group-hover:border-cobalt/20 transition-all">
+                    <div className="w-28 h-28 lg:w-56 lg:h-56 shrink-0 flex items-center justify-center bg-obsidian rounded-xl p-3 border border-white/5 group-hover:border-cobalt/20 transition-all">
                       <img 
                         src={productImage} 
                         alt={model.title} 
@@ -276,11 +276,8 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
               Solicitar Orçamento <ArrowRight size={14} />
             </a>
             <a href="tel:+553132451265" className="w-full border border-white/10 text-white/60 py-4 text-xs font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300 text-center flex items-center justify-center gap-2">
-              📞 (31) 3245-1265
+              <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" />(31) 3245-1265
             </a>
-            <button onClick={onBackToHome} className="text-xs text-white/30 uppercase tracking-wider hover:text-white transition-colors mt-4">
-              Ver todas as soluções
-            </button>
           </div>
         </div>
       </section>
