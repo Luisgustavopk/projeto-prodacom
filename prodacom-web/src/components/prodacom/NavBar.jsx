@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone, Mail } from "lucide-react";
 
-import logoProdacom from "../../assets/images/logo-prodacom-6-nbg.png";
+import logoProdacom from "../../assets/images/logo/logo-prodacom-6-nbg.png";
 
 const navItems = [
   { label: "Início", href: "#hero" },

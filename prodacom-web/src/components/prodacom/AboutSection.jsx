@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Target, Eye, Gem } from "lucide-react";
-import aboutImage from "../../assets/images/about-image.png";
+import aboutImage from "../../assets/images/component-image/about-image.png";
 const ABOUT_IMAGE = aboutImage;
 
 const pillars = [

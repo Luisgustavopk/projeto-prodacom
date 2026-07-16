@@ -5,26 +5,26 @@ import {
 
 // --- IMPORTAÇÃO DAS IMAGENS LOCAIS (Evita bloqueio de servidores externos) ---
 // Certifique-se de salvar as imagens correspondentes com esses nomes na pasta assets
-import imgF4 from "../../src/assets/images/facial-f4.jpg";
-import imgRepPlus from "../../src/assets/images/inner-rep-plus.jpg";
-import imgIdFace from "../../src/assets/images/idface.jpg";
-import imgIdFaceMax from "../../src/assets/images/idface-max.jpg";
-import imgIdLockBio from "../../src/assets/images/idlock-bio.png";
-import imgIdLock from "../../src/assets/images/idlock.png";
-import imgRevolution from "../../src/assets/images/catraca-revolution.png";
-import imgIdBlockNext from "../../src/assets/images/idblock-next.jpg";
-import imgIdBlockPne from "../../src/assets/images/idblock-pne.jpg";
-import imgViggia from "../../src/assets/images/bastao-viggia.jpg";
-import imgFit from "../assets/images/catraca-fit.png";
-import imgBox from "../assets/images/catraca-box.jpg";
-import imgCrachaPvc from "../../src/assets/images/crachas-pvc.png";
-import imgCrachaRfid from "../../src/assets/images/crachas-rfid.jpg";
-import imgIponto from "../../src/assets/images/software-iponto.jpg";
-import imgIfitness from "../../src/assets/images/software-ifitness.jpg";
-import imgIcontrol from "../../src/assets/images/software-icontrol.jpg";
-import imgIclube from "../../src/assets/images/software-iclube.jpg";
-import imgSchool from "../../src/assets/images/software-school.jpg";
-import imgRefcontrol from "../../src/assets/images/software-refcontrol.jpg";
+import imgF4 from "../../src/assets/images/relogio-de-ponto/facial-f4.jpg";
+import imgRepPlus from "../../src/assets/images/relogio-de-ponto/inner-rep-plus.jpg";
+import imgIdFace from "../../src/assets/images/controle-de-acesso/idface.jpg";
+import imgIdFaceMax from "../../src/assets/images/controle-de-acesso/idface-max.jpg";
+import imgIdLockBio from "../../src/assets/images/controle-de-acesso/idlock-bio.png";
+import imgIdLock from "../../src/assets/images/controle-de-acesso/idlock.png";
+import imgRevolution from "../../src/assets/images/catraca/catraca-revolution.png";
+import imgIdBlockNext from "../../src/assets/images/catraca/idblock-next.jpg";
+import imgIdBlockPne from "../../src/assets/images/catraca/idblock-pne.jpg";
+import imgViggia from "../../src/assets/images/bastao-de-ronda/bastao-viggia.jpg";
+import imgFit from "../assets/images/catraca/catraca-fit.png";
+import imgBox from "../assets/images/catraca/catraca-box.jpg";
+import imgCrachaPvc from "../../src/assets/images/cracha/crachas-pvc.png";
+import imgCrachaRfid from "../../src/assets/images/cracha/crachas-rfid.jpg";
+import imgIponto from "../../src/assets/images/software/software-iponto.jpg";
+import imgIfitness from "../../src/assets/images/software/software-ifitness.jpg";
+import imgIcontrol from "../../src/assets/images/software/software-icontrol.jpg";
+import imgIclube from "../../src/assets/images/software/software-iclube.jpg";
+import imgSchool from "../../src/assets/images/software/software-school.jpg";
+import imgRefcontrol from "../../src/assets/images/software/software-refcontrol.jpg";
 
 export const productsData = {
   // ==========================================================================

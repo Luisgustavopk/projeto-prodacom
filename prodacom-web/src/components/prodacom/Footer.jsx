@@ -2,7 +2,7 @@ import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 
-import logoProdacom from "../../assets/images/logo-prodacom-6.jpg";
+import logoProdacom from "../../assets/images/logo/logo-prodacom-6.jpg";
 
 const quickLinks = [
   { label: "Início", href: "#hero" },

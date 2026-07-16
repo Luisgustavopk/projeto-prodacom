@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import heroImage from "../../assets/images/hero-image-2.png";
+import heroImage from "../../assets/images/component-image/hero-image-2.png";
 const HERO_IMAGE = heroImage;
 export default function HeroSection() {
   const { scrollY } = useScroll();

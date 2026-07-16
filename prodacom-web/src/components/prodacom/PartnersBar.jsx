@@ -2,9 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 
 // Importação das imagens locais
-import logoTopdata from "../../assets/images/Topdata.png";
-import logoInspell from "../../assets/images/inspell.jpg";
-import logoControlid from "../../assets/images/controlid.jpg";
+import logoTopdata from "../../assets/images/logo/Topdata.png";
+import logoInspell from "../../assets/images/logo/inspell.jpg";
+import logoControlid from "../../assets/images/logo/controlid.jpg";
 
 const partners = [
   { id: "topdata", name: "Topdata", logo: logoTopdata },
