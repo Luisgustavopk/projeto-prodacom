@@ -4,8 +4,10 @@ import { ArrowRight, Box, Phone, ChevronLeft, ChevronRight } from "lucide-react"
 import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
 
-// Importa os dados dos produtos para buscar as imagens correspondentes
+// Importa os dados dos produtos para buscar as informações e imagens originais (fundo cinza)
 import { productsData } from "../data/products";
+// Importa a central de registro de imagens apenas para o carrossel no-bg
+import { imageRegistry } from "../data/imageRegistry";
 
 export default function CategoryPage({ category, onBackToHome, onSelectModel }) {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -47,13 +49,42 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
     setActiveSlide((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
   };
 
+  // Conversor estrito que associa o ID real do product.js com as chaves criadas no imageRegistry
+  const getNoBgImage = (id) => {
+    if (!id) return null;
+    
+    const mapping = {
+      // Controle de Acesso (IDs do products.js mapeados para chaves do imageRegistry)
+      "idface": { cat: "controleDeAcesso", key: "idfaceFrontalEn" },
+      "idface-max": { cat: "controleDeAcesso", key: "idfaceMaxFrontal" },
+      "idlock-teclado": { cat: "controleDeAcesso", key: "idlockFrente" },
+      "idlock-biometrico": { cat: "controleDeAcesso", key: "idlockBioFrente" },
+      
+      // Relógio de Ponto
+      "idface-point": { cat: "relogioDePonto", key: "controlePontoFacial" },
+      "inner-rep-plus": { cat: "relogioDePonto", key: "relogioPontoEletronico" },
+      
+      // Catracas
+      "catraca-revolution": { cat: "catraca", key: "inoxLeitorFacial" },
+      "catraca-box": { cat: "catraca", key: "eletronicaLeitorFacial" },
+      "idblock-next": { cat: "catraca", key: "idblockNextSemIdface" },
+      "idblock-pne": { cat: "catraca", key: "idblockPcdPerspectiva" },
+      "catraca-fit": { cat: "catraca", key: "inoxLeitorFacial" }
+    };
+
+    const target = mapping[id];
+    if (!target) return null;
+
+    return imageRegistry[target.cat]?.noBg?.[target.key] || null;
+  };
+
   if (!category) return null;
 
   return (
     <div className="min-h-screen bg-obsidian font-sans text-white">
       <NavBar onNavigateHome={onBackToHome} />
 
-      {/* 1. HERO SECTION COM CARROSSEL APENAS DE IMAGENS GIGANTES */}
+      {/* 1. HERO SECTION COM CARROSSEL ADAPTÁVEL E CENTRALIZADO */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden border-b border-white/5">
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           
@@ -97,14 +128,14 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
               </div>
             </motion.div>
 
-            {/* Direita: Carrossel de Imagem Pura Maximizada */}
+            {/* Direita: Janela do Carrossel */}
             <div 
               className="lg:col-span-8 relative w-full flex items-center justify-center"
               onMouseEnter={stopAutoplay}
               onMouseLeave={startAutoplay}
             >
               {carouselItems.length > 0 && (
-                <div className="relative h-[500px] md:h-[620px] w-full flex items-center justify-center overflow-hidden">
+                <div className="relative h-[480px] md:h-[580px] w-full flex items-center justify-center overflow-hidden">
                   
                   {/* Setas de Navegação Laterais Discretas */}
                   {carouselItems.length > 1 && (
@@ -124,28 +155,39 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                     </>
                   )}
 
-                  {/* Renderizador da Imagem Maximizada */}
+                  {/* Renderizador com Centralização Total e Proporção Preservada */}
                   <AnimatePresence mode="wait">
                     {carouselItems.map((model, idx) => {
                       if (idx !== activeSlide) return null;
                       const productInfo = productsData[model.id];
-                      const productImage = productInfo?.image || model.image;
+                      
+                      // Verifica se existe imagem recortada sem fundo real
+                      const noBgImage = getNoBgImage(model.id);
+                      const hasNoBg = !!noBgImage;
+
+                      // Se houver sem fundo, usa ela. Se não houver (como software), usa a de estúdio padrão do products.js
+                      const productImage = noBgImage || productInfo?.image || model.image;
 
                       return (
                         <motion.div
                           key={model.id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
+                          initial={{ opacity: 0, scale: 0.98 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.98 }}
                           transition={{ duration: 0.35 }}
-                          className="absolute inset-0 flex items-center justify-center p-2 cursor-pointer"
+                          className="absolute inset-0 flex items-center justify-center p-6 cursor-pointer w-full h-full"
                           onClick={() => onSelectModel(model.id)}
                         >
                           {productImage && (
                             <img 
                               src={productImage} 
                               alt={model.title} 
-                              className="max-h-[98%] max-w-[98%] object-contain select-none transition-transform duration-500 hover:scale-[1.02]"
+                              /* Se a imagem for transparente (hasNoBg), aplica um leve zoom (scale-110) para preencher a tela de forma limpa. Se for de estúdio (com fundo cinza/quadrada), desativa o zoom/escala para impedir qualquer tipo de corte nas bordas */
+                              className={`max-h-full max-w-full w-auto h-auto object-contain select-none transition-transform duration-500 ${
+                                hasNoBg 
+                                  ? "scale-105 md:scale-110 hover:scale-115" 
+                                  : "scale-100 hover:scale-[1.02]"
+                              }`}
                             />
                           )}
                         </motion.div>
@@ -185,7 +227,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
         </div>
       </section>
 
-      {/* 3. LINHA DE PRODUTOS (DARK - GRID DE CARDS MAXIMIZADOS COM IMAGENS GRANDES) */}
+      {/* 3. LINHA DE PRODUTOS (DARK - PUXANDO AS IMAGENS COM FUNDO ORIGINAL DIRETO DO PRODUCTS.JS) */}
       <section id="linha-produtos" className="py-24 bg-obsidian border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
@@ -194,17 +236,17 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
             </h2>
           </div>
 
-          {/* Grid expandido para melhor visualização em tela cheia */}
+          {/* Grid de Cards Maximizados */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
             {category.models.map((model, i) => {
               const productInfo = productsData[model.id];
+              // Pega estritamente a imagem cinza original configurada no seu products.js
               const productImage = productInfo?.image || model.image;
 
               return (
                 <div 
                   key={i} 
                   onClick={() => onSelectModel(model.id)}
-                  /* p-8 expande a área de respiro interna do card */
                   className="bg-white/[0.02] border border-white/5 hover:border-cobalt/30 p-8 rounded-2xl flex items-center gap-8 cursor-pointer hover:bg-white/[0.04] transition-all duration-300 group"
                 >
                   {/* Container da Imagem do Produto Expandido no Grid */}
