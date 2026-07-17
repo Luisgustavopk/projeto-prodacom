@@ -1,33 +1,46 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Box, Phone, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Phone, ChevronLeft, ChevronRight } from "lucide-react";
 
 import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
-
 
 import { productsData } from "../data/products";
 import { imageRegistry } from "../data/imageRegistry";
 import { useCarouselAutoplay } from "../hooks/useCarouselAutoplay";
 
-
 const PRODUCT_NO_BG_MAPPING = {
-
+  // Controle de Acesso
   "idface": imageRegistry.controleDeAcesso?.noBg?.idfaceFrontalEn,
   "idface-max": imageRegistry.controleDeAcesso?.noBg?.idfaceMaxFrontal,
   "idlock-bio": imageRegistry.controleDeAcesso?.noBg?.idlockBioFrente,
   "idlock": imageRegistry.controleDeAcesso?.noBg?.idlockFrente,
 
-  
+  // Relógio de Ponto
   "leitor-facial-f4": imageRegistry.relogioDePonto?.noBg?.controlePontoFacial,
   "inner-rep-plus": imageRegistry.relogioDePonto?.noBg?.relogioPontoEletronico,
 
- 
+  // Catracas
   "catraca-revolution": imageRegistry.catraca?.noBg?.inoxLeitorFacial,
   "catraca-box": imageRegistry.catraca?.noBg?.eletronicaLeitorFacial,
   "idblock-next": imageRegistry.catraca?.noBg?.idblockNextSemIdface,
   "idblock-pne": imageRegistry.catraca?.noBg?.idblockPcdPerspectiva,
-  "catraca-fit": imageRegistry.catraca?.noBg?.paraAcademia
+  "catraca-fit": imageRegistry.catraca?.noBg?.paraAcademia,
+
+  // Crachás
+  "crachas-pvc": imageRegistry.cracha?.noBg?.pvc,
+  "crachas-rfid": imageRegistry.cracha?.noBg?.rfid,
+
+  // Bastão de Ronda
+  "bastao-viggia": imageRegistry.bastaoDeRonda?.noBg?.bastaoDeRonda,
+
+  // Softwares
+  "software-iclube": imageRegistry.software?.noBg?.iclube,
+  "software-iponto": imageRegistry.software?.noBg?.iponto,
+  "software-icontrol": imageRegistry.software?.noBg?.icontrol,
+  "software-ifitness": imageRegistry.software?.noBg?.ifitness,
+  "software-refcontrol": imageRegistry.software?.noBg?.refcontrol,
+  "software-school": imageRegistry.software?.noBg?.school
 };
 
 export default function CategoryPage({ category, onBackToHome, onSelectModel }) {
@@ -39,7 +52,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
     handlePrev,
     startAutoplay,
     stopAutoplay,
-  } = useCarouselAutoplay(carouselItems.length, 2000);
+  } = useCarouselAutoplay(carouselItems.length, 4000);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -126,11 +139,15 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                   <AnimatePresence mode="wait">
                     {carouselItems.map((model, idx) => {
                       if (idx !== activeSlide) return null;
-                      const productInfo = productsData[model.id];
                       
+                      const productInfo = productsData[model.id];
+                      // Pega estritamente a imagem recortada se ela existir no mapeador
                       const noBgImage = PRODUCT_NO_BG_MAPPING[model.id];
+                      
+                      // Avalia se de fato encontrou uma imagem recortada válida
                       const isTransparent = !!noBgImage;
                       
+                      // Prioriza o recortado, caso não tenha (ex: fallback de erro), busca do productInfo
                       const productImage = noBgImage || productInfo?.image || model.image;
 
                       return (
@@ -140,13 +157,11 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.98 }}
                           transition={{ duration: 0.35 }}
-                          /* p-4 md:p-8 cria uma margem segura invisível para a imagem não tocar exatamente as setas */
                           className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 w-full h-full select-none"
                         >
                           {/* Glow Radial Limpo Ampliado para preencher melhor o espaço */}
                           {isTransparent && (
                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] md:w-[380px] md:h-[380px] bg-cobalt/20 rounded-full blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
-                          
                           )}
 
                           <div className="relative flex items-center justify-center w-full h-full">
@@ -155,7 +170,6 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                                 src={productImage} 
                                 alt={model.title} 
                                 onClick={() => onSelectModel(model.id)}
-                                /* w-full h-full com object-contain garante que a imagem cresça o máximo possível sem cortar */
                                 className={`w-full h-full object-contain cursor-pointer transition-transform duration-500 ${
                                   isTransparent 
                                     ? "drop-shadow-[0_15px_25px_rgba(0,0,0,0.55)] hover:scale-[1.03]" 
@@ -201,7 +215,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
         </div>
       </section>
 
-      {/* 3. LINHA DE PRODUTOS (DARK - BUSCA IMAGENS ORIGINAIS COM FUNDO CINZA DIRETO DO PRODUCTS.JS) */}
+      {/* 3. LINHA DE PRODUTOS (DARK - BUSCA IMAGENS ORIGINAIS COM FUNDO CINZA) */}
       <section id="linha-produtos" className="py-24 bg-obsidian border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
@@ -210,11 +224,10 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
             </h2>
           </div>
 
-          {/* Grid de Cards Maximizados */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
             {carouselItems.map((model, i) => {
               const productInfo = productsData[model.id];
-              // Pega estritamente a imagem cinza de estúdio configurada no seu arquivo products.js
+              // Na lista de produtos inferior, mantemos a imagem original com fundo cinza
               const productImage = productInfo?.image || model.image;
 
               return (
@@ -223,7 +236,6 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                   onClick={() => onSelectModel(model.id)}
                   className="bg-white/[0.02] border border-white/5 hover:border-cobalt/30 p-8 rounded-2xl flex items-center gap-8 cursor-pointer hover:bg-white/[0.04] transition-all duration-300 group"
                 >
-                  {/* Container da Imagem do Produto Expandido no Grid */}
                   {productImage && (
                     <div className="w-28 h-28 lg:w-56 lg:h-56 shrink-0 flex items-center justify-center bg-obsidian rounded-xl p-3 border border-white/5 group-hover:border-cobalt/20 transition-all">
                       <img 
@@ -254,7 +266,6 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
             })}
           </div>
 
-          {/* Addons */}
           {category.addons && category.addons.length > 0 && (
             <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-white/5">
               {category.addons.map((addon, i) => {

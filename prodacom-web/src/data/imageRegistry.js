@@ -23,14 +23,6 @@ import idblockNextSemIdface_Bg from "../assets/images/catraca/idblock-next-sem-i
 import idblockPcdFrontal_Bg from "../assets/images/catraca/idblock-pcd-frontal.jpg";
 import idblockPcdPerspectiva_Bg from "../assets/images/catraca/idblock-pcd-perspectiva.jpg";
 
-// --- Imagens de Estúdio (Fundo Cinza - JPG) ---
-import catracaBox_Studio from "../assets/images/catraca/catraca-box.jpg";
-import catracaFit_Studio from "../assets/images/catraca/catraca-fit.png";
-import catracaRevolution_Studio from "../assets/images/catraca/catraca-revolution.png";
-import idblockNext_Studio from "../assets/images/catraca/idblock-next.jpg";
-import idblockNextEs_Studio from "../assets/images/catraca/idblock-next-es.jpg";
-import idblockPne_Studio from "../assets/images/catraca/idblock-pne.jpg";
-
 // --- Imagens Transparentes (no-bg - PNG) ---
 import catracaEletronicaLeitorFacial_NoBg from "../assets/images/catraca/no-bg/catraca-eletronica-com-leitor-facial-600x1024.png";
 import catracaInoxLeitorFacial_NoBg from "../assets/images/catraca/no-bg/catraca-inox-com-leitor-facial.png";
@@ -55,11 +47,6 @@ import idlockInternoFrente_Bg from "../assets/images/controle-de-acesso/idlock-i
 import idlockInternoPerspectiva_Bg from "../assets/images/controle-de-acesso/idlock-interno-perspectiva.jpg";
 import idlockPerspectiva_Bg from "../assets/images/controle-de-acesso/idlock-perspectiva.jpg";
 
-// --- Imagens de Estúdio (Fundo Cinza - JPG) ---
-import idface_Studio from "../assets/images/controle-de-acesso/idface.jpg";
-import idfaceMax_Studio from "../assets/images/controle-de-acesso/idface-max.jpg";
-import idlock_Studio from "../assets/images/controle-de-acesso/idlock.png";
-import idlockBio_Studio from "../assets/images/controle-de-acesso/idlock-bio.png";
 
 // --- Imagens Transparentes (no-bg - PNG) ---
 import idfaceFrontalEn_NoBg from "../assets/images/controle-de-acesso/no-bg/idface-frontal-en.png";
@@ -87,13 +74,35 @@ import relogioPontoDigital_Bg from "../assets/images/relogio-de-ponto/relogio-de
 import relogioPontoEletronico_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-eletronico.jpg";
 import relogioPontoHomologado_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-homologado.jpg";
 
-// --- Imagens de Estúdio (Fundo Cinza - JPG) ---
-import facialF4_Studio from "../assets/images/relogio-de-ponto/facial-f4.jpg";
-import innerRepPlus_Studio from "../assets/images/relogio-de-ponto/inner-rep-plus.jpg";
 
 // --- Imagens Transparentes (no-bg - PNG) ---
 import controlePontoFacial_NoBg from "../assets/images/relogio-de-ponto/no-bg/controle-de-ponto-facial.png";
 import relogioPontoEletronico_NoBg from "../assets/images/relogio-de-ponto/no-bg/relogio-de-ponto-eletronico.png";
+
+
+// ============================================================================
+// 4. IMPORTAÇÕES - PASTA: bastao-de-ronda (src/assets/images/bastao-de-ronda/)
+// ============================================================================
+import bastaoDeRonda_NoBg from "../assets/images/bastao-de-ronda/no-bg/bastao-viggia.png";
+import controleDeVigia_NoBg from "../assets/images/bastao-de-ronda/no-bg/controle-de-vigias.png";
+
+
+// ============================================================================
+// 5. IMPORTAÇÕES - PASTA: software (src/assets/images/software/)
+// ============================================================================
+
+import softwareIponto_NoBg from "../assets/images/software/no-bg/software-iponto.png";
+import softwareIcontrol_NoBg from "../assets/images/software/no-bg/software-icontrol.png";
+import softwareIfitness_NoBg from "../assets/images/software/no-bg/software-ifitness.png";
+import softwareIclube_NoBg from "../assets/images/software/no-bg/software-iclube.png";
+import softwareRefcontrol_NoBg from "../assets/images/software/no-bg/software-refcontrol.png";
+import softwareSchool_NoBg from "../assets/images/software/no-bg/software-school.png";
+
+// ============================================================================
+// 6. IMPORTAÇÕES - PASTA: cracha (src/assets/images/cracha/)
+// ============================================================================
+import crachaPvc_NoBg from "../assets/images/cracha/no-bg/crachas-pvc.png";
+import crachaRfid_NoBg from "../assets/images/cracha/no-bg/crachas-rfid.png";
 
 
 // ============================================================================
@@ -182,5 +191,39 @@ export const imageRegistry = {
       controlePontoFacial: controlePontoFacial_NoBg,
       relogioPontoEletronico: relogioPontoEletronico_NoBg,
     }
-  }
+  },
+   // ----------------------------------------------------
+  // CATEGORIA: BASTÃO DE RONDA
+  // ----------------------------------------------------
+
+  bastaoDeRonda: {
+    noBg: {
+      bastaoDeRonda: bastaoDeRonda_NoBg,
+      controleDeVigia: controleDeVigia_NoBg,
+    }
+  },
+
+  // ----------------------------------------------------
+  // CATEGORIA: SOFTWARE
+  // ---------------------------------------------------- 
+
+  software: {
+    noBg: {
+      iponto: softwareIponto_NoBg,
+      icontrol: softwareIcontrol_NoBg,
+      ifitness: softwareIfitness_NoBg,
+      iclube: softwareIclube_NoBg,
+      refcontrol: softwareRefcontrol_NoBg,
+      school: softwareSchool_NoBg,
+    }
+  },
+  // ----------------------------------------------------
+  // CATEGORIA: CRACHÁS 
+  // ----------------------------------------------------
+  cracha: {
+    noBg: {
+      pvc: crachaPvc_NoBg,
+      rfid: crachaRfid_NoBg,
+    }
+  },
 };
