@@ -21,8 +21,8 @@ const PRODUCT_NO_BG_MAPPING = {
   "inner-rep-plus": imageRegistry.relogioDePonto?.noBg?.relogioPontoEletronico,
 
   // Catracas
-  "catraca-revolution": imageRegistry.catraca?.noBg?.inoxLeitorFacial,
-  "catraca-box": imageRegistry.catraca?.noBg?.eletronicaLeitorFacial,
+  "catraca-revolution": imageRegistry.catraca?.noBg?.eletronicaLeitorFacial,
+  "catraca-box": imageRegistry.catraca?.noBg?.inoxLeitorFacial,
   "idblock-next": imageRegistry.catraca?.noBg?.idblockNextSemIdface,
   "idblock-pne": imageRegistry.catraca?.noBg?.idblockPcdPerspectiva,
   "catraca-fit": imageRegistry.catraca?.noBg?.paraAcademia,
