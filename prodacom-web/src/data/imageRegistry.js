@@ -13,7 +13,7 @@ import catracaEletronicaAntiPanico1024_Bg from "../assets/images/catraca/catraca
 import catracaEletronicaLeitorFacial1024_Bg from "../assets/images/catraca/catraca-eletronica-com-leitor-facial-600x1024.jpg";
 import catracaEletronicaReconhecimentoFacial_Bg from "../assets/images/catraca/catraca-eletronica-com-reconhecimento-facial.jpg";
 import catracaEletronicaUrnaCartoes1024_Bg from "../assets/images/catraca/catraca-eletronica-com-urna-para-cartoes-778x1024.jpg";
-
+import catracaBoxInox_Bg from "../assets/images/catraca/catraca-inox.jpg";
 import catracaInoxLeitorFacial_Bg from "../assets/images/catraca/catraca-inox-com-leitor-facial.jpg";
 import catracaParaAcademia1024_Bg from "../assets/images/catraca/catraca-para-academia-819x1024.jpg";
 import catracaParaControleEventos_Bg from "../assets/images/catraca/catraca-para-controle-de-eventos.jpg";
@@ -123,7 +123,7 @@ export const imageRegistry = {
       eletronicaLeitorFacial1024: catracaEletronicaLeitorFacial1024_Bg,
       eletronicaReconhecimentoFacial: catracaEletronicaReconhecimentoFacial_Bg,
       eletronicaUrnaCartoes1024: catracaEletronicaUrnaCartoes1024_Bg,
-    
+      inox: catracaBoxInox_Bg,
       inoxComLeitorFacial: catracaInoxLeitorFacial_Bg,
       paraAcademia1024: catracaParaAcademia1024_Bg,
       paraControleEventos: catracaParaControleEventos_Bg,
