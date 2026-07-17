@@ -13,7 +13,7 @@ import catracaEletronicaAntiPanico1024_Bg from "../assets/images/catraca/catraca
 import catracaEletronicaLeitorFacial1024_Bg from "../assets/images/catraca/catraca-eletronica-com-leitor-facial-600x1024.jpg";
 import catracaEletronicaReconhecimentoFacial_Bg from "../assets/images/catraca/catraca-eletronica-com-reconhecimento-facial.jpg";
 import catracaEletronicaUrnaCartoes1024_Bg from "../assets/images/catraca/catraca-eletronica-com-urna-para-cartoes-778x1024.jpg";
-import catracaInox_Bg from "../assets/images/catraca/catraca-inox.jpg";
+
 import catracaInoxLeitorFacial_Bg from "../assets/images/catraca/catraca-inox-com-leitor-facial.jpg";
 import catracaParaAcademia1024_Bg from "../assets/images/catraca/catraca-para-academia-819x1024.jpg";
 import catracaParaControleEventos_Bg from "../assets/images/catraca/catraca-para-controle-de-eventos.jpg";
@@ -67,7 +67,6 @@ import idlockPerspectiva_NoBg from "../assets/images/controle-de-acesso/no-bg/id
 import controlePontoFacial_Bg from "../assets/images/relogio-de-ponto/controle-de-ponto-facial.jpg";
 import leitorFacial507_Bg from "../assets/images/relogio-de-ponto/leitor-facial-507x1024.jpg";
 import leitorFacialParaControlePonto_Bg from "../assets/images/relogio-de-ponto/leitor-facial-para-controle-de-ponto.jpg";
-import leitorParaIdentificacaoFacial_Bg from "../assets/images/relogio-de-ponto/leitor-para-identificacao-facial.jpg";
 import relogioPontoBiometrico_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-biometrico.jpg";
 import relogioPontoComCartao_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-com-cartao.jpg";
 import relogioPontoDigital_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-digital.jpg";
@@ -124,7 +123,7 @@ export const imageRegistry = {
       eletronicaLeitorFacial1024: catracaEletronicaLeitorFacial1024_Bg,
       eletronicaReconhecimentoFacial: catracaEletronicaReconhecimentoFacial_Bg,
       eletronicaUrnaCartoes1024: catracaEletronicaUrnaCartoes1024_Bg,
-      inox: catracaInox_Bg,
+    
       inoxComLeitorFacial: catracaInoxLeitorFacial_Bg,
       paraAcademia1024: catracaParaAcademia1024_Bg,
       paraControleEventos: catracaParaControleEventos_Bg,
@@ -180,7 +179,6 @@ export const imageRegistry = {
       controlePontoFacial: controlePontoFacial_Bg,
       leitorFacial507: leitorFacial507_Bg,
       leitorFacialParaControlePonto: leitorFacialParaControlePonto_Bg,
-      leitorParaIdentificacaoFacial: leitorParaIdentificacaoFacial_Bg,
       relogioPontoBiometrico: relogioPontoBiometrico_Bg,
       relogioPontoComCartao: relogioPontoComCartao_Bg,
       relogioPontoDigital: relogioPontoDigital_Bg,
