@@ -45,7 +45,7 @@ export default function ProductPage({ product, onBackToHome }) {
                 </a>
                 <button 
                   onClick={onBackToHome}
-                  className="w-full sm:w-auto text-white/40 hover:text-white text-xs font-medium tracking-wider uppercase transition-colors py-3"
+                  className="w-full sm:w-auto text-white/90 hover:text-white text-2xs font-medium tracking-wider uppercase transition-colors py-3"
                 >
                   &larr; Voltar
                 </button>

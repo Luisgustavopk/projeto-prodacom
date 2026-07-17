@@ -1,82 +1,49 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Box, Phone, ChevronLeft, ChevronRight } from "lucide-react";
+
 import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
 
-// Importa os dados dos produtos para buscar as informações e imagens originais (fundo cinza)
+
 import { productsData } from "../data/products";
-// Importa a central de registro de imagens apenas para o carrossel no-bg
 import { imageRegistry } from "../data/imageRegistry";
+import { useCarouselAutoplay } from "../hooks/useCarouselAutoplay";
+
+
+const PRODUCT_NO_BG_MAPPING = {
+
+  "idface": imageRegistry.controleDeAcesso?.noBg?.idfaceFrontalEn,
+  "idface-max": imageRegistry.controleDeAcesso?.noBg?.idfaceMaxFrontal,
+  "idlock-bio": imageRegistry.controleDeAcesso?.noBg?.idlockBioFrente,
+  "idlock": imageRegistry.controleDeAcesso?.noBg?.idlockFrente,
+
+  
+  "leitor-facial-f4": imageRegistry.relogioDePonto?.noBg?.controlePontoFacial,
+  "inner-rep-plus": imageRegistry.relogioDePonto?.noBg?.relogioPontoEletronico,
+
+ 
+  "catraca-revolution": imageRegistry.catraca?.noBg?.inoxLeitorFacial,
+  "catraca-box": imageRegistry.catraca?.noBg?.eletronicaLeitorFacial,
+  "idblock-next": imageRegistry.catraca?.noBg?.idblockNextSemIdface,
+  "idblock-pne": imageRegistry.catraca?.noBg?.idblockPcdPerspectiva,
+  "catraca-fit": imageRegistry.catraca?.noBg?.paraAcademia
+};
 
 export default function CategoryPage({ category, onBackToHome, onSelectModel }) {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const autoplayTimer = useRef(null);
+  const carouselItems = category?.models || [];
 
-  const carouselItems = category.models || [];
+  const {
+    activeSlide,
+    handleNext,
+    handlePrev,
+    startAutoplay,
+    stopAutoplay,
+  } = useCarouselAutoplay(carouselItems.length, 2000);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setActiveSlide(0);
   }, [category]);
-
-  // Autoplay ativo e contínuo do carrossel
-  useEffect(() => {
-    startAutoplay();
-    return () => stopAutoplay();
-  }, [activeSlide, carouselItems]);
-
-  const startAutoplay = () => {
-    stopAutoplay();
-    if (carouselItems.length > 1) {
-      autoplayTimer.current = setInterval(() => {
-        handleNext();
-      }, 4000); // Troca de slide automaticamente a cada 4 segundos
-    }
-  };
-
-  const stopAutoplay = () => {
-    if (autoplayTimer.current) {
-      clearInterval(autoplayTimer.current);
-    }
-  };
-
-  const handleNext = () => {
-    setActiveSlide((prev) => (prev + 1) % carouselItems.length);
-  };
-
-  const handlePrev = () => {
-    setActiveSlide((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
-  };
-
-  // Conversor estrito que associa o ID real do product.js com as chaves criadas no imageRegistry
-  const getNoBgImage = (id) => {
-    if (!id) return null;
-    
-    const mapping = {
-      // Controle de Acesso (IDs do products.js mapeados para chaves do imageRegistry)
-      "idface": { cat: "controleDeAcesso", key: "idfaceFrontalEn" },
-      "idface-max": { cat: "controleDeAcesso", key: "idfaceMaxFrontal" },
-      "idlock-teclado": { cat: "controleDeAcesso", key: "idlockFrente" },
-      "idlock-biometrico": { cat: "controleDeAcesso", key: "idlockBioFrente" },
-      
-      // Relógio de Ponto
-      "idface-point": { cat: "relogioDePonto", key: "controlePontoFacial" },
-      "inner-rep-plus": { cat: "relogioDePonto", key: "relogioPontoEletronico" },
-      
-      // Catracas
-      "catraca-revolution": { cat: "catraca", key: "inoxLeitorFacial" },
-      "catraca-box": { cat: "catraca", key: "eletronicaLeitorFacial" },
-      "idblock-next": { cat: "catraca", key: "idblockNextSemIdface" },
-      "idblock-pne": { cat: "catraca", key: "idblockPcdPerspectiva" },
-      "catraca-fit": { cat: "catraca", key: "inoxLeitorFacial" }
-    };
-
-    const target = mapping[id];
-    if (!target) return null;
-
-    return imageRegistry[target.cat]?.noBg?.[target.key] || null;
-  };
 
   if (!category) return null;
 
@@ -141,13 +108,13 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                   {carouselItems.length > 1 && (
                     <>
                       <button 
-                        onClick={handlePrev}
+                        onClick={handlePrev} 
                         className="absolute left-2 z-30 p-2.5 rounded-full border border-white/5 bg-obsidian/40 text-white/40 hover:text-white hover:bg-obsidian/85 hover:border-white/20 transition-all"
                       >
                         <ChevronLeft size={24} />
                       </button>
                       <button 
-                        onClick={handleNext}
+                        onClick={handleNext} 
                         className="absolute right-2 z-30 p-2.5 rounded-full border border-white/5 bg-obsidian/40 text-white/40 hover:text-white hover:bg-obsidian/85 hover:border-white/20 transition-all"
                       >
                         <ChevronRight size={24} />
@@ -155,17 +122,15 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                     </>
                   )}
 
-                  {/* Renderizador com Centralização Total e Proporção Preservada */}
+                  {/* Renderizador com Centralização Total e Tamanho Máximo Adaptável */}
                   <AnimatePresence mode="wait">
                     {carouselItems.map((model, idx) => {
                       if (idx !== activeSlide) return null;
                       const productInfo = productsData[model.id];
                       
-                      // Verifica se existe imagem recortada sem fundo real
-                      const noBgImage = getNoBgImage(model.id);
-                      const hasNoBg = !!noBgImage;
-
-                      // Se houver sem fundo, usa ela. Se não houver (como software), usa a de estúdio padrão do products.js
+                      const noBgImage = PRODUCT_NO_BG_MAPPING[model.id];
+                      const isTransparent = !!noBgImage;
+                      
                       const productImage = noBgImage || productInfo?.image || model.image;
 
                       return (
@@ -175,21 +140,30 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.98 }}
                           transition={{ duration: 0.35 }}
-                          className="absolute inset-0 flex items-center justify-center p-6 cursor-pointer w-full h-full"
-                          onClick={() => onSelectModel(model.id)}
+                          /* p-4 md:p-8 cria uma margem segura invisível para a imagem não tocar exatamente as setas */
+                          className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 w-full h-full select-none"
                         >
-                          {productImage && (
-                            <img 
-                              src={productImage} 
-                              alt={model.title} 
-                              /* Se a imagem for transparente (hasNoBg), aplica um leve zoom (scale-110) para preencher a tela de forma limpa. Se for de estúdio (com fundo cinza/quadrada), desativa o zoom/escala para impedir qualquer tipo de corte nas bordas */
-                              className={`max-h-full max-w-full w-auto h-auto object-contain select-none transition-transform duration-500 ${
-                                hasNoBg 
-                                  ? "scale-105 md:scale-110 hover:scale-115" 
-                                  : "scale-100 hover:scale-[1.02]"
-                              }`}
-                            />
+                          {/* Glow Radial Limpo Ampliado para preencher melhor o espaço */}
+                          {isTransparent && (
+                           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] md:w-[380px] md:h-[380px] bg-cobalt/20 rounded-full blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
+                          
                           )}
+
+                          <div className="relative flex items-center justify-center w-full h-full">
+                            {productImage && (
+                              <img 
+                                src={productImage} 
+                                alt={model.title} 
+                                onClick={() => onSelectModel(model.id)}
+                                /* w-full h-full com object-contain garante que a imagem cresça o máximo possível sem cortar */
+                                className={`w-full h-full object-contain cursor-pointer transition-transform duration-500 ${
+                                  isTransparent 
+                                    ? "drop-shadow-[0_15px_25px_rgba(0,0,0,0.55)] hover:scale-[1.03]" 
+                                    : "hover:scale-[1.02]"
+                                }`}
+                              />
+                            )}
+                          </div>
                         </motion.div>
                       );
                     })}
@@ -213,7 +187,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            {category.benefits.map((feat, i) => {
+            {category.benefits?.map((feat, i) => {
               const Icon = feat.icon;
               return (
                 <div key={i} className="group border-l border-slate_mist pl-6 hover:border-cobalt transition-colors duration-300">
@@ -227,7 +201,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
         </div>
       </section>
 
-      {/* 3. LINHA DE PRODUTOS (DARK - PUXANDO AS IMAGENS COM FUNDO ORIGINAL DIRETO DO PRODUCTS.JS) */}
+      {/* 3. LINHA DE PRODUTOS (DARK - BUSCA IMAGENS ORIGINAIS COM FUNDO CINZA DIRETO DO PRODUCTS.JS) */}
       <section id="linha-produtos" className="py-24 bg-obsidian border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
@@ -238,9 +212,9 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
 
           {/* Grid de Cards Maximizados */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-            {category.models.map((model, i) => {
+            {carouselItems.map((model, i) => {
               const productInfo = productsData[model.id];
-              // Pega estritamente a imagem cinza original configurada no seu products.js
+              // Pega estritamente a imagem cinza de estúdio configurada no seu arquivo products.js
               const productImage = productInfo?.image || model.image;
 
               return (

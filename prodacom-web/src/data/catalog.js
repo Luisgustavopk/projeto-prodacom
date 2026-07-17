@@ -57,9 +57,8 @@ export const catalogData = {
     models: [
       { id: "catraca-revolution", num: "01", title: "Catraca Revolution Topdata", desc: "Pedestal em aço carbono com tampo em inox escovado. O melhor custo-benefício para fluxos corporativos." },
       { id: "catraca-box", num: "02", title: "Catraca Box Topdata", desc: "Gabinete reforçado tipo cofre, oferecendo maior barreira física e espaço para múltiplas integrações." },
-      { id: "catraca-flap", num: "03", title: "Catraca Flap Premium", desc: "Barreiras motorizadas de vidro retráteis. Abertura por aproximação ultra rápida e visual sofisticado." },
-      { id: "idblock-next", num: "04", title: "iDBlock Next Control iD", desc: "Catraca pedestal da Control iD equipada com display touchscreen, leitor biométrico e design ultra moderno." },
-      { id: "idblock-pne", num: "05", title: "iDBlock PNE Acessível", desc: "Modelo Control iD em conformidade com as normas de acessibilidade, com braço estendido ou pivotante." }
+      { id: "idblock-next", num: "03", title: "iDBlock Next Control iD", desc: "Catraca pedestal da Control iD equipada com display touchscreen, leitor biométrico e design ultra moderno." },
+      { id: "idblock-pne", num: "04", title: "iDBlock PNE Acessível", desc: "Modelo Control iD em conformidade com as normas de acessibilidade, com braço estendido ou pivotante." }
     ]
   },
 
