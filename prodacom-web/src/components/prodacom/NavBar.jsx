@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Phone, Mail, ChevronDown, Monitor, Smartphone, Cloud } from "lucide-react";
+import { Menu, X, Phone, Mail, ChevronDown, Monitor, Clock, ClipboardCheck, Dumbbell, ShieldCheck, Users } from "lucide-react";
 
 import logoProdacom from "../../assets/images/logo/logo-prodacom-6-nbg.png";
 
@@ -12,16 +12,19 @@ const navItems = [
   { label: "Contato", href: "#contato" },
 ];
 
-// Itens do Dropdown de Soluções Web
+
 const webSolutions = [
-  { label: "Iponto Marcação Web", href: "https://ipontomobile.com.br/iponto_web/", icon: Monitor },
+  { label: "Iponto Marcação Web", href: "https://ipontomobile.com.br/iponto_web/", icon: Clock },
+  { label: "Iponto Gestor", href: "https://ipontogestor.inspell.com.br/iponto/login/", icon: ClipboardCheck },
+  { label: "Ifitness Gestor", href: "https://ifitnessmobile.inspell.com.br/gestor/", icon: Dumbbell },
+  { label: "ControlID IDSecure", href: "https://idsecure.com.br/auth/login", icon: ShieldCheck },
+  { label: "ControlID RHiD", href: "https://www.rhid.com.br/v2/#/login", icon: Users }
 ];
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   
-  // Referência para fechar o dropdown ao clicar fora dele
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -38,7 +41,6 @@ export default function NavBar() {
     e.preventDefault();
     setMenuOpen(false);
     setDropdownOpen(false);
-    // Dispara o evento global para a Home ouvir e trocar de tela
     window.dispatchEvent(new CustomEvent('navigate-hash', { detail: href }));
   };
 
