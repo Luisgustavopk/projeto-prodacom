@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Phone, Mail, ChevronDown, Monitor, Clock, ClipboardCheck, Dumbbell, ShieldCheck, Users } from "lucide-react";
+import { Menu, X, Phone, Mail, ChevronDown, Clock, ClipboardCheck, Dumbbell, ShieldCheck, Users } from "lucide-react";
 
 import logoProdacom from "../../assets/images/logo/logo-prodacom-6-nbg.png";
 
@@ -11,7 +12,6 @@ const navItems = [
   { label: "Sobre", href: "#sobre" },
   { label: "Contato", href: "#contato" },
 ];
-
 
 const webSolutions = [
   { label: "Iponto Marcação Web", href: "https://ipontomobile.com.br/iponto_web/", icon: Clock },
@@ -24,8 +24,10 @@ const webSolutions = [
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  
   const dropdownRef = useRef(null);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -41,7 +43,14 @@ export default function NavBar() {
     e.preventDefault();
     setMenuOpen(false);
     setDropdownOpen(false);
-    window.dispatchEvent(new CustomEvent('navigate-hash', { detail: href }));
+    
+    if (location.pathname === "/") {
+      // Se já está na Home, rola suavemente até a seção
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // Se está na página de produto ou categoria, navega para a Home passando a hash
+      navigate(`/${href}`); 
+    }
   };
 
   return (
@@ -84,7 +93,6 @@ export default function NavBar() {
               (31) 3245-1265
             </a>
             
-            {/* Dropdown Desktop */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -94,7 +102,6 @@ export default function NavBar() {
                 <ChevronDown size={14} className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : "rotate-0"}`} />
               </button>
 
-              {/* Menu Suspenso */}
               <AnimatePresence>
                 {dropdownOpen && (
                   <motion.div
@@ -134,7 +141,6 @@ export default function NavBar() {
         </div>
       </motion.nav>
 
-      {/* Menu Mobile */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div 
@@ -161,7 +167,6 @@ export default function NavBar() {
 
               <div className="w-full flex flex-col items-center gap-4 mt-8 pt-8 border-t border-slate_mist">
                 
-                {/* Dropdown Mobile - Expandido Inline */}
                 <div className="w-full bg-white border border-slate_mist rounded-sm p-4 mb-4">
                   <h4 className="text-xs font-medium tracking-widest text-cobalt uppercase mb-4 text-center">Soluções Web</h4>
                   <div className="flex flex-col gap-3">

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, Shield, Fence, Radio, Monitor, CreditCard, ArrowRight } from "lucide-react";
 
-// Lista de Categorias Principais
+
 const services = [
   { id: "relogio-de-ponto", num: "01", title: "Relógio de Ponto", desc: "Sistemas REP homologados pelo MTE com biometria, cartão e senha.", icon: Clock },
   { id: "controle-de-acesso", num: "02", title: "Controle de Acesso", desc: "Soluções biométricas e RFID para gerenciamento de acesso.", icon: Shield  },
@@ -12,7 +13,8 @@ const services = [
   { id: "crachas", num: "06", title: "Crachás", desc: "Confecção de crachás em PVC com tecnologia RFID.", icon: CreditCard },
 ];
 
-export default function ServiceMatrix({ onSelectCategory }) {
+export default function ServiceMatrix() { 
+  const navigate = useNavigate(); 
   const [activeId, setActiveId] = useState(null);
   const activeService = services.find((s) => s.id === activeId);
 
@@ -31,7 +33,7 @@ export default function ServiceMatrix({ onSelectCategory }) {
             return (
               <motion.div 
                 key={service.id} 
-                onClick={() => onSelectCategory(service.id)}
+                onClick={() => navigate(`/categoria/${service.id}`)} // <-- REDIRECIONA PARA A ROTA DA CATEGORIA
                 initial={{ opacity: 0, y: 20 }} 
                 whileInView={{ opacity: 1, y: 0 }} 
                 viewport={{ once: true }} 

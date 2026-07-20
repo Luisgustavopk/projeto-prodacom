@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Phone, ChevronLeft, ChevronRight } from "lucide-react";
 
 import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
 
+import { catalogData } from "../data/catalog";
 import { productsData } from "../data/products";
 import { imageRegistry } from "../data/imageRegistry";
 import { useCarouselAutoplay } from "../hooks/useCarouselAutoplay";
+
 
 const PRODUCT_NO_BG_MAPPING = {
   // Controle de Acesso
@@ -43,7 +46,11 @@ const PRODUCT_NO_BG_MAPPING = {
   "software-school": imageRegistry.software?.noBg?.school
 };
 
-export default function CategoryPage({ category, onBackToHome, onSelectModel }) {
+export default function CategoryPage() {
+  const { id } = useParams(); 
+  const navigate = useNavigate(); 
+
+  const category = catalogData[id];
   const carouselItems = category?.models || [];
 
   const {
@@ -52,27 +59,45 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
     handlePrev,
     startAutoplay,
     stopAutoplay,
-  } = useCarouselAutoplay(carouselItems.length, 4000);
+  } = useCarouselAutoplay(carouselItems.length, 2500);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [category]);
+  }, [id]);
 
-  if (!category) return null;
+  if (!category) {
+    return (
+      <div className="min-h-screen bg-obsidian flex flex-col items-center justify-center text-white p-6">
+        <h1 className="font-display font-bold text-2xl mb-4">Categoria não encontrada</h1>
+        <button 
+          onClick={() => navigate("/")} 
+          className="bg-cobalt border border-white/10 px-6 py-2.5 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all"
+        >
+          Voltar ao início
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-obsidian font-sans text-white">
-      <NavBar onNavigateHome={onBackToHome} />
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen bg-obsidian font-sans text-white"
+    >
+      <NavBar />
 
       {/* 1. HERO SECTION COM CARROSSEL ADAPTÁVEL E CENTRALIZADO */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden border-b border-white/5">
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           
-          {/* Botão Voltar */}
+          {/* Botão Voltar usando rota nativa */}
           <motion.button 
             initial={{ opacity: 0, x: -20 }} 
             animate={{ opacity: 1, x: 0 }}
-            onClick={onBackToHome}
+            onClick={() => navigate("/")}
             className="text-white/90 hover:text-white text-2xs font-mono tracking-widest uppercase mb-8 flex items-center gap-2 transition-colors"
           >
             &larr; Voltar ao início
@@ -141,13 +166,8 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                       if (idx !== activeSlide) return null;
                       
                       const productInfo = productsData[model.id];
-                      // Pega estritamente a imagem recortada se ela existir no mapeador
                       const noBgImage = PRODUCT_NO_BG_MAPPING[model.id];
-                      
-                      // Avalia se de fato encontrou uma imagem recortada válida
                       const isTransparent = !!noBgImage;
-                      
-                      // Prioriza o recortado, caso não tenha (ex: fallback de erro), busca do productInfo
                       const productImage = noBgImage || productInfo?.image || model.image;
 
                       return (
@@ -159,7 +179,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                           transition={{ duration: 0.35 }}
                           className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 w-full h-full select-none"
                         >
-                          {/* Glow Radial Limpo Ampliado para preencher melhor o espaço */}
+                          {/* Glow Radial Circular Suave sem bordas marcadas */}
                           {isTransparent && (
                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] md:w-[380px] md:h-[380px] bg-cobalt/20 rounded-full blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
                           )}
@@ -169,7 +189,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
                               <img 
                                 src={productImage} 
                                 alt={model.title} 
-                                onClick={() => onSelectModel(model.id)}
+                                onClick={() => navigate(`/produto/${model.id}`)}
                                 className={`w-full h-full object-contain cursor-pointer transition-transform duration-500 ${
                                   isTransparent 
                                     ? "drop-shadow-[0_15px_25px_rgba(0,0,0,0.55)] hover:scale-[1.03]" 
@@ -215,7 +235,7 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
         </div>
       </section>
 
-      {/* 3. LINHA DE PRODUTOS (DARK - BUSCA IMAGENS ORIGINAIS COM FUNDO CINZA) */}
+      {/* 3. LINHA DE PRODUTOS (DARK) */}
       <section id="linha-produtos" className="py-24 bg-obsidian border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
@@ -227,13 +247,12 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
             {carouselItems.map((model, i) => {
               const productInfo = productsData[model.id];
-              // Na lista de produtos inferior, mantemos a imagem original com fundo cinza
               const productImage = productInfo?.image || model.image;
 
               return (
                 <div 
                   key={i} 
-                  onClick={() => onSelectModel(model.id)}
+                  onClick={() => navigate(`/produto/${model.id}`)}
                   className="bg-white/[0.02] border border-white/5 hover:border-cobalt/30 p-8 rounded-2xl flex items-center gap-8 cursor-pointer hover:bg-white/[0.04] transition-all duration-300 group"
                 >
                   {productImage && (
@@ -309,6 +328,6 @@ export default function CategoryPage({ category, onBackToHome, onSelectModel }) 
         </div>
       </section>
       <Footer />
-    </div>
+    </motion.div>
   );
 }

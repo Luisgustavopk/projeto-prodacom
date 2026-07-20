@@ -1,17 +1,33 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import React from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+
+
+import Home from "./pages/Home";
+import CategoryPage from "./pages/CategoryPage";
+import ProductPage from "./pages/ProductPage";
+import ChatWidget from "./components/prodacom/ChatWidget";
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+   
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} />
+        <Route path="/categoria/:id" element={<CategoryPage />} />
+        <Route path="/produto/:id" element={<ProductPage />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* A Rota Principal: Quando o cliente acessar prodacom.com.br/ */}
-        <Route path="/" element={<Home />} />
-
-        {/* Bônus: Rota de Erro (Opcional, para links quebrados) */}
-        <Route path="*" element={<div className="h-screen flex items-center justify-center text-xl">Página não encontrada 😕</div>} />
-      </Routes>
+      <AnimatedRoutes />
+      <ChatWidget />
     </BrowserRouter>
   );
 }

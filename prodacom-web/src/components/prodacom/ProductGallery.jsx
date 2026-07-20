@@ -1,13 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // 
 import { motion, useMotionValue, animate } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-// 1. Importamos o seu banco de dados de produtos reais
+
 import { productsData } from "../../data/products";
 
-// 2. Definimos QUAIS produtos vão aparecer no carrossel.
-// Basta colocar os IDs exatos que você cadastrou no products.js.
-// Você pode colocar até uns 10 aqui, a ordem que você colocar é a ordem que vai aparecer!
+
 const featuredProductIds = [
   "leitor-facial-f4",
   "inner-rep-plus",
@@ -21,13 +20,13 @@ const featuredProductIds = [
   "bastao-viggia"
 ];
 
-export default function ProductGallery({ onSelectProduct }) {
+export default function ProductGallery() { //
+  const navigate = useNavigate(); 
   const carouselRef = useRef(null);
   const [width, setWidth] = useState(0);
   const x = useMotionValue(0);
 
-  // 3. O código mapeia os IDs e busca os dados completos no productsData.
-  // O .filter(Boolean) evita erros caso você digite um ID que não existe.
+ 
   const carouselProducts = featuredProductIds
     .map(id => productsData[id])
     .filter(Boolean);
@@ -40,7 +39,7 @@ export default function ProductGallery({ onSelectProduct }) {
     };
     updateWidth();
     
-    // Pequeno delay para garantir que as imagens carregaram antes de calcular a largura
+
     setTimeout(updateWidth, 100); 
     
     window.addEventListener("resize", updateWidth);
@@ -84,11 +83,11 @@ export default function ProductGallery({ onSelectProduct }) {
         <motion.div ref={carouselRef} className="cursor-grab active:cursor-grabbing overflow-hidden pl-6 md:pl-16 py-4">
           <motion.div style={{ x }} drag="x" dragConstraints={{ right: 0, left: -width }} className="flex gap-6 pr-6 md:pr-16">
             
-            {/* Agora iteramos sobre os produtos dinâmicos do banco de dados */}
+           
             {carouselProducts.map((product, i) => (
               <motion.div 
                 key={product.id} 
-                onClick={() => onSelectProduct(product.id)}
+                onClick={() => navigate(`/produto/${product.id}`)}
                 initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }} 
                 className="relative shrink-0 w-72 sm:w-80 md:w-96 group cursor-pointer"
               >

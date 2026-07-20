@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
 
 import NavBar from "../components/prodacom/NavBar";
 import Footer from "../components/prodacom/Footer"; 
-
-// Importa a central de registro de imagens
+import { productsData } from "../data/products";
 import { imageRegistry } from "../data/imageRegistry";
 
-// Mapeador dinâmico em Array: Coloque as imagens na ordem que deseja (Ex: [Principal, Fundo/Lado])
+
 const PRODUCT_GALLERY_MAPPING = {
   // Controle de Acesso
   "idface": [
@@ -23,7 +23,6 @@ const PRODUCT_GALLERY_MAPPING = {
     imageRegistry.controleDeAcesso?.newBg?.idlockBioPerspectiva,
     imageRegistry.controleDeAcesso?.newBg?.idlockBioFrente,
     imageRegistry.controleDeAcesso?.newBg?.idlockInternoFrente
-    
   ],
   "idlock": [
     imageRegistry.controleDeAcesso?.newBg?.idlockPerspectiva,
@@ -35,7 +34,6 @@ const PRODUCT_GALLERY_MAPPING = {
   "leitor-facial-f4": [
     imageRegistry.relogioDePonto?.newBg?.leitorFacialParaControlePonto,
     imageRegistry.relogioDePonto?.newBg?.controlePontoFacial,
-
   ],
   "inner-rep-plus": [
     imageRegistry.relogioDePonto?.newBg?.relogioPontoHomologado,
@@ -67,20 +65,41 @@ const PRODUCT_GALLERY_MAPPING = {
   ]
 };
 
-export default function ProductPage({ product, onBackToHome }) {
-  // Rola para o topo sempre que o produto mudar
+export default function ProductPage() {
+  const { id } = useParams(); 
+  const navigate = useNavigate();
+
+  const product = productsData[id];
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [product]);
+  }, [id]);
 
-  if (!product) return null;
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-ghost flex flex-col items-center justify-center text-obsidian p-6">
+        <h1 className="font-display font-bold text-2xl mb-4">Produto não encontrado</h1>
+        <button 
+          onClick={() => navigate("/")} 
+          className="bg-cobalt text-white px-6 py-2.5 text-xs font-medium tracking-wider uppercase hover:bg-obsidian transition-all"
+        >
+          Voltar ao início
+        </button>
+      </div>
+    );
+  }
 
-  // Filtra as imagens cadastradas removendo possíveis valores 'undefined'
   const galleryImages = (PRODUCT_GALLERY_MAPPING[product.id] || []).filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-ghost animate-fadeIn">
-      <NavBar onNavigateHome={onBackToHome} />
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen bg-ghost font-sans animate-fadeIn"
+    >
+      <NavBar />
 
       {/* SEÇÃO 1: HERO (Visual Escuro Premium) */}
       <section className="relative pt-24 pb-20 md:pt-36 md:pb-28 bg-obsidian overflow-hidden">
@@ -109,8 +128,9 @@ export default function ProductPage({ product, onBackToHome }) {
                 >
                   Solicitar Orçamento <ArrowRight size={14} />
                 </a>
+                {/* O navigate(-1) faz a mesma ação nativa de voltar do navegador */}
                 <button 
-                  onClick={onBackToHome}
+                  onClick={() => navigate(-1)}
                   className="w-full sm:w-auto text-white/90 hover:text-white text-2xs font-medium tracking-wider uppercase transition-colors py-3"
                 >
                   &larr; Voltar
@@ -134,7 +154,7 @@ export default function ProductPage({ product, onBackToHome }) {
         </div>
       </section>
 
-      {/* SEÇÃO 2: DIFERENCIAIS (Design Limpo) */}
+      {/* SEÇÃO 2: CARD MATRIX (Diferenciais) */}
       <section className="py-24 bg-ghost">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-16">
@@ -160,7 +180,7 @@ export default function ProductPage({ product, onBackToHome }) {
         </div>
       </section>
 
-      {/* SEÇÃO 3: COMPOSIÇÃO DE DESIGN (Galeria Estática Estilo Apple) */}
+      {/* SEÇÃO 3: COMPOSIÇÃO DE DESIGN (Cenário de profundidade estático Apple) */}
       {galleryImages.length > 0 && (
         <section className="py-24 bg-white border-t border-slate_mist overflow-hidden">
           <div className="max-w-7xl mx-auto px-6">
@@ -223,7 +243,7 @@ export default function ProductPage({ product, onBackToHome }) {
             <a href="tel:+553132451265" className="w-full border border-white/10 text-white/60 py-4 text-xs font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300 text-center flex items-center justify-center gap-2">
               <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" /> (31) 3245-1265
             </a>
-            <button onClick={onBackToHome} className="text-xs text-white/30 uppercase tracking-wider hover:text-white transition-colors mt-4">
+            <button onClick={() => navigate("/")} className="text-xs text-white/30 uppercase tracking-wider hover:text-white transition-colors mt-4">
               Ver todas as soluções
             </button>
           </div>
@@ -231,17 +251,14 @@ export default function ProductPage({ product, onBackToHome }) {
       </section>
 
       <Footer />
-    </div>
+    </motion.div>
   );
 }
 
-// ============================================================================
-// COMPONENTE AUXILIAR: Composição Fotográfica Elegante (Sem Carrossel)
-// ============================================================================
+// Subcomponente de composição fotográfica acoplado linearmente
 function ProductComposition({ images, title }) {
   if (!images || images.length === 0) return null;
 
-  // LAYOUT 1: Apenas uma imagem extra (Centralizada e Grande)
   if (images.length === 1) {
     return (
       <div className="flex justify-center w-full">
@@ -254,17 +271,14 @@ function ProductComposition({ images, title }) {
     );
   }
 
-  // LAYOUT 2: Duas imagens (Uma principal na frente, outra menor atrás/deslocada criando profundidade)
   if (images.length === 2) {
     return (
       <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-5xl mx-auto relative px-4">
-        {/* Imagem 1 (Destaque principal) */}
         <motion.img
           initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }}
           src={images[0]} alt={`${title} Visão Principal`}
           className="w-[85%] md:w-[55%] h-auto object-contain mix-blend-multiply drop-shadow-2xl z-10 hover:-translate-y-2 transition-transform duration-500"
         />
-        {/* Imagem 2 (Secundária, levemente menor e sobreposta) */}
         <motion.img
           initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           src={images[1]} alt={`${title} Visão Secundária`}
@@ -274,7 +288,6 @@ function ProductComposition({ images, title }) {
     );
   }
 
-  // LAYOUT 3: Três ou mais imagens (Uma no centro, ladeada por detalhes menores)
   return (
     <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl mx-auto relative px-4">
        <motion.img
