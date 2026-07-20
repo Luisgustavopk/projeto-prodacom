@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Phone, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+
+// Importa a API estruturada com funções clássicas
+import { api } from "../../services/api"; 
 
 const steps = [
   { id: 1, label: "Identificação" },
@@ -14,29 +17,42 @@ const steps = [
 export default function ContactSection() {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ nome: "", empresa: "", email: "", telefone: "", segmento: "", qtdFuncionarios: "", mensagem: "" });
-
-  const update = (field, value) => setForm((p) => ({ ...p, [field]: value }));
+  const [isSending, setIsSending] = useState(false);
   
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Impede a página de recarregar
+  const [form, setForm] = useState({ 
+    nome: "", 
+    empresa: "", 
+    email: "", 
+    telefone: "", 
+    segmento: "", 
+    mensagem: "" 
+  });
 
-    // 1. Puxando os dados da SUA variável de estado "form"
-    const { nome, empresa, email, telefone, segmento, mensagem } = form; 
+  // Função tradicional para atualizar o estado do formulário
+  function update(field, value) {
+    setForm(function(p) {
+      const newForm = { ...p };
+      newForm[field] = value;
+      return newForm;
+    });
+  }
+  
+  // Função tradicional assíncrona para lidar com o envio
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setIsSending(true);
 
-    // 2. Destinatário de Email
-    const destinatario = "comercial@prodacom.com.br";
-    
-    // 3. Montando um assunto e corpo de texto profissional para o e-mail
-    const assunto = encodeURIComponent(`Solicitação de Orçamento pelo Site - ${nome} ${empresa ? `(${empresa})` : ''}`);
-    const corpo = encodeURIComponent(`Olá, equipe Comercial! \n\nSegue abaixo os dados do meu orçamento:\n\nNome: ${nome}\nEmpresa: ${empresa || 'Não informado'}\nTelefone: ${telefone || 'Não informado'}\nE-mail: ${email}\nSegmento: ${segmento || 'Não informado'}\n\nEis a minha solicitação:\n"${mensagem}"`);
-
-    // 4. Abre o cliente de e-mail (Outlook, Gmail, Apple Mail, etc)
-    window.location.href = `mailto:${destinatario}?subject=${assunto}&body=${corpo}`;
-    
-    // 5. Mostra a tela de "Mensagem Gerada" no site
-    setSubmitted(true);
-  };
+    try {
+      // Faz a chamada limpa através da API centralizada
+      await api.enviarOrcamento(form);
+      setSubmitted(true);
+    } catch (error) {
+      // Captura o erro tratado pelo request() do api.js
+      alert(error.message || "Erro de conexão com o servidor. Verifique sua internet.");
+    } finally {
+      setIsSending(false);
+    }
+  }
 
   return (
     <section id="contato" className="relative py-24 md:py-32 bg-obsidian">
@@ -87,21 +103,23 @@ export default function ContactSection() {
                 <div className="w-16 h-16 bg-cobalt/20 flex items-center justify-center mb-6">
                   <Check size={28} strokeWidth={1} className="text-cobalt" />
                 </div>
-                <h3 className="font-display font-semibold text-2xl text-white mb-3">Solicitação Gerada!</h3>
-                <p className="text-sm text-white/40 max-w-sm">O aplicativo de e-mail do seu dispositivo foi aberto com os dados preenchidos. Basta enviar a mensagem para iniciarmos o atendimento.</p>
+                <h3 className="font-display font-semibold text-2xl text-white mb-3">Mensagem Enviada!</h3>
+                <p className="text-sm text-white/40 max-w-sm">Nossa equipe comercial recebeu os detalhes do seu projeto e entrará em contato com você o mais breve possível.</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit}>
                 <div className="flex items-center gap-2 mb-8">
-                  {steps.map((s) => (
-                    <div key={s.id} className="flex items-center gap-2">
-                      <div className={`w-6 h-6 flex items-center justify-center text-xs font-mono transition-colors ${step >= s.id ? "bg-cobalt text-white" : "bg-white/5 text-white/20"}`}>
-                        {s.id}
+                  {steps.map(function(s) {
+                    return (
+                      <div key={s.id} className="flex items-center gap-2">
+                        <div className={`w-6 h-6 flex items-center justify-center text-xs font-mono transition-colors ${step >= s.id ? "bg-cobalt text-white" : "bg-white/5 text-white/20"}`}>
+                          {s.id}
+                        </div>
+                        <span className={`text-xs tracking-wider uppercase hidden sm:inline ${step >= s.id ? "text-white/60" : "text-white/20"}`}>{s.label}</span>
+                        {s.id < 3 && <div className={`w-8 h-px ${step > s.id ? "bg-cobalt" : "bg-white/10"}`} />}
                       </div>
-                      <span className={`text-xs tracking-wider uppercase hidden sm:inline ${step >= s.id ? "text-white/60" : "text-white/20"}`}>{s.label}</span>
-                      {s.id < 3 && <div className={`w-8 h-px ${step > s.id ? "bg-cobalt" : "bg-white/10"}`} />}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -109,14 +127,14 @@ export default function ContactSection() {
                     <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Nome completo *</label>
-                        <Input value={form.nome} onChange={(e) => update("nome", e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Seu nome" />
+                        <Input value={form.nome} onChange={function(e) { update("nome", e.target.value); }} required className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Seu nome" />
                       </div>
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Empresa</label>
-                        <Input value={form.empresa} onChange={(e) => update("empresa", e.target.value)} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Nome da empresa" />
+                        <Input value={form.empresa} onChange={function(e) { update("empresa", e.target.value); }} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Nome da empresa" />
                       </div>
                       <div className="flex justify-end pt-4">
-                        <Button type="button" onClick={() => form.nome ? setStep(2) : null} className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
+                        <Button type="button" onClick={function() { if (form.nome) setStep(2); }} className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
                           Próximo <ArrowRight size={14} strokeWidth={1} className="ml-2" />
                         </Button>
                       </div>
@@ -127,21 +145,21 @@ export default function ContactSection() {
                     <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">E-mail *</label>
-                        <Input type="email" value={form.email} onChange={(e) => update("email", e.target.value)} required className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="seu@email.com" />
+                        <Input type="email" value={form.email} onChange={function(e) { update("email", e.target.value); }} required className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="seu@email.com" />
                       </div>
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Telefone</label>
-                        <Input value={form.telefone} onChange={(e) => update("telefone", e.target.value)} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="(00) 00000-0000" />
+                        <Input value={form.telefone} onChange={function(e) { update("telefone", e.target.value); }} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="(00) 00000-0000" />
                       </div>
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Segmento</label>
-                        <Input value={form.segmento} onChange={(e) => update("segmento", e.target.value)} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Ex: Academia, Escola, Indústria..." />
+                        <Input value={form.segmento} onChange={function(e) { update("segmento", e.target.value); }} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Ex: Academia, Escola, Indústria..." />
                       </div>
                       <div className="flex justify-between pt-4">
-                        <Button type="button" variant="ghost" onClick={() => setStep(1)} className="text-white/40 hover:text-white rounded-none text-xs tracking-wider uppercase">
+                        <Button type="button" variant="ghost" onClick={function() { setStep(1); }} className="text-white/40 hover:text-white rounded-none text-xs tracking-wider uppercase">
                           <ArrowLeft size={14} strokeWidth={1} className="mr-2" /> Voltar
                         </Button>
-                        <Button type="button" onClick={() => form.email ? setStep(3) : null} className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
+                        <Button type="button" onClick={function() { if (form.email) setStep(3); }} className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
                           Próximo <ArrowRight size={14} strokeWidth={1} className="ml-2" />
                         </Button>
                       </div>
@@ -152,14 +170,19 @@ export default function ContactSection() {
                     <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Mensagem *</label>
-                        <Textarea value={form.mensagem} onChange={(e) => update("mensagem", e.target.value)} required rows={5} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none resize-none" placeholder="Descreva sua necessidade..." />
+                        <Textarea value={form.mensagem} onChange={function(e) { update("mensagem", e.target.value); }} required rows={5} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none resize-none" placeholder="Descreva sua necessidade..." />
                       </div>
                       <div className="flex justify-between pt-4">
-                        <Button type="button" variant="ghost" onClick={() => setStep(2)} className="text-white/40 hover:text-white rounded-none text-xs tracking-wider uppercase">
+                        <Button type="button" variant="ghost" onClick={function() { setStep(2); }} disabled={isSending} className="text-white/40 hover:text-white rounded-none text-xs tracking-wider uppercase">
                           <ArrowLeft size={14} strokeWidth={1} className="mr-2" /> Voltar
                         </Button>
-                        <Button type="submit" className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
-                          Enviar E-mail <ArrowRight size={14} strokeWidth={1} className="ml-2" />
+                        
+                        <Button type="submit" disabled={isSending} className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+                          {isSending ? (
+                            <>Enviando... <Loader2 size={14} strokeWidth={2} className="ml-2 animate-spin" /></>
+                          ) : (
+                            <>Enviar E-mail <ArrowRight size={14} strokeWidth={1} className="ml-2" /></>
+                          )}
                         </Button>
                       </div>
                     </motion.div>
