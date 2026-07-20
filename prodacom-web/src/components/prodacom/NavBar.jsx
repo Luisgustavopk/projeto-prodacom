@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Phone, Mail } from "lucide-react";
+import { Menu, X, Phone, Mail, ChevronDown, Monitor, Smartphone, Cloud } from "lucide-react";
 
 import logoProdacom from "../../assets/images/logo/logo-prodacom-6-nbg.png";
 
@@ -12,12 +12,32 @@ const navItems = [
   { label: "Contato", href: "#contato" },
 ];
 
+// Itens do Dropdown de Soluções Web
+const webSolutions = [
+  { label: "Iponto Marcação Web", href: "https://ipontomobile.com.br/iponto_web/", icon: Monitor },
+];
+
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  
+  // Referência para fechar o dropdown ao clicar fora dele
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleNavigation = (e, href) => {
     e.preventDefault();
     setMenuOpen(false);
+    setDropdownOpen(false);
     // Dispara o evento global para a Home ouvir e trocar de tela
     window.dispatchEvent(new CustomEvent('navigate-hash', { detail: href }));
   };
@@ -57,18 +77,53 @@ export default function NavBar() {
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-6">
             <a href="tel:+553132451265" className="text-xs font-mono text-obsidian/50 hover:text-cobalt transition-colors">
               (31) 3245-1265
             </a>
             
-            <a
-              href="#contato"
-              onClick={(e) => handleNavigation(e, "#contato")}
-              className="text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-1.5 hover:bg-obsidian transition-all duration-500 text-center cursor-pointer opacity-100"
-            >
-              Orçamento
-            </a>
+            {/* Dropdown Desktop */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-2 text-xs font-medium tracking-wider uppercase bg-cobalt text-white px-4 py-2 hover:bg-obsidian transition-all duration-500 cursor-pointer"
+              >
+                Acessar Soluções Web
+                <ChevronDown size={14} className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : "rotate-0"}`} />
+              </button>
+
+              {/* Menu Suspenso */}
+              <AnimatePresence>
+                {dropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-3 w-56 bg-white border border-slate_mist shadow-lg rounded-sm overflow-hidden"
+                  >
+                    <div className="py-2">
+                      {webSolutions.map((solution, idx) => {
+                        const Icon = solution.icon;
+                        return (
+                          <a
+                            key={idx}
+                            href={solution.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 text-xs font-medium text-obsidian/70 hover:text-cobalt hover:bg-ghost transition-colors"
+                          >
+                            <Icon size={16} strokeWidth={1.5} />
+                            {solution.label}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-obsidian">
@@ -77,6 +132,7 @@ export default function NavBar() {
         </div>
       </motion.nav>
 
+      {/* Menu Mobile */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div 
@@ -84,9 +140,9 @@ export default function NavBar() {
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
             transition={{ duration: 0.3 }} 
-            className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center"
+            className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center overflow-y-auto pt-20 pb-10"
           >
-            <div className="flex flex-col items-center gap-8">
+            <div className="flex flex-col items-center gap-6 w-full max-w-sm px-6">
               {navItems.map((item, i) => (
                 <motion.a 
                   key={item.label} 
@@ -95,24 +151,42 @@ export default function NavBar() {
                   initial={{ opacity: 0, y: 20 }} 
                   animate={{ opacity: 1, y: 0 }} 
                   transition={{ delay: i * 0.08 }} 
-                  className="text-xl font-display font-semibold tracking-wider uppercase text-slate-800 hover:text-sky-600 transition-colors"
+                  className="text-xl font-display font-semibold tracking-wider uppercase text-slate-800 hover:text-cobalt transition-colors"
                 >
                   {item.label}
                 </motion.a>
               ))}
-              <div className="flex flex-col items-center gap-3 mt-6 pt-6 border-t border-slate_mist">
+
+              <div className="w-full flex flex-col items-center gap-4 mt-8 pt-8 border-t border-slate_mist">
+                
+                {/* Dropdown Mobile - Expandido Inline */}
+                <div className="w-full bg-white border border-slate_mist rounded-sm p-4 mb-4">
+                  <h4 className="text-xs font-medium tracking-widest text-cobalt uppercase mb-4 text-center">Soluções Web</h4>
+                  <div className="flex flex-col gap-3">
+                    {webSolutions.map((solution, idx) => {
+                      const Icon = solution.icon;
+                      return (
+                        <a
+                          key={idx}
+                          href={solution.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2 text-sm font-medium text-obsidian/70 hover:text-cobalt transition-colors py-2 border border-ghost hover:border-cobalt/20"
+                        >
+                          <Icon size={16} strokeWidth={1.5} />
+                          {solution.label}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <a href="tel:+553132451265" className="flex items-center gap-2 text-sm text-obsidian/60">
                   <Phone size={14} strokeWidth={1} /> (31) 3245-1265
                 </a>
                 <a href="mailto:comercial@prodacom.com.br" className="flex items-center gap-2 text-sm text-obsidian/60">
                   <Mail size={14} strokeWidth={1} /> comercial@prodacom.com.br
                 </a>
-                <button 
-                  onClick={(e) => handleNavigation(e, "#contato")} 
-                  className="mt-4 bg-cobalt text-white px-8 py-3 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors"
-                >
-                  Solicite seu Orçamento
-                </button>
               </div>
             </div>
           </motion.div>

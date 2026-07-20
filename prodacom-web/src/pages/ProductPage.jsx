@@ -167,7 +167,7 @@ export default function ProductPage({ product, onBackToHome }) {
             <div className="mb-16 text-center">
               <span className="text-xs font-mono tracking-widest text-cobalt uppercase block mb-3">Visão Detalhada</span>
               <h3 className="font-display font-bold text-3xl md:text-4xl text-obsidian tracking-tight">
-                Design em Detalhes
+                Design da Solução
               </h3>
             </div>
             

@@ -24,19 +24,17 @@ export default function ContactSection() {
     // 1. Puxando os dados da SUA variável de estado "form"
     const { nome, empresa, email, telefone, segmento, mensagem } = form; 
 
-    // 2. Montando um texto super profissional para o WhatsApp
-    const texto = `Olá! Meu nome é *${nome}*${empresa ? ` da empresa *${empresa}*` : ''}.\n\n*Meus contatos:*\n- Telefone: ${telefone || 'Não informado'}\n- E-mail: ${email}\n${segmento ? `- Segmento: ${segmento}` : ''}\n\n*Gostaria de conversar sobre:*\n"${mensagem}"`;
-
-    // 3. Converte o texto para o formato de link de internet
-    const textoCodificado = encodeURIComponent(texto);
-
-    // 4. O número oficial da Prodacom
-    const numeroProdacom = "5531993092473";
-
-    // 5. Abre o WhatsApp na nova aba
-    window.open(`https://wa.me/${numeroProdacom}?text=${textoCodificado}`, '_blank');
+    // 2. Destinatário de Email
+    const destinatario = "comercial@prodacom.com.br";
     
-    // 6. Mostra a tela de "Mensagem Enviada" no site
+    // 3. Montando um assunto e corpo de texto profissional para o e-mail
+    const assunto = encodeURIComponent(`Solicitação de Orçamento pelo Site - ${nome} ${empresa ? `(${empresa})` : ''}`);
+    const corpo = encodeURIComponent(`Olá, equipe Comercial! \n\nSegue abaixo os dados do meu orçamento:\n\nNome: ${nome}\nEmpresa: ${empresa || 'Não informado'}\nTelefone: ${telefone || 'Não informado'}\nE-mail: ${email}\nSegmento: ${segmento || 'Não informado'}\n\nEis a minha solicitação:\n"${mensagem}"`);
+
+    // 4. Abre o cliente de e-mail (Outlook, Gmail, Apple Mail, etc)
+    window.location.href = `mailto:${destinatario}?subject=${assunto}&body=${corpo}`;
+    
+    // 5. Mostra a tela de "Mensagem Gerada" no site
     setSubmitted(true);
   };
 
@@ -90,7 +88,7 @@ export default function ContactSection() {
                   <Check size={28} strokeWidth={1} className="text-cobalt" />
                 </div>
                 <h3 className="font-display font-semibold text-2xl text-white mb-3">Solicitação Gerada!</h3>
-                <p className="text-sm text-white/40 max-w-sm">Os detalhes foram enviados para o WhatsApp. Envie a mensagem na nova aba para iniciarmos o atendimento.</p>
+                <p className="text-sm text-white/40 max-w-sm">O aplicativo de e-mail do seu dispositivo foi aberto com os dados preenchidos. Basta enviar a mensagem para iniciarmos o atendimento.</p>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit}>
@@ -161,7 +159,7 @@ export default function ContactSection() {
                           <ArrowLeft size={14} strokeWidth={1} className="mr-2" /> Voltar
                         </Button>
                         <Button type="submit" className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
-                          Enviar via WhatsApp <ArrowRight size={14} strokeWidth={1} className="ml-2" />
+                          Enviar E-mail <ArrowRight size={14} strokeWidth={1} className="ml-2" />
                         </Button>
                       </div>
                     </motion.div>
