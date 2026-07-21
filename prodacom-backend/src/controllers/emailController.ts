@@ -1,17 +1,21 @@
 import { Request, Response } from 'express';
 import { emailService } from '../services/emailService';
+import { validarDadosOrcamento } from '../utils/validators';
 
 export async function enviarOrcamento(req: Request, res: Response) {
   try {
     const dados = req.body;
+
+   
+    const erros = validarDadosOrcamento(dados);
+
     
-    if (!dados.nome || !dados.email || !dados.mensagem) {
+    if (erros.length > 0) {
       return res.status(400).json({ 
         sucesso: false, 
-        mensagem: "Campos obrigatórios (Nome, E-mail e Mensagem) em falta." 
+        mensagem: erros[0] 
       });
     }
-
 
     await emailService.enviarEmailOrcamento(dados);
 
@@ -24,7 +28,7 @@ export async function enviarOrcamento(req: Request, res: Response) {
     console.error("[ERRO] Falha ao enviar e-mail de orçamento:", error);
     return res.status(500).json({ 
       sucesso: false, 
-      mensagem: "Erro interno no servidor ao tentar enviar o e-mail." 
+      mensagem: "Erro interno no servidor ao tentar processar o seu pedido." 
     });
   }
 }

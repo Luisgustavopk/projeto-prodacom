@@ -4,9 +4,11 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Phone, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
-
-// Importa a API estruturada com funções clássicas
+import toast, { Toaster } from "react-hot-toast";
 import { api } from "../../services/api"; 
+import { mascaraTelefone } from "../../utils/masks";
+
+const EMAIL_REGEX = new RegExp("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
 const steps = [
   { id: 1, label: "Identificação" },
@@ -28,27 +30,41 @@ export default function ContactSection() {
     mensagem: "" 
   });
 
-  // Função tradicional para atualizar o estado do formulário
   function update(field, value) {
     setForm(function(p) {
       const newForm = { ...p };
-      newForm[field] = value;
+      
+      if (field === "telefone") {
+        newForm[field] = mascaraTelefone(value);
+      } else {
+        newForm[field] = value;
+      }
+      
       return newForm;
     });
   }
-  
-  // Função tradicional assíncrona para lidar com o envio
+
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!EMAIL_REGEX.test(form.email)) {
+      toast.error("Por favor, insira um endereço de e-mail válido.");
+      return; 
+    }
+
+    if (form.telefone && form.telefone.length < 14) {
+      toast.error("Por favor, insira um número de telefone completo com DDD.");
+      return;
+    }
+
     setIsSending(true);
 
     try {
-      // Faz a chamada limpa através da API centralizada
       await api.enviarOrcamento(form);
       setSubmitted(true);
+      toast.success("Orçamento enviado com sucesso!");
     } catch (error) {
-      // Captura o erro tratado pelo request() do api.js
-      alert(error.message || "Erro de conexão com o servidor. Verifique sua internet.");
+      toast.error(error.message || "Erro de conexão com o servidor. Verifique sua internet.");
     } finally {
       setIsSending(false);
     }
@@ -56,6 +72,20 @@ export default function ContactSection() {
 
   return (
     <section id="contato" className="relative py-24 md:py-32 bg-obsidian">
+      
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: '#1e293b',
+            color: '#fff',
+            border: '0.2rem solid rgba(255,255,255,0.1)',
+          },
+          success: { iconTheme: { primary: '#3b82f6', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+        }} 
+      />
+
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
@@ -149,7 +179,13 @@ export default function ContactSection() {
                       </div>
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Telefone</label>
-                        <Input value={form.telefone} onChange={function(e) { update("telefone", e.target.value); }} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="(00) 00000-0000" />
+                        <Input 
+                          value={form.telefone} 
+                          onChange={function(e) { update("telefone", e.target.value); }} 
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" 
+                          placeholder="(00) 00000-0000" 
+                          type="tel"
+                        />
                       </div>
                       <div>
                         <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Segmento</label>
