@@ -319,7 +319,7 @@ export default function CategoryPage() {
           
           <div className="flex flex-col gap-4">
             <a href="https://wa.me/5531993092473" target="_blank" rel="noopener noreferrer" className="w-full bg-cobalt text-white py-4 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 text-center flex items-center justify-center gap-2">
-              Solicitar Orçamento <ArrowRight size={14} />
+              Solicitar Orçamento no WhatsApp <ArrowRight size={14} />
             </a>
             <a href="tel:+553132451265" className="w-full border border-white/10 text-white/60 py-4 text-xs font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300 text-center flex items-center justify-center gap-2">
               <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" />(31) 3245-1265

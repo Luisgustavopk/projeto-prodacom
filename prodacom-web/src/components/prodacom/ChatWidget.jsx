@@ -1,5 +1,6 @@
 // src/components/prodacom/ChatWidget.jsx
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Maximize2, Minimize2, Send, ChevronRight } from "lucide-react";
 import { WebChatContext } from "../../context/WebChatContext"; 
@@ -7,6 +8,8 @@ import { WebChatContext } from "../../context/WebChatContext";
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
 
 export default function ChatWidget() {
+  const [isOverContact, setIsOverContact] = useState(false);
+  const location = useLocation();
 
   const {
     open, setOpen,
@@ -21,6 +24,47 @@ export default function ChatWidget() {
     handleStartChat,
     handleSend
   } = useContext(WebChatContext);
+
+  useEffect(function () {
+    let observer = null;
+    let attempts = 0;
+    const maxAttempts = 10; // Tenta encontrar o elemento por até 2 segundos
+
+    function initObserver() {
+      const contatoSection = document.getElementById("contato");
+
+      if (contatoSection) {
+        if (observer) observer.disconnect();
+
+        observer = new IntersectionObserver(
+          function (entries) {
+            if (entries[0]) {
+              setIsOverContact(entries[0].isIntersecting);
+            }
+          },
+          { threshold: 0.15 }
+        );
+
+        observer.observe(contatoSection);
+      } else if (attempts < maxAttempts) {
+        // Se a página recém-carregada ainda não renderizou o #contato, tenta novamente em 200ms
+        attempts++;
+        setTimeout(initObserver, 200);
+      } else {
+        // Se passou do tempo e realmente não há #contato na página atual
+        setIsOverContact(false);
+      }
+    }
+
+    // Reinicia o processo toda vez que a URL muda
+    initObserver();
+
+    return function () {
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [location.pathname]);
 
   const panelWidth = expanded 
     ? "w-[calc(100vw-2.5rem)] md:w-[520px] lg:w-[640px]" 
@@ -110,7 +154,17 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
 
-      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={function () { setOpen(!open); }} className="bg-obsidian text-white w-14 h-14 flex items-center justify-center shadow-2xl">
+      {/* Botão do Chat */}
+      <motion.button 
+        whileHover={{ scale: 1.05 }} 
+        whileTap={{ scale: 0.95 }} 
+        onClick={function () { setOpen(!open); }} 
+        className={`w-14 h-14 flex items-center justify-center shadow-2xl transition-colors duration-200 ${
+          isOverContact 
+            ? "bg-cobalt text-white border border-white/20" 
+            : "bg-obsidian text-white"
+        }`}
+      >
         {open ? <X size={22} /> : <MessageSquare size={22} />}
       </motion.button>
     </div>

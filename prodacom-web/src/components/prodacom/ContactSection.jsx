@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Phone, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { api } from "../../services/api"; 
 import { mascaraTelefone } from "../../utils/masks";
@@ -91,18 +91,38 @@ export default function ContactSection() {
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
             
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight mb-6">Vamos Conversar</h2>
-            <p className="text-base text-white/40 leading-relaxed mb-12 max-w-md">Solicite seu orçamento sem compromisso. Nossa equipe de consultores está pronta para encontrar a solução ideal para sua empresa.</p>
+            <p className="text-base text-white/40 leading-relaxed text-justify mb-12 max-w-md">Solicite seu orçamento no formulário ao lado ou converse com a nossa equipe diretamente pelo chat no canto inferior direito. Nossos consultores estão prontos para entender suas necessidades e apresentar a solução ideal para o seu negócio.</p>
 
             <div className="space-y-6">
+              
+              {/* TELEFONE FIXO */}
               <div className="flex items-start gap-4">
                 <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
-                  <span className="text-xs text-white/30 uppercase tracking-wider block mb-1">Telefone</span>
-                  <a href="tel:+553132451265" className="text-sm text-white/70 hover:text-cobalt transition-colors">(31) 3245-1265</a>
-                  <span className="text-white/20 mx-2">|</span>
-                  <a href="https://wa.me/5531993092473" target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 hover:text-cobalt transition-colors">(31) 99309-2473</a>
+                  <span className="text-xs text-white/30 uppercase tracking-wider block mb-1">Telefone Fixo</span>
+                  <a href="tel:+553132451265" className="text-sm text-white/70 hover:text-cobalt transition-colors">
+                    (31) 3245-1265
+                  </a>
                 </div>
               </div>
+
+              {/* WHATSAPP (SEPARADO) */}
+              <div className="flex items-start gap-4">
+                <MessageCircle size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
+                <div>
+                  <span className="text-xs text-white/30 uppercase tracking-wider block mb-1">WhatsApp</span>
+                  <a 
+                    href="https://wa.me/5531993092473" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-sm text-white/70 hover:text-cobalt transition-colors inline-flex items-center gap-1.5"
+                  >
+                    (31) 99309-2473
+                  </a>
+                </div>
+              </div>
+
+              {/* E-MAIL */}
               <div className="flex items-start gap-4">
                 <Mail size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
@@ -110,6 +130,8 @@ export default function ContactSection() {
                   <a href="mailto:comercial@prodacom.com.br" className="text-sm text-white/70 hover:text-cobalt transition-colors">comercial@prodacom.com.br</a>
                 </div>
               </div>
+
+              {/* LOCALIZAÇÃO */}
               <div className="flex items-start gap-4">
                 <MapPin size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
@@ -117,6 +139,8 @@ export default function ContactSection() {
                   <p className="text-sm text-white/70">Belo Horizonte — MG</p>
                 </div>
               </div>
+
+              {/* HORÁRIO */}
               <div className="flex items-start gap-4">
                 <Clock size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
@@ -124,6 +148,7 @@ export default function ContactSection() {
                   <p className="text-sm text-white/70">Segunda a Sexta — 08:00 às 17:40</p>
                 </div>
               </div>
+
             </div>
           </motion.div>
 

@@ -8,7 +8,6 @@ import Footer from "../components/prodacom/Footer";
 import { productsData } from "../data/products";
 import { imageRegistry } from "../data/imageRegistry";
 
-
 const PRODUCT_GALLERY_MAPPING = {
   // Controle de Acesso
   "idface": [
@@ -71,16 +70,20 @@ export default function ProductPage() {
 
   const product = productsData[id];
 
-  useEffect(() => {
+  useEffect(function () {
     window.scrollTo(0, 0);
   }, [id]);
+
+  function handleContactRedirect() {
+    navigate("/#contato");
+  }
 
   if (!product) {
     return (
       <div className="min-h-screen bg-ghost flex flex-col items-center justify-center text-obsidian p-6">
         <h1 className="font-display font-bold text-2xl mb-4">Produto não encontrado</h1>
         <button 
-          onClick={() => navigate("/")} 
+          onClick={function () { navigate("/"); }} 
           className="bg-cobalt text-white px-6 py-2.5 text-xs font-medium tracking-wider uppercase hover:bg-obsidian transition-all"
         >
           Voltar ao início
@@ -120,18 +123,17 @@ export default function ProductPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <a 
-                  href="https://wa.me/5531993092473" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="w-full sm:w-auto bg-cobalt text-white px-8 py-3 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 text-center flex items-center justify-center gap-2"
+                {/* PRIMEIRO BOTÃO: Redireciona para o formulário de Contato na Home */}
+                <button 
+                  onClick={handleContactRedirect}
+                  className="w-full sm:w-auto bg-cobalt text-white px-8 py-3 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 text-center flex items-center justify-center gap-2 cursor-pointer"
                 >
                   Solicitar Orçamento <ArrowRight size={14} />
-                </a>
-                {/* O navigate(-1) faz a mesma ação nativa de voltar do navegador */}
+                </button>
+                
                 <button 
-                  onClick={() => navigate(-1)}
-                  className="w-full sm:w-auto text-white/90 hover:text-white text-2xs font-medium tracking-wider uppercase transition-colors py-3"
+                  onClick={function () { navigate(-1); }}
+                  className="w-full sm:w-auto text-white/90 hover:text-white text-2xs font-medium tracking-wider uppercase transition-colors py-3 cursor-pointer"
                 >
                   &larr; Voltar
                 </button>
@@ -164,7 +166,7 @@ export default function ProductPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {product.features?.map((feat, i) => {
+            {product.features?.map(function (feat, i) {
               const Icon = feat.icon;
               return (
                 <div key={i} className="bg-white border border-slate_mist p-8 hover:shadow-md transition-all duration-300 group rounded-xl">
@@ -180,7 +182,7 @@ export default function ProductPage() {
         </div>
       </section>
 
-      {/* SEÇÃO 3: COMPOSIÇÃO DE DESIGN (Cenário de profundidade estático Apple) */}
+      {/* SEÇÃO 3: COMPOSIÇÃO DE DESIGN */}
       {galleryImages.length > 0 && (
         <section className="py-24 bg-white border-t border-slate_mist overflow-hidden">
           <div className="max-w-7xl mx-auto px-6">
@@ -206,16 +208,18 @@ export default function ProductPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-24">
-            {product.specs?.map((spec, i) => (
-              <div key={i} className="py-5 border-b border-slate_mist flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 hover:bg-white transition-colors">
-                <span className="text-sm text-obsidian/50">
-                  {spec.label}
-                </span>
-                <span className="text-sm font-mono font-medium text-obsidian text-left sm:text-right">
-                  {spec.value}
-                </span>
-              </div>
-            ))}
+            {product.specs?.map(function (spec, i) {
+              return (
+                <div key={i} className="py-5 border-b border-slate_mist flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 hover:bg-white transition-colors">
+                  <span className="text-sm text-obsidian/50">
+                    {spec.label}
+                  </span>
+                  <span className="text-sm font-mono font-medium text-obsidian text-left sm:text-right">
+                    {spec.value}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
         </div>
@@ -237,13 +241,20 @@ export default function ProductPage() {
           </div>
           
           <div className="flex flex-col gap-4">
-            <a href="https://wa.me/5531993092473" target="_blank" rel="noopener noreferrer" className="w-full bg-cobalt text-white py-4 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 text-center flex items-center justify-center gap-2">
-              Solicitar Orçamento <ArrowRight size={14} />
+            <a 
+              href="https://wa.me/5531993092473" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="w-full bg-cobalt text-white py-4 text-xs font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 text-center flex items-center justify-center gap-2"
+            >
+              Solicitar Orçamento no WhatsApp <ArrowRight size={14} />
             </a>
+            
             <a href="tel:+553132451265" className="w-full border border-white/10 text-white/60 py-4 text-xs font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300 text-center flex items-center justify-center gap-2">
               <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" /> (31) 3245-1265
             </a>
-            <button onClick={() => navigate("/")} className="text-xs text-white/30 uppercase tracking-wider hover:text-white transition-colors mt-4">
+            
+            <button onClick={function () { navigate("/"); }} className="text-xs text-white/30 uppercase tracking-wider hover:text-white transition-colors mt-4 cursor-pointer">
               Ver todas as soluções
             </button>
           </div>
@@ -255,7 +266,6 @@ export default function ProductPage() {
   );
 }
 
-// Subcomponente de composição fotográfica acoplado linearmente
 function ProductComposition({ images, title }) {
   if (!images || images.length === 0) return null;
 
@@ -290,21 +300,21 @@ function ProductComposition({ images, title }) {
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl mx-auto relative px-4">
-       <motion.img
-          initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
-          src={images[1]} alt={`${title} Visão Esquerda`}
-          className="hidden md:block w-[30%] h-auto object-contain mix-blend-multiply drop-shadow-md z-0 mt-20 -mr-16 opacity-90"
-        />
-        <motion.img
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
-          src={images[0]} alt={`${title} Visão Principal`}
-          className="w-[85%] md:w-[45%] h-auto object-contain mix-blend-multiply drop-shadow-2xl z-10 hover:-translate-y-2 transition-transform duration-500"
-        />
-        <motion.img
-          initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.4 }}
-          src={images[2]} alt={`${title} Visão Direita`}
-          className="w-[70%] md:w-[30%] h-auto object-contain mix-blend-multiply drop-shadow-md z-0 -mt-12 md:mt-20 md:-ml-16 opacity-90"
-        />
+      <motion.img
+        initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
+        src={images[1]} alt={`${title} Visão Esquerda`}
+        className="hidden md:block w-[30%] h-auto object-contain mix-blend-multiply drop-shadow-md z-0 mt-20 -mr-16 opacity-90"
+      />
+      <motion.img
+        initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
+        src={images[0]} alt={`${title} Visão Principal`}
+        className="w-[85%] md:w-[45%] h-auto object-contain mix-blend-multiply drop-shadow-2xl z-10 hover:-translate-y-2 transition-transform duration-500"
+      />
+      <motion.img
+        initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.4 }}
+        src={images[2]} alt={`${title} Visão Direita`}
+        className="w-[70%] md:w-[30%] h-auto object-contain mix-blend-multiply drop-shadow-md z-0 -mt-12 md:mt-20 md:-ml-16 opacity-90"
+      />
     </div>
   );
 }
