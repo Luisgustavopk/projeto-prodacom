@@ -6,7 +6,7 @@ import { imageRegistry } from "../../data/imageRegistry";
 
 const categoryImages = {
   "relogio-de-ponto": imageRegistry.relogioDePonto.noBg.relogioPontoEletronico,
-  "controle-de-acesso": imageRegistry.controleDeAcesso.noBg.idfaceFrontalEn,
+  "controle-de-acesso": imageRegistry.controleDeAcesso.noBg.idfacePerspectivaAEn,
   "catracas": imageRegistry.catraca.noBg.eletronicaLeitorFacial,
   "ronda": imageRegistry.bastaoDeRonda.noBg.bastaoDeRonda,
   "softwares": imageRegistry.software.noBg.iponto,
