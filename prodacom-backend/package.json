@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "tsx --env-file=.env src/server.ts",
-    "start": "node server.js"
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -24,3 +25,4 @@
     "typescript": "^7.0.2"
   }
 }
+
