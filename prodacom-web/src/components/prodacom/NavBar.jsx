@@ -108,10 +108,9 @@ export default function NavBar() {
           </div>
 
           <div className="hidden md:flex items-center gap-6">
-            <a href="tel:+553132451265" className="text-xs font-mono text-obsidian/50 hover:text-cobalt transition-colors">
-              (31) 3245-1265
+            <a href="https://wa.me/5531993092473" className="text-xs font-mono text-obsidian/50 hover:text-cobalt transition-colors">
+              (31) 99309-2473
             </a>
-            
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={function () { setDropdownOpen(!dropdownOpen); }}

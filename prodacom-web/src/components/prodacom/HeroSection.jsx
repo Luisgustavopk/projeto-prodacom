@@ -13,7 +13,7 @@ export default function HeroSection() {
     <section id="hero" className="relative min-h-screen flex flex-col justify-end overflow-hidden">
       <motion.div style={{ y: imgY }} className="absolute inset-0">
         <img src={HERO_IMAGE} alt="Scanner biométrico" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/90 to-transparent" />
       </motion.div>
 
       <div className="absolute inset-0 grid-overlay opacity-10" />
@@ -25,17 +25,17 @@ export default function HeroSection() {
 
         <div className="overflow-hidden">
           <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white leading-none tracking-tight">
-            INFRAESTRUTURA
+            SOLUÇÕES PARA
           </motion.h1>
         </div>
         <div className="overflow-hidden">
           <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white/30 leading-none tracking-tight">
-            PARA A ERA DA
+            O CONTROLE 
           </motion.h1>
         </div>
         <div className="overflow-hidden">
           <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-cobalt leading-none tracking-tight">
-            PRECISÃO.
+            DE PONTO E ACESSO.
           </motion.h1>
         </div>
 
