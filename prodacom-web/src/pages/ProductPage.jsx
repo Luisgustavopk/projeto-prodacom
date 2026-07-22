@@ -115,7 +115,7 @@ export default function ProductPage() {
               <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight mb-4 leading-tight">
                 {product.title}
               </h1>
-              <h2 className="text-xl text-cobalt font-medium mb-6">
+              <h2 className="text-xl text-sky-600 font-medium mb-6">
                 {product.subtitle}
               </h2>
               <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg text-justify">

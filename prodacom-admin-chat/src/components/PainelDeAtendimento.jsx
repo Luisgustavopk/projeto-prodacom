@@ -86,7 +86,7 @@ export function PainelDeAtendimento() {
       {/* BARRA LATERAL */}
       <div className={`${clienteAtivo ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 md:max-w-sm bg-[#1a1a1a] flex-col border-r border-white/5 shadow-2xl z-20`}>
         <div className="p-4 md:p-6 bg-[#1a1a1a] border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-[#2563eb] flex items-center justify-center shadow-lg">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
             <Monitor className="text-white" size={18} strokeWidth={1.5} />
           </div>
           <div>
@@ -109,7 +109,7 @@ export function PainelDeAtendimento() {
                   key={id}
                   onClick={function () { setClienteAtivo(id); }}
                   className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 group ${
-                    clienteAtivo === id ? "bg-[#2563eb]" : "hover:bg-white/5"
+                    clienteAtivo === id ? "bg-sky-800" : "hover:bg-white/5"
                   }`}
                 >
                   <div className="flex justify-between items-start w-full">
@@ -147,7 +147,7 @@ export function PainelDeAtendimento() {
                   <ChevronLeft size={20} />
                 </button>
 
-                <div className="flex w-10 h-10 md:w-12 md:h-12 bg-[#2563eb] text-white items-center justify-center shadow-lg">
+                <div className="flex w-10 h-10 md:w-12 md:h-12 bg-cobalt text-white items-center justify-center shadow-lg">
                   <User size={20} strokeWidth={1.5} />
                 </div>
                 
@@ -159,7 +159,7 @@ export function PainelDeAtendimento() {
                     <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-400 rounded-full animate-pulse" />
                   </div>
                   <div className="flex items-center gap-2 md:gap-4 mt-0.5 md:mt-1">
-                    <a href={`https://wa.me/${chats[clienteAtivo].contato.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="text-[#2563eb] hover:text-white transition-colors text-[9px] md:text-[10px] font-mono font-bold flex items-center gap-1">
+                    <a href={`https://wa.me/${chats[clienteAtivo].contato.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="text-sky-700 hover:text-white transition-colors text-[9px] md:text-[10px] font-mono font-bold flex items-center gap-1">
                       <Phone size={10} /> {chats[clienteAtivo].contato}
                     </a>
                     <span className="hidden sm:inline text-white/30 text-[9px] md:text-[10px] uppercase tracking-widest font-bold">

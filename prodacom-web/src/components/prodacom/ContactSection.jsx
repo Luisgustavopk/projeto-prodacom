@@ -100,7 +100,7 @@ export default function ContactSection() {
                 <Phone size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
                   <span className="text-xs text-white/30 uppercase tracking-wider block mb-1">Telefone Fixo</span>
-                  <a href="tel:+553132451265" className="text-sm text-white/70 hover:text-cobalt transition-colors">
+                  <a href="tel:+553132451265" className="text-sm text-white/70 hover:text-sky-600 transition-colors">
                     (31) 3245-1265
                   </a>
                 </div>
@@ -115,7 +115,7 @@ export default function ContactSection() {
                     href="https://wa.me/5531993092473" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-sm text-white/70 hover:text-cobalt transition-colors inline-flex items-center gap-1.5"
+                    className="text-sm text-white/70 hover:text-sky-600 transition-colors inline-flex items-center gap-1.5"
                   >
                     (31) 99309-2473
                   </a>
@@ -127,7 +127,7 @@ export default function ContactSection() {
                 <Mail size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
                   <span className="text-xs text-white/30 uppercase tracking-wider block mb-1">E-mail</span>
-                  <a href="mailto:comercial@prodacom.com.br" className="text-sm text-white/70 hover:text-cobalt transition-colors">comercial@prodacom.com.br</a>
+                  <a href="mailto:comercial@prodacom.com.br" className="text-sm text-white/70 hover:text-sky-600 transition-colors">comercial@prodacom.com.br</a>
                 </div>
               </div>
 

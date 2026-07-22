@@ -113,7 +113,7 @@ export default function CategoryPage() {
               transition={{ delay: 0.1 }} 
               className="lg:col-span-4 max-w-xl"
             >
-              <span className="text-xs font-mono tracking-widest text-cobalt uppercase block mb-3">
+              <span className="text-xs font-mono tracking-widest text-sky-600 uppercase block mb-3">
                 Categoria de Soluções
               </span>
               <h1 className="font-display font-bold text-4xl md:text-5xl text-white tracking-tight mb-6 leading-tight">

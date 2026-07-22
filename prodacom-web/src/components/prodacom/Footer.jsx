@@ -90,7 +90,7 @@ export default function Footer() {
                     <a 
                       href={link.href} 
                       onClick={function (e) { handleQuickLink(e, link.href); }} 
-                      className="text-sm text-white/40 hover:text-cobalt transition-colors duration-300 cursor-pointer"
+                      className="text-sm text-white/40 hover:text-sky-600 transition-colors duration-300 cursor-pointer"
                     >
                       {link.label}
                     </a>
@@ -109,7 +109,7 @@ export default function Footer() {
                     <a 
                       href={`/categoria/${link.id}`} 
                       onClick={function (e) { handleProductLink(e, link.id); }} 
-                      className="text-sm text-white/40 hover:text-cobalt transition-colors duration-300 cursor-pointer"
+                      className="text-sm text-white/40 hover:text-sky-600 transition-colors duration-300 cursor-pointer"
                     >
                       {link.label}
                     </a>
@@ -123,12 +123,12 @@ export default function Footer() {
             <span className="text-xs font-mono tracking-widest text-white/20 uppercase block mb-4">Acesso Rápido</span>
             <ul className="space-y-2">
               <li>
-                <a href="https://ipontomobile.com.br/iponto_web" target="_blank" rel="noopener noreferrer" className="text-sm text-white/40 hover:text-cobalt transition-colors duration-300 flex items-center gap-1">
+                <a href="https://ipontomobile.com.br/iponto_web" target="_blank" rel="noopener noreferrer" className="text-sm text-white/40 hover:text-sky-600 transition-colors duration-300 flex items-center gap-1">
                   Marcar o Ponto <ArrowUpRight size={12} strokeWidth={1} />
                 </a>
               </li>
               <li>
-                <a href="http://www.prodaloja.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/40 hover:text-cobalt transition-colors duration-300 flex items-center gap-1">
+                <a href="http://www.prodaloja.com/" target="_blank" rel="noopener noreferrer" className="text-sm text-white/40 hover:text-sky-600 transition-colors duration-300 flex items-center gap-1">
                   Visitar Loja <ArrowUpRight size={12} strokeWidth={1} />
                 </a>
               </li>
@@ -136,8 +136,8 @@ export default function Footer() {
 
             <div className="mt-8">
               <span className="text-xs text-white/20 uppercase tracking-wider block mb-2">Contato</span>
-              <a href="tel:+553132451265" className="text-sm text-white/40 hover:text-cobalt transition-colors block">(31) 3245-1265</a>
-              <a href="mailto:comercial@prodacom.com.br" className="text-sm text-white/40 hover:text-cobalt transition-colors block mt-1">comercial@prodacom.com.br</a>
+              <a href="tel:+553132451265" className="text-sm text-white/40 hover:text-sky-600 transition-colors block">(31) 3245-1265</a>
+              <a href="mailto:comercial@prodacom.com.br" className="text-sm text-white/40 hover:text-sky-600 transition-colors block mt-1">comercial@prodacom.com.br</a>
             </div>
           </div>
         </div>

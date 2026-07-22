@@ -65,7 +65,7 @@ export default function ProductGallery() { //
 
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <h2 className="font-display font-bold text-3xl md:text-5xl lg:text-6xl text-white tracking-tight">Produtos em Destaque</h2>
-            <a href="#contato" onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} className="flex items-center gap-2 text-xs font-medium tracking-wider uppercase text-white/40 hover:text-cobalt transition-colors group">
+            <a href="#contato" onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} className="flex items-center gap-2 text-xs font-medium tracking-wider uppercase text-white/40 hover:text-sky-600 transition-colors group">
               Solicitar Orçamento <ArrowRight size={14} strokeWidth={1} className="group-hover:translate-x-1 transition-transform" />
             </a>
           </div>
@@ -97,8 +97,8 @@ export default function ProductGallery() { //
                   
                 </div>
                 <div className="mt-4 flex items-center justify-between">
-                  <h3 className="font-display font-semibold text-base text-white group-hover:text-cobalt transition-colors duration-300">{product.title}</h3>
-                  <ArrowRight size={14} strokeWidth={1} className="text-white/10 group-hover:text-cobalt group-hover:translate-x-1 transition-all duration-300" />
+                  <h3 className="font-display font-semibold text-base text-white group-hover:text-sky-600 transition-colors duration-300">{product.title}</h3>
+                  <ArrowRight size={14} strokeWidth={1} className="text-white/10 group-hover:text-sky-600 group-hover:translate-x-1 transition-all duration-300" />
                 </div>
               </motion.div>
             ))}

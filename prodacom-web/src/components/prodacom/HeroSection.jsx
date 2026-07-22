@@ -34,7 +34,7 @@ export default function HeroSection() {
           </motion.h1>
         </div>
         <div className="overflow-hidden">
-          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-cobalt leading-none tracking-tight">
+          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-sky-600 leading-none tracking-tight">
             DE PONTO E ACESSO.
           </motion.h1>
         </div>
