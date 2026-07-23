@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { api } from "../../services/api"; 
 import { mascaraTelefone } from "../../utils/masks";
@@ -19,7 +19,6 @@ const steps = [
 export default function ContactSection() {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
-  const [isSending, setIsSending] = useState(false);
   
   const [form, setForm] = useState({ 
     nome: "", 
@@ -57,16 +56,14 @@ export default function ContactSection() {
       return;
     }
 
-    setIsSending(true);
+    setSubmitted(true);
+
 
     try {
       await api.enviarOrcamento(form);
-      setSubmitted(true);
-      toast.success("Orçamento enviado com sucesso!");
     } catch (error) {
-      toast.error(error.message || "Erro de conexão com o servidor. Verifique sua internet.");
-    } finally {
-      setIsSending(false);
+      setSubmitted(false);
+      toast.error(error.message || "Ocorreu um erro no servidor. Por favor, tente falar conosco pelo WhatsApp.");
     }
   }
 
@@ -106,7 +103,7 @@ export default function ContactSection() {
                 </div>
               </div>
 
-              {/* WHATSAPP (SEPARADO) */}
+              {/* WHATSAPP */}
               <div className="flex items-start gap-4">
                 <MessageCircle size={18} strokeWidth={1} className="text-cobalt mt-0.5" />
                 <div>
@@ -234,16 +231,12 @@ export default function ContactSection() {
                         <Textarea value={form.mensagem} onChange={function(e) { update("mensagem", e.target.value); }} required rows={5} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none resize-none" placeholder="Descreva sua necessidade..." />
                       </div>
                       <div className="flex justify-between pt-4">
-                        <Button type="button" variant="ghost" onClick={function() { setStep(2); }} disabled={isSending} className="text-white/40 hover:text-white rounded-none text-xs tracking-wider uppercase">
+                        <Button type="button" variant="ghost" onClick={function() { setStep(2); }} className="text-white/40 hover:text-white rounded-none text-xs tracking-wider uppercase">
                           <ArrowLeft size={14} strokeWidth={1} className="mr-2" /> Voltar
                         </Button>
                         
-                        <Button type="submit" disabled={isSending} className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed">
-                          {isSending ? (
-                            <>Enviando... <Loader2 size={14} strokeWidth={2} className="ml-2 animate-spin" /></>
-                          ) : (
-                            <>Enviar E-mail <ArrowRight size={14} strokeWidth={1} className="ml-2" /></>
-                          )}
+                        <Button type="submit" className="bg-cobalt hover:bg-white hover:text-obsidian text-white rounded-none px-6 text-xs tracking-wider uppercase">
+                          Enviar E-mail <ArrowRight size={14} strokeWidth={1} className="ml-2" />
                         </Button>
                       </div>
                     </motion.div>
