@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import API_URL from "../config/api.js";
+import API_URL from "../config/env.js";
 
 // Instância única conectando à URL configurada
 export const socket = io(API_URL, {

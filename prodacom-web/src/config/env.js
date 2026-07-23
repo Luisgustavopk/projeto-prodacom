@@ -1,5 +1,5 @@
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://api.prodacom.com.br' 
+  ? import.meta.env.VITE_API_URL
   : 'http://localhost:3001';
 
 export default API_URL;
