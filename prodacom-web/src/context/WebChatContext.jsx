@@ -9,6 +9,9 @@ export function WebChatProvider(props) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
+
+  const [isAdminOnline, setIsAdminOnline] = useState(false);
+
   // 1. Memória das Mensagens
   const [messages, setMessages] = useState(function () {
     const salvas = localStorage.getItem("prodacom_chat_messages");
@@ -31,7 +34,20 @@ export function WebChatProvider(props) {
   const [isAskingContact, setIsAskingContact] = useState(false);
   const [pendingMessage, setPendingMessage] = useState("");
 
-  // Salva mensagens e rola para o fim
+ 
+  useEffect(() => {
+    socket.on("status_admin", (status) => {
+      setIsAdminOnline(status);
+    });
+
+    socket.emit("solicitar_status_admin");
+
+    return () => {
+      socket.off("status_admin");
+    };
+  }, []);
+
+
   useEffect(function () {
     localStorage.setItem("prodacom_chat_messages", JSON.stringify(messages));
     if (open) {
@@ -39,13 +55,12 @@ export function WebChatProvider(props) {
     }
   }, [messages, open]);
 
-  // Salva identificação e formulário
   useEffect(function () {
     localStorage.setItem("prodacom_chat_is_identified", isIdentified);
     localStorage.setItem("prodacom_chat_lead_form", JSON.stringify(leadForm));
   }, [isIdentified, leadForm]);
 
-  // Reconexão automática
+ 
   useEffect(function () {
     if (isIdentified) {
       socket.connect();
@@ -56,7 +71,6 @@ export function WebChatProvider(props) {
     }
   }, [isIdentified]);
 
-  // Ouvir mensagens do servidor
   useEffect(function () {
     function handleReceberMensagem(dados) {
       if (dados.autor !== leadForm.nome) {
@@ -154,6 +168,7 @@ export function WebChatProvider(props) {
       isIdentified,
       leadForm, setLeadForm,
       isAskingContact,
+      isAdminOnline, 
       messagesEndRef,
       handleFirstMessage,
       handleStartChat,

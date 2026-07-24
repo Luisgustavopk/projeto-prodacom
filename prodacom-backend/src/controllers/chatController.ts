@@ -1,66 +1,124 @@
-
 import { Server, Socket } from 'socket.io';
-import { chatService } from '../services/chatService';  
-import { ClientToServerEvents, ServerToClientEvents } from '../config/socket/types';
+import { chatService } from '../services/chatService'; 
+import { ClientToServerEvents, ServerToClientEvents, ISocketMessage } from '../config/socket/types';
 
-export function configurarEventosChat(io: Server<ClientToServerEvents, ServerToClientEvents>, socket: Socket) {
-  
-  // 1. ADMIN ENTROU
-  socket.on('entrar_como_admin', async function () {
+const adminSockets = new Set<string>();
+
+const limparContato = (contato?: string): string => {
+  if (!contato) return '';
+  return contato.replace(/\D/g, '').trim();
+};
+
+export function configurarEventosChat(
+  io: Server<ClientToServerEvents, ServerToClientEvents>, 
+  socket: Socket
+) {
+
+
+  // 1. Status do Admin
+  const handleSolicitarStatusAdmin = () => {
+    socket.emit('status_admin', adminSockets.size > 0);
+  };
+
+  // 2. Admin Entrou
+  const handleEntrarComoAdmin = async () => {
     socket.join('admins');
-    console.log(` Admin (${socket.id}) entrou no painel.`);
-    
+    if (!adminSockets.has(socket.id)) {
+    adminSockets.add(socket.id);
+    io.emit('status_admin', true);
+    console.log(`[ADMIN] (${socket.id}) entrou no painel. Admins online: ${adminSockets.size}`);
+  }
     const conversas = await chatService.obterTodasAsConversas();
     socket.emit('sincronizar_conversas_existentes', conversas);
-  });
+  };
 
-  // 2. CLIENTE RECONECTOU
-  socket.on('cliente_reconectado', async function (dados: { contato: string; nome: string }) {
-    const salaNome = `sala_${dados.contato}`;
-    socket.join(salaNome);
+  // 3. Cliente Reconectou
+  const handleClienteReconectado = async (dados: { contato: string; nome: string }) => {
+    const contatoLimpo = limparContato(dados.contato);
+    const salaNome = `sala_${contatoLimpo}`;
     
-    console.log(` Cliente ${dados.nome} reconectado na sala: ${salaNome}`);
+    socket.join(salaNome);
 
-    const conversaExiste = await chatService.obterConversa(dados.contato);
+    const ficouOnline = chatService.registrarConexaoCliente(contatoLimpo, socket.id);
+    if (ficouOnline) {
+      io.to('admins').emit('status_cliente', { contato: contatoLimpo, online: true });
+      console.log(`[STATUS] Cliente ${contatoLimpo} ficou ONLINE na sala: ${salaNome}.`);
+    }
+
+
+    const conversaExiste = await chatService.obterConversa(contatoLimpo);
     if (conversaExiste) {
-      chatService.atualizarIdDoCliente(dados.contato, socket.id);
+      chatService.atualizarIdDoCliente(contatoLimpo, socket.id);
       io.to('admins').emit('cliente_atualizou_conexao', {
-        contato: dados.contato,
+        contato: contatoLimpo,
         novoId: socket.id
       });
     }
-  });
+  };
 
-  // 3. FLUXO DE MENSAGENS
-  socket.on('enviar_mensagem', async function (dados: any) {
-    const { texto, autor, contato, hora, salaDestino } = dados;
+  // 4. Fluxos de Envio de Mensagem (Separados para clareza)
+  const handleMensagemAdmin = async (salaDestino: string, texto: string, hora: string) => {
+    await chatService.adicionarMensagem(salaDestino, { role: 'admin', content: texto, hora }, 'Admin');
+    io.to(`sala_${salaDestino}`).emit('receber_mensagem', { autor: 'Admin', texto, hora });
+  };
 
-    // ADMIN RESPONDENDO
-    if (salaDestino) {
-      console.log(`[Admin] enviando resposta para a sala: ${salaDestino}`);
-      
-      await chatService.adicionarMensagem(salaDestino, { role: 'admin', content: texto, hora }, 'Admin');
-      io.to(`sala_${salaDestino}`).emit('receber_mensagem', { autor: 'Admin', texto, hora });
-    } 
-    // CLIENTE PERGUNTANDO
-    else {
-      const salaNome = `sala_${contato}`;
-      socket.join(salaNome);
+  const handleMensagemCliente = async (contato: string, autor: string, texto: string, hora: string) => {
+    const salaNome = `sala_${contato}`;
+    socket.join(salaNome);
 
-      console.log(`[Cliente] ${autor} enviou mensagem na sala: ${salaNome}`);
-
-      chatService.criarConversaSeNaoExistir(contato, autor, socket.id);
-      chatService.atualizarIdDoCliente(contato, socket.id);
-      
-      await chatService.adicionarMensagem(contato, { role: 'user', content: texto, hora }, autor);
-
-      const pacoteParaAdmin = { idDoCliente: contato, autor, contato, texto, hora };
-      io.to('admins').emit('nova_mensagem_cliente', pacoteParaAdmin);
-      io.to(salaNome).emit('receber_mensagem', { autor, texto, hora });
+    const ficouOnline = chatService.registrarConexaoCliente(contato, socket.id);
+    if (ficouOnline) {
+      io.to('admins').emit('status_cliente', { contato, online: true });
+      console.log(`[STATUS] Cliente ${contato} ficou ONLINE.`);
     }
-  });
 
-  socket.on('disconnect', function () {
+
+    chatService.criarConversaSeNaoExistir(contato, autor, socket.id);
+    chatService.atualizarIdDoCliente(contato, socket.id);
+
+    await chatService.adicionarMensagem(contato, { role: 'user', content: texto, hora }, autor);
+
+    const pacoteParaAdmin = { idDoCliente: contato, autor, contato, texto, hora };
+    io.to('admins').emit('nova_mensagem_cliente', pacoteParaAdmin);
+    io.to(salaNome).emit('receber_mensagem', { autor, texto, hora });
+  };
+
+  const handleEnviarMensagem = async (dados: ISocketMessage) => {
+    const { texto, autor, hora } = dados;
+    const contatoLimpo = limparContato(dados.contato);
+    const salaDestinoLimpa = limparContato(dados.salaDestino);
+
+    if (salaDestinoLimpa) {
+      await handleMensagemAdmin(salaDestinoLimpa, texto, hora);
+    } else {
+      await handleMensagemCliente(contatoLimpo, autor, texto, hora);
+    }
+  };
+
+  // 5. Desconexão
+  const handleDisconnect = () => {
     console.log(`Conexão encerrada: ${socket.id}`);
-  });
+
+    if (adminSockets.has(socket.id)) {
+      adminSockets.delete(socket.id);
+      io.emit('status_admin', adminSockets.size > 0);
+      console.log(`[ADMIN] Admin desconectado. Restantes: ${adminSockets.size}`);
+    } else {
+      const resultado = chatService.removerConexaoCliente(socket.id);
+      if (resultado?.ficouOffline) {
+        io.to('admins').emit('status_cliente', {
+          contato: resultado.contato,
+          online: false
+        });
+        console.log(`[STATUS] Cliente ${resultado.contato} ficou OFFLINE.`);
+      }
+    }
+  };
+
+  // --- REGISTRO DOS EVENTOS ---
+  socket.on('solicitar_status_admin', handleSolicitarStatusAdmin);
+  socket.on('entrar_como_admin', handleEntrarComoAdmin);
+  socket.on('cliente_reconectado', handleClienteReconectado);
+  socket.on('enviar_mensagem', handleEnviarMensagem);
+  socket.on('disconnect', handleDisconnect);
 }

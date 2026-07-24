@@ -1,7 +1,6 @@
-// src/components/PainelDeAtendimento.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { MessageSquare, Send, User, Phone, Monitor, ChevronRight, ChevronLeft } from "lucide-react";
-import { socket } from "../services/socket"; // Corrigido o caminho relativo para a pasta services
+import { socket } from "../services/socket";
 
 export function PainelDeAtendimento() {
   const [chats, setChats] = useState({});
@@ -10,25 +9,83 @@ export function PainelDeAtendimento() {
   
   const messagesEndRef = useRef(null);
 
+  // Rolagem automática para a última mensagem
   useEffect(function () {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats, clienteAtivo]);
 
+  // Conexão e Gerenciamento do Socket.io
   useEffect(function () {
     socket.connect();
     socket.emit("entrar_como_admin");
 
+    // Sincroniza histórico inicial vindo do backend
     socket.on("sincronizar_conversas_existentes", function (historicoDoServidor) {
-      setChats(historicoDoServidor);
+      setChats(historicoDoServidor || {});
     });
 
-    function handleNovaMensagem(dados) {
+    // Atualização de Status Online/Offline do Cliente
+    // Atualização de Status Online/Offline do Cliente (Busca Robusta)
+function handleStatusCliente(dados) {
+      if (!dados || !dados.contato) return;
+      
+      // Remove qualquer caractere não numérico para comparação
+      const contatoNumerico = dados.contato.replace(/\D/g, "");
+
       setChats(function (prevChats) {
-        const chatId = dados.contato;
+        // Procura a chave correspondente no estado do React
+        const chaveEncontrada = Object.keys(prevChats).find(function (key) {
+          const chat = prevChats[key];
+          const keyNumerica = key.replace(/\D/g, "");
+          const contatoChatNumerico = chat.contato ? chat.contato.replace(/\D/g, "") : "";
+
+          return keyNumerica === contatoNumerico || contatoChatNumerico === contatoNumerico;
+        });
+
+        if (!chaveEncontrada || !prevChats[chaveEncontrada]) return prevChats;
+
+        // Cria uma nova referência de objeto para forçar o React a re-renderizar na hora
+        return {
+          ...prevChats,
+          [chaveEncontrada]: {
+            ...prevChats[chaveEncontrada],
+            online: dados.online
+          }
+        };
+      });
+    }
+
+    // Atualização de Conexão/Reconexão do Cliente
+    function handleClienteAtualizouConexao(dados) {
+      if (!dados || !dados.contato) return;
+      const chatId = dados.contato.trim();
+
+      setChats(function (prevChats) {
+        const chatExistente = prevChats[chatId];
+        if (!chatExistente) return prevChats;
+
+        return {
+          ...prevChats,
+          [chatId]: {
+            ...chatExistente,
+            idDoCliente: dados.novoId,
+            online: true
+          }
+        };
+      });
+    }
+
+    // Recebimento de Nova Mensagem do Cliente
+    function handleNovaMensagem(dados) {
+      if (!dados || !dados.contato) return;
+      const chatId = dados.contato.trim();
+
+      setChats(function (prevChats) {
         const chatAtual = prevChats[chatId] || {
           nome: dados.autor,
-          contato: dados.contato,
-          idDoCliente: dados.contato,
+          contato: chatId,
+          idDoCliente: chatId,
+          online: true,
           mensagens: []
         };
 
@@ -36,41 +93,57 @@ export function PainelDeAtendimento() {
           ...prevChats,
           [chatId]: {
             ...chatAtual,
-            mensagens: [...chatAtual.mensagens, { role: "user", content: dados.texto, hora: dados.hora }]
+            online: true,
+            mensagens: [
+              ...chatAtual.mensagens,
+              { role: "user", content: dados.texto, hora: dados.hora }
+            ]
           }
         };
       });
     }
 
+    socket.on("status_cliente", handleStatusCliente);
+    socket.on("cliente_atualizou_conexao", handleClienteAtualizouConexao);
     socket.on("nova_mensagem_cliente", handleNovaMensagem);
 
     return function () {
       socket.off("sincronizar_conversas_existentes");
+      socket.off("status_cliente", handleStatusCliente);
+      socket.off("cliente_atualizou_conexao", handleClienteAtualizouConexao);
       socket.off("nova_mensagem_cliente", handleNovaMensagem);
-      socket.disconnect(); 
+      socket.disconnect();
     };
   }, []);
 
+  // Envio de Mensagem do Admin
   function handleSend(e) {
     e.preventDefault();
     if (!input.trim() || !clienteAtivo) return;
 
     const texto = input.trim();
     const hora = new Date().toLocaleTimeString();
+    const chatId = clienteAtivo.trim();
 
     socket.emit("enviar_mensagem", {
       autor: "Admin",
       texto: texto,
       hora: hora,
-      salaDestino: clienteAtivo 
+      salaDestino: chatId
     });
 
     setChats(function (prev) {
+      const chatAtual = prev[chatId];
+      if (!chatAtual) return prev;
+
       return {
         ...prev,
-        [clienteAtivo]: {
-          ...prev[clienteAtivo],
-          mensagens: [...prev[clienteAtivo].mensagens, { role: "admin", content: texto, hora: hora }]
+        [chatId]: {
+          ...chatAtual,
+          mensagens: [
+            ...chatAtual.mensagens,
+            { role: "admin", content: texto, hora: hora }
+          ]
         }
       };
     });
@@ -83,7 +156,7 @@ export function PainelDeAtendimento() {
   return (
     <div className="flex h-screen w-screen bg-slate-50 font-sans selection:bg-blue-600 selection:text-white overflow-hidden">
       
-      {/* BARRA LATERAL */}
+      {/* BARRA LATERAL - LISTA DE CONVERSAS */}
       <div className={`${clienteAtivo ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 md:max-w-sm bg-[#1a1a1a] flex-col border-r border-white/5 shadow-2xl z-20`}>
         <div className="p-4 md:p-6 bg-[#1a1a1a] border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
           <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
@@ -104,27 +177,32 @@ export function PainelDeAtendimento() {
             </div>
           ) : (
             conversasAtivas.map(function ([id, dados]) {
+              const isSelected = clienteAtivo === id;
+              
               return (
                 <button
                   key={id}
                   onClick={function () { setClienteAtivo(id); }}
-                  className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 group ${
-                    clienteAtivo === id ? "bg-sky-800" : "hover:bg-white/5"
+                  className={`relative w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 group ${
+                    isSelected ? "bg-sky-800" : "hover:bg-white/5"
                   }`}
                 >
-                  <div className="flex justify-between items-start w-full">
-                    <span className={`font-bold text-xs uppercase tracking-wider ${clienteAtivo === id ? "text-white" : "text-white/90"}`}>
-                      {dados.nome}
-                    </span>
-                    <span className={`text-[9px] font-mono ${clienteAtivo === id ? "text-white/60" : "text-white/30"}`}>
+                  <div className="flex justify-between items-start w-full pr-4">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 rounded-full transition-all duration-300 ${dados.online ? "bg-emerald-400 animate-pulse" : "bg-slate-500"}`} />
+                      <span className={`font-bold text-xs uppercase tracking-wider ${isSelected ? "text-white" : "text-white/90"}`}>
+                        {dados.nome}
+                      </span>
+                    </div>
+                    <span className={`text-[9px] font-mono ${isSelected ? "text-white/60" : "text-white/30"}`}>
                       {dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1].hora : "--:--"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between w-full">
-                    <span className={`text-[10px] md:text-[11px] truncate pr-4 ${clienteAtivo === id ? "text-white/80" : "text-white/40"}`}>
+                    <span className={`text-[10px] md:text-[11px] truncate pr-4 ${isSelected ? "text-white/80" : "text-white/40"}`}>
                       {dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1].content : "Nova solicitação"}
                     </span>
-                    <ChevronRight size={12} className={clienteAtivo === id ? "text-white" : "text-white/10"} />
+                    <ChevronRight size={12} className={isSelected ? "text-white" : "text-white/10"} />
                   </div>
                 </button>
               );
@@ -133,11 +211,11 @@ export function PainelDeAtendimento() {
         </div>
       </div>
 
-      {/* ÁREA PRINCIPAL DO CHAT */}
+      {/* ÁREA PRINCIPAL - CONVERSA ATIVA */}
       <div className={`${!clienteAtivo ? 'hidden md:flex' : 'flex'} flex-1 flex-col bg-slate-50 z-10 w-full`}>
         {clienteAtivo && chats[clienteAtivo] ? (
           <>
-            {/* Header do Chat Ativo */}
+            {/* Header do Chat */}
             <div className="px-4 md:px-8 py-4 md:py-5 bg-[#1a1a1a] border-b border-white/10 flex items-center justify-between shadow-md shrink-0">
               <div className="flex items-center gap-3 md:gap-4">
                 <button 
@@ -156,7 +234,10 @@ export function PainelDeAtendimento() {
                     <h2 className="text-white font-bold text-xs md:text-sm uppercase tracking-[0.15em] line-clamp-1">
                       {chats[clienteAtivo].nome}
                     </h2>
-                    <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-400 rounded-full animate-pulse" />
+                    <span className={`w-2 h-2 rounded-full transition-all duration-300 ${chats[clienteAtivo].online ? "bg-emerald-400 animate-pulse" : "bg-slate-500"}`} />
+                    <span className="text-[10px] text-white/50 uppercase font-mono">
+                      {chats[clienteAtivo].online ? "Online" : "Offline"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-4 mt-0.5 md:mt-1">
                     <a href={`https://wa.me/${chats[clienteAtivo].contato.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="text-sky-700 hover:text-white transition-colors text-[9px] md:text-[10px] font-mono font-bold flex items-center gap-1">
@@ -170,7 +251,7 @@ export function PainelDeAtendimento() {
               </div>
             </div>
 
-            {/* Mensagens */}
+            {/* Lista de Mensagens */}
             <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-4 md:space-y-6 bg-slate-50 custom-scrollbar">
               {chats[clienteAtivo].mensagens?.map(function (msg, i) {
                 return (
@@ -200,7 +281,7 @@ export function PainelDeAtendimento() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input de Mensagem */}
+            {/* Input para envio de mensagens */}
             <div className="p-3 md:p-6 bg-white border-t border-slate-200 shrink-0">
               <form onSubmit={handleSend} className="flex items-center gap-2 md:gap-3 max-w-5xl mx-auto">
                 <input

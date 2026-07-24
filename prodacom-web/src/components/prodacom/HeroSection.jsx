@@ -12,7 +12,7 @@ export default function HeroSection() {
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
-    // 1. Adicionado pt-32 e pb-16 aqui na section principal para garantir a zona de segurança
+  
     <section id="hero" className="relative min-h-screen flex flex-col justify-center pt-32 pb-16 overflow-hidden">
       <motion.div style={{ y: imgY }} className="absolute inset-0">
         <img src={HERO_IMAGE} alt="Scanner biométrico" className="w-full h-full object-cover object-[70%_center]" />
@@ -20,11 +20,7 @@ export default function HeroSection() {
       </motion.div>
 
       <div className="absolute inset-0 grid-overlay opacity-10" />
-
-      {/* 2. Removido o pt-24/pt-10 daqui, pois agora a zona de segurança está na section pai */}
       <motion.div style={{ y: textY, opacity }} className="relative z-10 max-w-7xl 2xl:max-w-[90rem] mx-auto w-full px-6">
-        
-        {/* 3. Ajuste fino na escala da fonte: text-4xl -> md:text-5xl -> lg:text-6xl -> xl:text-7xl -> 2xl:text-8xl */}
         <div className="overflow-hidden">
           <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-white leading-tight tracking-tight pt-2">
             SOLUÇÕES PARA

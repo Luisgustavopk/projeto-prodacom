@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Maximize2, Minimize2, Send, ChevronRight } from "lucide-react";
 import { WebChatContext } from "../../context/WebChatContext"; 
+import { socket } from "../../services/socket";
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
 
@@ -20,22 +21,23 @@ export default function ChatWidget() {
     isIdentified,
     leadForm, setLeadForm,
     messagesEndRef,
+    isAdminOnline,
     handleFirstMessage,
     handleStartChat,
     handleSend
   } = useContext(WebChatContext);
 
+
   useEffect(function () {
     let observer = null;
     let attempts = 0;
-    const maxAttempts = 10; // Tenta encontrar o elemento por até 2 segundos
+    const maxAttempts = 10; 
 
     function initObserver() {
       const contatoSection = document.getElementById("contato");
 
       if (contatoSection) {
         if (observer) observer.disconnect();
-
         observer = new IntersectionObserver(
           function (entries) {
             if (entries[0]) {
@@ -44,25 +46,19 @@ export default function ChatWidget() {
           },
           { threshold: 0.15 }
         );
-
         observer.observe(contatoSection);
       } else if (attempts < maxAttempts) {
-        // Se a página recém-carregada ainda não renderizou o #contato, tenta novamente em 200ms
         attempts++;
         setTimeout(initObserver, 200);
       } else {
-        // Se passou do tempo e realmente não há #contato na página atual
         setIsOverContact(false);
       }
     }
 
-    // Reinicia o processo toda vez que a URL muda
     initObserver();
 
     return function () {
-      if (observer) {
-        observer.disconnect();
-      }
+      if (observer) observer.disconnect();
     };
   }, [location.pathname]);
 
@@ -79,7 +75,8 @@ export default function ChatWidget() {
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 30, scale: 0.95 }} className={`${panelWidth} ${panelHeight} bg-white border border-slate_mist flex flex-col shadow-2xl`}>
-            {/* Header */}
+            
+            {/* HEADER DO CHAT */}
             <div className="bg-obsidian text-white px-5 py-4 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-cobalt flex items-center justify-center">
@@ -87,9 +84,13 @@ export default function ChatWidget() {
                 </div>
                 <div>
                   <p className="font-display font-bold text-sm tracking-widest uppercase">Prodacom</p>
+                  
+                  {/* RENDERIZAÇÃO CONDICIONAL DO STATUS ONLINE/OFFLINE */}
                   <p className="text-[10px] font-mono text-white/50 tracking-wider uppercase flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> Online
+                    <span className={`w-1.5 h-1.5 rounded-full ${isAdminOnline ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} /> 
+                    {isAdminOnline ? 'Online' : 'Offline'}
                   </p>
+                  
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -102,7 +103,7 @@ export default function ChatWidget() {
               </div>
             </div>
 
-            {/* Mensagens */}
+            {/* MENSAGENS */}
             <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-ghost">
               {messages.map(function (msg, i) {
                 return (
@@ -119,7 +120,7 @@ export default function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Sugestões Rápidas */}
+            {/* SUGESTÕES RÁPIDAS */}
             {messages.length === 1 && !isAskingContact && (
               <div className="px-5 py-3 border-t border-slate_mist bg-white flex flex-wrap gap-2">
                 {quickReplies.map(function (q) {
@@ -135,7 +136,7 @@ export default function ChatWidget() {
             {/* FORMULÁRIO OU BARRA DE DIGITAÇÃO */}
             {isAskingContact ? (
               <form onSubmit={handleStartChat} className="p-4 border-t border-slate_mist bg-white flex flex-col gap-3">
-                <p className="text-xs text-obsidian/60 font-medium">Por favor, informe seus dados para iniciarmos:</p>
+                <p className="text-xs text-obsidian/60 font-medium">Por favor, informe os seus dados para iniciarmos:</p>
                 <div className="flex gap-2">
                   <input type="text" required placeholder="Seu nome" value={leadForm.nome} onChange={function (e) { setLeadForm({ ...leadForm, nome: e.target.value }); }} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
                   <input type="text" required placeholder="WhatsApp" maxLength={15} value={leadForm.contato} onChange={function (e) { setLeadForm({ ...leadForm, contato: e.target.value }); }} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
@@ -146,7 +147,7 @@ export default function ChatWidget() {
               </form>
             ) : (
               <form onSubmit={handleSend} className="p-3 border-t border-slate_mist bg-white flex items-center gap-2">
-                <input type="text" value={input} onChange={function (e) { setInput(e.target.value); }} placeholder="Escreva sua mensagem..." className="flex-1 bg-ghost border border-slate_mist px-4 py-2.5 text-sm focus:outline-none focus:border-cobalt" />
+                <input type="text" value={input} onChange={function (e) { setInput(e.target.value); }} placeholder="Escreva a sua mensagem..." className="flex-1 bg-ghost border border-slate_mist px-4 py-2.5 text-sm focus:outline-none focus:border-cobalt" />
                 <button type="submit" className="bg-cobalt text-white p-2.5 hover:bg-obsidian"><Send size={16} /></button>
               </form>
             )}
@@ -154,7 +155,7 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
 
-      {/* Botão do Chat */}
+      {/* BOTÃO FLUTUANTE DO CHAT */}
       <motion.button 
         whileHover={{ scale: 1.05 }} 
         whileTap={{ scale: 0.95 }} 
