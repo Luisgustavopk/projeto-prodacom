@@ -4,6 +4,7 @@ const mapeamentoSockets: Record<string, string> = {};
 const socketParaContato = new Map<string, string>();
 const contatoParaSockets = new Map<string, Set<string>>();
 
+// --- GERENCIAMENTO DE CONEXÕES SOCKET ---
 
 function registrarConexaoCliente(contato: string, socketId: string): boolean {
   const contatoLimpo = contato.trim(); 
@@ -44,6 +45,7 @@ function isClienteOnline(contato: string): boolean {
   return sockets ? sockets.size > 0 : false;
 }
 
+// --- CONSULTAS E BANCO DE DADOS (MONGO) ---
 
 async function obterTodasAsConversas() {
   try {
@@ -55,7 +57,12 @@ async function obterTodasAsConversas() {
           nome: { $first: "$clienteNome" },
           contato: { $first: "$clienteId" },
           mensagens: {
-            $push: { role: "$role", content: "$content", hora: "$hora" }
+            $push: { 
+              role: "$role", 
+              content: "$content", 
+              hora: "$hora",
+              status: { $ifNull: ["$status", "enviado"] } 
+            }
           }
         }
       }
@@ -64,7 +71,6 @@ async function obterTodasAsConversas() {
     const bancoDeConversas: Record<string, any> = {};
     
     conversasAgrupadas.forEach(function (chat) {
-    
       const contatoLimpo = chat.contato.trim();
 
       bancoDeConversas[contatoLimpo] = {
@@ -94,7 +100,12 @@ async function obterConversa(contato: string) {
       contato: contatoLimpo,
       idDoCliente: mapeamentoSockets[contatoLimpo] || contatoLimpo,
       online: isClienteOnline(contatoLimpo),
-      mensagens: mensagens.map(m => ({ role: m.role, content: m.content, hora: m.hora }))
+      mensagens: mensagens.map(m => ({ 
+        role: m.role, 
+        content: m.content, 
+        hora: m.hora,
+        status: m.status || 'enviado'
+      }))
     };
   } catch (error) {
     console.error(`Erro ao obter conversa:`, error);
@@ -113,9 +124,15 @@ function atualizarIdDoCliente(contato: string, novoId: string) {
   mapeamentoSockets[contato.trim()] = novoId;
 }
 
+
 async function adicionarMensagem(
   contato: string, 
-  mensagem: { role: "user" | "admin"; content: string; hora: string }, 
+  mensagem: { 
+    role: "user" | "admin"; 
+    content: string; 
+    hora: string; 
+    status?: "enviado" | "entregue" | "lido" 
+  }, 
   clienteNome: string
 ) {
   try {
@@ -124,11 +141,34 @@ async function adicionarMensagem(
       clienteNome: clienteNome,
       role: mensagem.role,
       content: mensagem.content,
-      hora: mensagem.hora
+      hora: mensagem.hora,
+      status: mensagem.status || 'enviado'
     });
-    console.log(`[MONGO] Mensagem de [${mensagem.role}] salva para: ${contato.trim()}`);
+    console.log(`[MONGO] Mensagem de [${mensagem.role}] salva para: ${contato.trim()} com status: ${mensagem.status || 'enviado'}`);
   } catch (error) {
     console.error("Erro ao salvar mensagem no MongoDB:", error);
+  }
+}
+
+
+async function atualizarStatusMensagens(
+  contato: string, 
+  roleTarget: "user" | "admin", 
+  novoStatus: "entregue" | "lido"
+) {
+  try {
+    const contatoLimpo = contato.trim();
+    await MessageModel.updateMany(
+      { 
+        clienteId: contatoLimpo, 
+        role: roleTarget,
+        status: { $ne: 'lido' }
+      },
+      { $set: { status: novoStatus } }
+    );
+    console.log(`[MONGO] Mensagens de [${roleTarget}] para ${contatoLimpo} atualizadas para: ${novoStatus}`);
+  } catch (error) {
+    console.error("Erro ao atualizar status das mensagens no MongoDB:", error);
   }
 }
 
@@ -138,6 +178,7 @@ export const chatService = {
   criarConversaSeNaoExistir,
   atualizarIdDoCliente,
   adicionarMensagem,
+  atualizarStatusMensagens,
   registrarConexaoCliente,
   removerConexaoCliente,
   isClienteOnline

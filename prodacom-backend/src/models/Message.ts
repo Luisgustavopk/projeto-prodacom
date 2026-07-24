@@ -7,6 +7,7 @@ interface IMessage {
   role: "user" | "admin";
   content: string;
   hora: string;
+  status: 'enviado' | 'entregue' | 'lido';
   createdAt: Date;
 }
 

@@ -9,6 +9,19 @@ interface DadosOrcamento {
   mensagem: string;
 }
 
+interface DadosNovoClienteChat {
+  nome: string;
+  contato: string;
+  mensagem: string;
+}
+
+interface DadosMensagemPendente {
+  nome: string;
+  contato: string;
+  mensagem: string;
+  tempoAguardando: string;
+}
+
 export const emailService = {
   
   async enviarEmailOrcamento(dados: DadosOrcamento) {
@@ -76,10 +89,10 @@ export const emailService = {
       </div>
     `;
 
-    // 4. Disparo assíncrono em paralelo utilizando Promise.all tradicional
+    
     const resultados = await Promise.all([
       
-      // DISPARO 1: Envio para a equipe interna usando o truque do BCC contra o filtro da Hostinger
+    
       transporter.sendMail({
         from: `"Prodacom" <${process.env.EMAIL_USER}>`, 
         to: process.env.EMAIL_USER,                    
@@ -89,7 +102,7 @@ export const emailService = {
         html: htmlBodyComercial,
       }),
 
-      // DISPARO 2: Envio automático de confirmação direto para o e-mail do Cliente
+      
       transporter.sendMail({
         from: `"Prodacom" <${process.env.EMAIL_USER}>`, 
         to: dados.email,                                
@@ -99,9 +112,89 @@ export const emailService = {
 
     ]);
 
-    // 5. Logs informativos no console do seu backend local
+    
     console.log("[COMERCIAL] Cópia encaminhada com sucesso! ID:", resultados[0].messageId);
     console.log("[CLIENTE] Auto-resposta entregue com sucesso! ID:", resultados[1].messageId);
+  },
+
+  async enviarNotificacaoNovoClienteChat(dados: DadosNovoClienteChat) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const htmlBody = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #2563eb; padding: 20px; text-align: center;">
+            <h2 style="color: #ffffff; margin: 0;">🚨 Novo Cliente no Chat</h2>
+          </div>
+          <div style="padding: 20px;">
+            <p style="margin: 5px 0;"><strong>Nome:</strong> ${dados.nome}</p>
+            <p style="margin: 5px 0;"><strong>WhatsApp/Contato:</strong> ${dados.contato}</p>
+            <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 15px 0;" />
+            <h3 style="margin-top: 0; color: #2563eb;">Primeira Mensagem:</h3>
+            <p style="background: #f8fafc; padding: 15px; border-left: 4px solid #2563eb; border-radius: 4px;">${dados.mensagem}</p>
+          </div>
+        </div>
+      `;
+
+      await transporter.sendMail({
+        from: `"Chat Prodacom" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        bcc: "comercial@prodacom.com.br",
+        subject: `Novo Atendimento - ${dados.nome}`,
+        html: htmlBody,
+      });
+    } catch (error) {
+      console.error("[EMAIL CHAT] Erro ao enviar e-mail de novo cliente:", error);
+    }
+  },
+
+  async enviarAlertaMensagemPendente(dados: DadosMensagemPendente) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const htmlBody = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+          <div style="background-color: #d97706; padding: 20px; text-align: center;">
+            <h2 style="color: #ffffff; margin: 0;">⏰ Cliente Aguardando Atendimento</h2>
+          </div>
+          <div style="padding: 20px;">
+            <p style="color: #b45309; font-weight: bold;">
+              O cliente abaixo enviou mensagem há mais de ${dados.tempoAguardando} e ainda não obteve resposta no painel:
+            </p>
+            <p><strong>Cliente:</strong> ${dados.nome}</p>
+            <p><strong>Contato:</strong> ${dados.contato}</p>
+            <h3 style="margin-top: 15px; color: #d97706;">Última Mensagem:</h3>
+            <p style="background: #fffbeb; padding: 15px; border-left: 4px solid #d97706; border-radius: 4px;">"${dados.mensagem}"</p>
+          </div>
+        </div>
+      `;
+
+      await transporter.sendMail({
+        from: `"Alerta Chat" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        bcc: "comercial@prodacom.com.br",
+        subject: `Atendimento Pendente (${dados.tempoAguardando}) - ${dados.nome}`,
+        html: htmlBody,
+      });
+    } catch (error) {
+      console.error("[EMAIL CHAT] Erro ao enviar e-mail de mensagem pendente:", error);
+    }
   }
   
 };

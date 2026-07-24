@@ -1,7 +1,7 @@
 // src/App.jsx
 import React, { useState } from 'react';
 import { TelaBloqueio } from './components/TelaBloqueio';
-import { PainelDeAtendimento } from './components/PainelDeAtendimento';
+import { PainelDeAtendimento } from './components/PainelAtendimento/PainelDeAtendimento';
 
 export default function App() {
   const [autorizado, setAutorizado] = useState(
