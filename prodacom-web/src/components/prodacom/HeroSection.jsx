@@ -2,7 +2,9 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import heroImage from "../../assets/images/component-image/hero-image-2.png";
+
 const HERO_IMAGE = heroImage;
+
 export default function HeroSection() {
   const { scrollY } = useScroll();
   const imgY = useTransform(scrollY, [0, 600], [0, 120]);
@@ -10,44 +12,46 @@ export default function HeroSection() {
   const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col justify-end overflow-hidden">
+    // 1. Adicionado pt-32 e pb-16 aqui na section principal para garantir a zona de segurança
+    <section id="hero" className="relative min-h-screen flex flex-col justify-center pt-32 pb-16 overflow-hidden">
       <motion.div style={{ y: imgY }} className="absolute inset-0">
-        <img src={HERO_IMAGE} alt="Scanner biométrico" className="w-full h-full object-cover" />
+        <img src={HERO_IMAGE} alt="Scanner biométrico" className="w-full h-full object-cover object-[70%_center]" />
         <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/90 to-transparent" />
       </motion.div>
 
       <div className="absolute inset-0 grid-overlay opacity-10" />
 
-      <motion.div style={{ y: textY, opacity }} className="relative z-10 max-w-7xl mx-auto w-full px-6 pb-16 md:pb-24">
-        <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="mb-6">
-    
-        </motion.div>
-
+      {/* 2. Removido o pt-24/pt-10 daqui, pois agora a zona de segurança está na section pai */}
+      <motion.div style={{ y: textY, opacity }} className="relative z-10 max-w-7xl 2xl:max-w-[90rem] mx-auto w-full px-6">
+        
+        {/* 3. Ajuste fino na escala da fonte: text-4xl -> md:text-5xl -> lg:text-6xl -> xl:text-7xl -> 2xl:text-8xl */}
         <div className="overflow-hidden">
-          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white leading-none tracking-tight">
+          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-white leading-tight tracking-tight pt-2">
             SOLUÇÕES PARA
           </motion.h1>
         </div>
+        
         <div className="overflow-hidden">
-          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white/30 leading-none tracking-tight">
+          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-white/30 leading-tight tracking-tight pt-2">
             O CONTROLE 
           </motion.h1>
         </div>
+        
         <div className="overflow-hidden">
-          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-sky-600 leading-none tracking-tight">
+          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-sky-600 leading-tight tracking-tight pt-2">
             DE PONTO E ACESSO.
           </motion.h1>
         </div>
 
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.8 }} className="mt-8 max-w-lg text-sm md:text-base text-white/50 leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.8 }} className="mt-6 lg:mt-8 max-w-lg 2xl:max-w-xl text-sm md:text-base 2xl:text-lg text-white/50 leading-relaxed">
           Há mais de 10 anos provendo soluções integradas de controle de ponto e acesso para empresas de todos os portes. Tecnologia que transforma a gestão do seu negócio.
         </motion.p>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8 }} className="mt-10 flex flex-col sm:flex-row items-start gap-4">
-          <a href="#contato" onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} className="bg-cobalt text-white px-8 py-3 text-sm font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8 }} className="mt-8 lg:mt-10 flex flex-col sm:flex-row items-start gap-4">
+          <a href="#contato" onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} className="bg-cobalt text-white px-8 py-3 text-sm 2xl:text-base font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300">
             Solicite um Orçamento
           </a>
-          <a href="#solucoes" onClick={(e) => { e.preventDefault(); document.querySelector("#solucoes")?.scrollIntoView({ behavior: "smooth" }); }} className="border border-white/20 text-white/60 px-8 py-3 text-sm font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300">
+          <a href="#solucoes" onClick={(e) => { e.preventDefault(); document.querySelector("#solucoes")?.scrollIntoView({ behavior: "smooth" }); }} className="border border-white/20 text-white/60 px-8 py-3 text-sm 2xl:text-base font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300">
             Nossas Soluções
           </a>
         </motion.div>
