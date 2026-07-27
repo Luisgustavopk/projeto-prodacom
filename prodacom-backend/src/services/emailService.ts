@@ -129,17 +129,29 @@ export const emailService = {
         },
       });
 
-      const htmlBody = `
+    const htmlBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
           <div style="background-color: #2563eb; padding: 20px; text-align: center;">
-            <h2 style="color: #ffffff; margin: 0;">🚨 Novo Cliente no Chat</h2>
+            <h2 style="color: #ffffff; margin: 0;">Novo Cliente no Chat</h2>
           </div>
           <div style="padding: 20px;">
             <p style="margin: 5px 0;"><strong>Nome:</strong> ${dados.nome}</p>
             <p style="margin: 5px 0;"><strong>WhatsApp/Contato:</strong> ${dados.contato}</p>
+            
             <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 15px 0;" />
+            
             <h3 style="margin-top: 0; color: #2563eb;">Primeira Mensagem:</h3>
-            <p style="background: #f8fafc; padding: 15px; border-left: 4px solid #2563eb; border-radius: 4px;">${dados.mensagem}</p>
+            <p style="background: #f8fafc; padding: 15px; border-left: 4px solid #2563eb; border-radius: 4px; margin-bottom: 25px;">
+              ${dados.mensagem}
+            </p>
+
+            <div style="text-align: center; margin-top: 30px; margin-bottom: 10px;">
+              <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Acesse o painel para responder a esta solicitação:</p>
+              <a href="https://painel.prodacom.com.br" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-weight: bold; display: inline-block;">
+                Acessar Painel de Atendimento
+              </a>
+            </div>
+            
           </div>
         </div>
       `;

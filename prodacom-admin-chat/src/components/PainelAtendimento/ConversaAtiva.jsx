@@ -82,7 +82,6 @@ export function ConversaAtiva({ clienteAtivo, setClienteAtivo, chat, input, setI
                 {/* Rodapé da mensagem: Hora + Checks */}
                 {/* Rodapé da mensagem: Hora + Checks */}
                 <div className={`flex items-center gap-1.5 ${isAdmin ? "justify-end" : "justify-start"}`}>
-                  {!isAdmin && <StatusMensagem status={msg.status || "lido"} />}
                   
                   <span className="text-[8px] md:text-[9px] font-mono uppercase tracking-tighter text-slate-400">
                     {msg.hora}
