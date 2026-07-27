@@ -5,7 +5,6 @@ import { Menu, X, Phone, Mail, ChevronDown, Clock, ClipboardCheck, Dumbbell, Shi
 
 import logoProdacom from "../../assets/images/logo/logo-prodacom-6-nbg.png";
 
-// Href alterado para "/" no item Início
 const navItems = [
   { label: "Início", href: "/" },
   { label: "Soluções", href: "#solucoes" },
@@ -41,7 +40,6 @@ export default function NavBar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
 
   function handleNavigation(e, href) {
     e.preventDefault();
@@ -153,7 +151,7 @@ export default function NavBar() {
             </div>
           </div>
 
-          <button onClick={function () { setMenuOpen(!menuOpen); }} className="md:hidden text-obsidian">
+          <button onClick={function () { setMenuOpen(!menuOpen); }} className="md:hidden text-obsidian z-50">
             {menuOpen ? <X size={20} strokeWidth={1} /> : <Menu size={20} strokeWidth={1} />}
           </button>
         </div>
@@ -166,54 +164,59 @@ export default function NavBar() {
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
             transition={{ duration: 0.3 }} 
-            className="fixed inset-0 z-40 bg-ghost flex flex-col justify-center items-center overflow-y-auto pt-20 pb-10"
+            className="fixed inset-0 z-40 bg-ghost flex flex-col h-[100dvh]"
           >
-            <div className="flex flex-col items-center gap-6 w-full max-w-sm px-6">
-              {navItems.map(function (item, i) {
-                return (
-                  <motion.a 
-                    key={item.label} 
-                    href={item.href} 
-                    onClick={function (e) { handleNavigation(e, item.href); }} 
-                    initial={{ opacity: 0, y: 20 }} 
-                    animate={{ opacity: 1, y: 0 }} 
-                    transition={{ delay: i * 0.08 }} 
-                    className="text-xl font-display font-semibold tracking-wider uppercase text-slate-800 hover:text-cobalt transition-colors"
-                  >
-                    {item.label}
-                  </motion.a>
-                );
-              })}
+            <div className="h-[76px] shrink-0 w-full" />
+            <div className="flex-1 overflow-y-auto px-6 w-full flex flex-col items-center pb-24">
+              
+              <div className="flex flex-col items-center gap-6 w-full max-w-sm pt-8">
+                {navItems.map(function (item, i) {
+                  return (
+                    <motion.a 
+                      key={item.label} 
+                      href={item.href} 
+                      onClick={function (e) { handleNavigation(e, item.href); }} 
+                      initial={{ opacity: 0, y: 20 }} 
+                      animate={{ opacity: 1, y: 0 }} 
+                      transition={{ delay: i * 0.08 }} 
+                      className="text-xl font-display font-semibold tracking-wider uppercase text-slate-800 hover:text-cobalt transition-colors"
+                    >
+                      {item.label}
+                    </motion.a>
+                  );
+                })}
 
-              <div className="w-full flex flex-col items-center gap-4 mt-8 pt-8 border-t border-slate_mist">
-                <div className="w-full bg-white border border-slate_mist rounded-sm p-4 mb-4">
-                  <h4 className="text-xs font-medium tracking-widest text-cobalt uppercase mb-4 text-center">Soluções Web</h4>
-                  <div className="flex flex-col gap-3">
-                    {webSolutions.map(function (solution, idx) {
-                      const Icon = solution.icon;
-                      return (
-                        <a
-                          key={idx}
-                          href={solution.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 text-sm font-medium text-obsidian/70 hover:text-cobalt transition-colors py-2 border border-ghost hover:border-cobalt/20"
-                        >
-                          <Icon size={16} strokeWidth={1.5} />
-                          {solution.label}
-                        </a>
-                      );
-                    })}
+                <div className="w-full flex flex-col items-center gap-4 mt-8 pt-8 border-t border-slate_mist">
+                  <div className="w-full bg-white border border-slate_mist rounded-sm p-4 mb-4">
+                    <h4 className="text-xs font-medium tracking-widest text-cobalt uppercase mb-4 text-center">Soluções Web</h4>
+                    <div className="flex flex-col gap-3">
+                      {webSolutions.map(function (solution, idx) {
+                        const Icon = solution.icon;
+                        return (
+                          <a
+                            key={idx}
+                            href={solution.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 text-sm font-medium text-obsidian/70 hover:text-cobalt transition-colors py-2 border border-ghost hover:border-cobalt/20"
+                          >
+                            <Icon size={16} strokeWidth={1.5} />
+                            {solution.label}
+                          </a>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
 
-                <a href="tel:+553132451265" className="flex items-center gap-2 text-sm text-obsidian/60">
-                  <Phone size={14} strokeWidth={1} /> (31) 3245-1265
-                </a>
-                <a href="mailto:comercial@prodacom.com.br" className="flex items-center gap-2 text-sm text-obsidian/60">
-                  <Mail size={14} strokeWidth={1} /> comercial@prodacom.com.br
-                </a>
+                  <a href="tel:+553132451265" className="flex items-center gap-2 text-sm text-obsidian/60">
+                    <Phone size={14} strokeWidth={1} /> (31) 3245-1265
+                  </a>
+                  <a href="mailto:comercial@prodacom.com.br" className="flex items-center gap-2 text-sm text-obsidian/60">
+                    <Mail size={14} strokeWidth={1} /> comercial@prodacom.com.br
+                  </a>
+                </div>
               </div>
+              
             </div>
           </motion.div>
         )}

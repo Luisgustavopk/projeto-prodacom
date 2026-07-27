@@ -56,6 +56,7 @@ async function obterTodasAsConversas() {
           _id: "$clienteId",
           nome: { $first: "$clienteNome" },
           contato: { $first: "$clienteId" },
+          lastMessageAt: { $last: "$createdAt" },
           mensagens: {
             $push: { 
               role: "$role", 
@@ -77,7 +78,8 @@ async function obterTodasAsConversas() {
         nome: chat.nome,
         contato: contatoLimpo,
         idDoCliente: mapeamentoSockets[contatoLimpo] || contatoLimpo,
-        online: isClienteOnline(contatoLimpo), 
+        online: isClienteOnline(contatoLimpo),
+        lastMessageAt: chat.lastMessageAt, 
         mensagens: chat.mensagens
       };
     });
@@ -100,6 +102,7 @@ async function obterConversa(contato: string) {
       contato: contatoLimpo,
       idDoCliente: mapeamentoSockets[contatoLimpo] || contatoLimpo,
       online: isClienteOnline(contatoLimpo),
+      lastMessageAt: mensagens[mensagens.length - 1].createdAt,
       mensagens: mensagens.map(m => ({ 
         role: m.role, 
         content: m.content, 

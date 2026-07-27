@@ -1,11 +1,38 @@
 import React from "react";
 import { Monitor, ChevronRight } from "lucide-react";
 
+// Função para formatar o tempo (Verifica se passou de 24h)
+function formatarTempoVisivel(isoString, fallbackHora) {
+  if (!isoString) return fallbackHora || "--:--";
+  
+  const msgDate = new Date(isoString);
+  const now = new Date();
+  
+  // Verifica se é o mesmo dia (para mostrar só a hora)
+  const isHoje = msgDate.getDate() === now.getDate() && 
+                 msgDate.getMonth() === now.getMonth() && 
+                 msgDate.getFullYear() === now.getFullYear();
+
+  if (isHoje) {
+    return msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } else {
+    // Se não for hoje, mostra a data (Ex: 25/07/2026)
+    return msgDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+}
+
 export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
-  const conversasAtivas = Object.entries(chats);
+  
+  // ORDENAÇÃO: Pega as conversas e ordena da mais recente para a mais antiga
+  const conversasOrdenadas = Object.entries(chats).sort((a, b) => {
+    const dataA = a[1].lastMessageAt ? new Date(a[1].lastMessageAt).getTime() : 0;
+    const dataB = b[1].lastMessageAt ? new Date(b[1].lastMessageAt).getTime() : 0;
+    return dataB - dataA; // Retorna em ordem decrescente
+  });
 
   return (
     <div className={`${clienteAtivo ? "hidden md:flex" : "flex"} w-full md:w-1/3 md:max-w-sm bg-[#1a1a1a] flex-col border-r border-white/5 shadow-2xl z-20`}>
+      
       {/* Header Sidebar */}
       <div className="p-4 md:p-6 bg-[#1a1a1a] border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
         <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
@@ -21,15 +48,20 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
         </div>
       </div>
 
-      {/* Lista de Conversas */}
+      {/* Lista de Conversas Ordenadas */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        {conversasAtivas.length === 0 ? (
+        {conversasOrdenadas.length === 0 ? (
           <div className="text-white/20 text-center text-[10px] uppercase tracking-widest p-10 mt-10 font-medium">
             Aguardando novas conexões...
           </div>
         ) : (
-          conversasAtivas.map(([id, dados]) => {
+          conversasOrdenadas.map(([id, dados]) => {
             const isSelected = clienteAtivo === id;
+            
+            // Pega a última mensagem para exibir o textinho resumido e fallback de hora
+            const ultimaMsg = dados.mensagens?.length > 0 
+              ? dados.mensagens[dados.mensagens.length - 1] 
+              : null;
 
             return (
               <button
@@ -45,17 +77,22 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
                     <span className={`font-bold text-xs uppercase tracking-wider ${isSelected ? "text-white" : "text-white/90"}`}>
                       {dados.nome}
                     </span>
+                    
+                    {/* Badge Bolinha de Não Lido */}
                     {dados.unread && !isSelected && (
                       <span className="ml-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />
                     )}
                   </div>
+                  
+                  {/* HORA OU DATA DA ÚLTIMA MENSAGEM */}
                   <span className={`text-[9px] font-mono ${isSelected ? "text-white/60" : "text-white/30"}`}>
-                    {dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1].hora : "--:--"}
+                    {formatarTempoVisivel(dados.lastMessageAt, ultimaMsg?.hora)}
                   </span>
                 </div>
+                
                 <div className="flex items-center justify-between w-full">
                   <span className={`text-[10px] md:text-[11px] truncate pr-4 ${dados.unread ? "font-bold text-white" : isSelected ? "text-white/80" : "text-white/40"}`}>
-                    {dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1].content : "Nova solicitação"}
+                    {ultimaMsg ? ultimaMsg.content : "Nova solicitação"}
                   </span>
                   <ChevronRight size={12} className={isSelected ? "text-white" : "text-white/10"} />
                 </div>

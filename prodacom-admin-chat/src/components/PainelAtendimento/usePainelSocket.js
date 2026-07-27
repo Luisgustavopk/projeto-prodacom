@@ -102,6 +102,7 @@ export function usePainelSocket() {
             ...chatAtual,
             online: true,
             unread: !isChatAberto,
+            lastMessageAt: new Date().toISOString(),
             mensagens: [
               ...chatAtual.mensagens,
               { 
@@ -168,6 +169,7 @@ export function usePainelSocket() {
         [chatId]: {
           ...chatAtual,
           unread: false,
+          lastMessageAt: new Date().toISOString(),
           mensagens: [
             ...chatAtual.mensagens,
             { role: "admin", autor: "Admin", content: texto, hora, status: "enviado" }
