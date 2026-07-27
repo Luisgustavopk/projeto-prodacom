@@ -6,7 +6,6 @@ import { WebChatContext } from "../../context/WebChatContext";
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
 
-// Subcomponente de Status Visual para o Widget do Cliente
 function StatusMensagem({ status }) {
   if (status === "enviado") return <Check size={13} className="text-white/70" />;
   if (status === "entregue") return <CheckCheck size={14} className="text-white/70" />;
@@ -33,6 +32,7 @@ export default function ChatWidget() {
     handleStartChat,
     handleSend
   } = useContext(WebChatContext);
+
 
   useEffect(function () {
     let observer = null;
@@ -66,14 +66,33 @@ export default function ChatWidget() {
     };
   }, [location.pathname]);
 
-  const panelWidth = expanded ? "w-[calc(100vw-2.5rem)] md:w-[520px] lg:w-[640px]" : "w-[calc(100vw-2.5rem)] sm:w-[360px]";
-  const panelHeight = expanded ? "h-[calc(100dvh-7rem)] md:h-[640px]" : "h-[calc(100dvh-7rem)] sm:h-[480px] sm:max-h-[80vh]";
+  useEffect(() => {
+    if (open && expanded && window.innerWidth < 768) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    
+    return () => { 
+      document.body.style.overflow = "unset"; 
+    };
+  }, [open, expanded]);
 
   return (
     <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3">
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 30, scale: 0.95 }} className={`${panelWidth} ${panelHeight} bg-white border border-slate_mist flex flex-col shadow-2xl`}>
+          <motion.div 
+            initial={{ opacity: 0, y: 30, scale: 0.95 }} 
+            animate={{ opacity: 1, y: 0, scale: 1 }} 
+            exit={{ opacity: 0, y: 30, scale: 0.95 }} 
+            className={`bg-white flex flex-col shadow-2xl overflow-hidden transition-all duration-300
+              ${expanded 
+                ? "fixed inset-0 z-[70] w-full h-[100dvh] rounded-none md:relative md:inset-auto md:w-[520px] lg:w-[640px] md:h-[640px] md:border md:border-slate_mist md:rounded-xl" 
+                : "relative w-[calc(100vw-2.5rem)] sm:w-[360px] h-[calc(100dvh-7rem)] sm:h-[480px] sm:max-h-[80vh] border border-slate_mist rounded-xl"
+              }
+            `}
+          >
             
             {/* HEADER */}
             <div className="bg-obsidian text-white px-5 py-4 flex items-center justify-between flex-shrink-0">

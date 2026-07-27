@@ -169,7 +169,7 @@ async function atualizarStatusMensagens(
       },
       { $set: { status: novoStatus } }
     );
-    console.log(`[MONGO] Mensagens de [${roleTarget}] para ${contatoLimpo} atualizadas para: ${novoStatus}`);
+  
   } catch (error) {
     console.error("Erro ao atualizar status das mensagens no MongoDB:", error);
   }
