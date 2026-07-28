@@ -8,43 +8,7 @@ import Footer from "../components/prodacom/Footer";
 
 import { catalogData } from "../data/catalog";
 import { productsData } from "../data/products";
-import { imageRegistry } from "../data/imageRegistry";
 import { useCarouselAutoplay } from "../hooks/useCarouselAutoplay";
-
-
-const PRODUCT_NO_BG_MAPPING = {
-  // Controle de Acesso
-  "idface": imageRegistry.controleDeAcesso?.noBg?.idfaceFrontalEn,
-  "idface-max": imageRegistry.controleDeAcesso?.noBg?.idfaceMaxFrontal,
-  "idlock-bio": imageRegistry.controleDeAcesso?.noBg?.idlockBioFrente,
-  "idlock": imageRegistry.controleDeAcesso?.noBg?.idlockFrente,
-
-  // Relógio de Ponto
-  "leitor-facial-f4": imageRegistry.relogioDePonto?.noBg?.controlePontoFacial,
-  "inner-rep-plus": imageRegistry.relogioDePonto?.noBg?.relogioPontoEletronico,
-
-  // Catracas
-  "catraca-revolution": imageRegistry.catraca?.noBg?.eletronicaLeitorFacial,
-  "catraca-box": imageRegistry.catraca?.noBg?.inoxLeitorFacial,
-  "idblock-next": imageRegistry.catraca?.noBg?.idblockNextSemIdface,
-  "idblock-pne": imageRegistry.catraca?.noBg?.idblockPcdPerspectiva,
-  "catraca-fit": imageRegistry.catraca?.noBg?.paraAcademia,
-
-  // Crachás
-  "crachas-pvc": imageRegistry.cracha?.noBg?.pvc,
-  "crachas-rfid": imageRegistry.cracha?.noBg?.rfid,
-
-  // Bastão de Ronda
-  "bastao-viggia": imageRegistry.bastaoDeRonda?.noBg?.bastaoDeRonda,
-
-  // Softwares
-  "software-iclube": imageRegistry.software?.noBg?.iclube,
-  "software-iponto": imageRegistry.software?.noBg?.iponto,
-  "software-icontrol": imageRegistry.software?.noBg?.icontrol,
-  "software-ifitness": imageRegistry.software?.noBg?.ifitness,
-  "software-refcontrol": imageRegistry.software?.noBg?.refcontrol,
-  "software-school": imageRegistry.software?.noBg?.school
-};
 
 export default function CategoryPage() {
   const { id } = useParams(); 
@@ -79,6 +43,13 @@ export default function CategoryPage() {
     );
   }
 
+  // 👇 LÓGICA DO GRID ADAPTÁVEL: Define as classes baseadas na quantidade de produtos
+  const gridClass = carouselItems.length === 1 
+    ? "grid grid-cols-1 max-w-sm mx-auto" 
+    : carouselItems.length === 2 
+      ? "grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" 
+      : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto";
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -93,7 +64,6 @@ export default function CategoryPage() {
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden border-b border-white/5">
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           
-          {/* Botão Voltar usando rota nativa */}
           <motion.button 
             initial={{ opacity: 0, x: -20 }} 
             animate={{ opacity: 1, x: 0 }}
@@ -103,7 +73,6 @@ export default function CategoryPage() {
             &larr; Voltar ao início
           </motion.button>
 
-          {/* Grid Principal */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
             {/* Esquerda: Informações da Categoria */}
@@ -142,7 +111,6 @@ export default function CategoryPage() {
               {carouselItems.length > 0 && (
                 <div className="relative h-[480px] md:h-[580px] w-full flex items-center justify-center overflow-hidden">
                   
-                  {/* Setas de Navegação Laterais Discretas */}
                   {carouselItems.length > 1 && (
                     <>
                       <button 
@@ -160,15 +128,14 @@ export default function CategoryPage() {
                     </>
                   )}
 
-                  {/* Renderizador com Centralização Total e Tamanho Máximo Adaptável */}
                   <AnimatePresence mode="wait">
                     {carouselItems.map((model, idx) => {
                       if (idx !== activeSlide) return null;
                       
                       const productInfo = productsData[model.id];
-                      const noBgImage = PRODUCT_NO_BG_MAPPING[model.id];
-                      const isTransparent = !!noBgImage;
-                      const productImage = noBgImage || productInfo?.image || model.image;
+                      // Usa a imagem transparente direto do banco de dados (se existir)
+                      const isTransparent = !!productInfo?.imageNoBg;
+                      const productImage = productInfo?.imageNoBg || productInfo?.image || model.image;
 
                       return (
                         <motion.div
@@ -179,7 +146,6 @@ export default function CategoryPage() {
                           transition={{ duration: 0.35 }}
                           className="absolute inset-0 flex flex-col items-center justify-center p-4 md:p-8 w-full h-full select-none"
                         >
-                          {/* Glow Radial Circular Suave sem bordas marcadas */}
                           {isTransparent && (
                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] md:w-[380px] md:h-[380px] bg-cobalt/20 rounded-full blur-[80px] md:blur-[120px] -z-10 pointer-events-none" />
                           )}
@@ -202,7 +168,6 @@ export default function CategoryPage() {
                       );
                     })}
                   </AnimatePresence>
-
                 </div>
               )}
             </div>
@@ -235,58 +200,63 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* 3. LINHA DE PRODUTOS (DARK) */}
+      {/* 3. LINHA DE PRODUTOS (DARK - NOVO FORMATO VERTICAL) */}
       <section id="linha-produtos" className="py-24 bg-obsidian border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-16">
+        <div className="px-6 w-full">
+          <div className="mb-16 max-w-7xl mx-auto">
             <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight">
               Linha de produtos
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          {/* Grid Dinâmico que se adapta à quantidade de itens */}
+          <div className={`${gridClass} gap-8`}>
             {carouselItems.map((model, i) => {
               const productInfo = productsData[model.id];
-              const productImage = productInfo?.image || model.image;
+              const productImage = productInfo?.imageNoBg || productInfo?.image || model.image;
 
               return (
                 <div 
                   key={i} 
                   onClick={() => navigate(`/produto/${model.id}`)}
-                  className="bg-white/[0.02] border border-white/5 hover:border-cobalt/30 p-8 rounded-2xl flex items-center gap-8 cursor-pointer hover:bg-white/[0.04] transition-all duration-300 group"
+                  className="bg-white/[0.02] border border-white/5 hover:border-cobalt/30 p-6 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer hover:bg-white/[0.04] hover:-translate-y-1 transition-all duration-300 group"
                 >
                   {productImage && (
-                    <div className="w-28 h-28 lg:w-56 lg:h-56 shrink-0 flex items-center justify-center bg-obsidian rounded-xl p-3 border border-white/5 group-hover:border-cobalt/20 transition-all">
+                    <div className="w-full h-72 md:h-96 shrink-0 flex items-center justify-center bg-white/[0.02] rounded-xl p-2 md:p-4 border border-white/5 group-hover:border-cobalt/30 transition-all mb-8 relative overflow-hidden">
+                      <div className="absolute w-40 h-40 md:w-56 md:h-56 bg-cobalt/10 blur-[60px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none group-hover:bg-cobalt/20 transition-colors" />
                       <img 
                         src={productImage} 
                         alt={model.title} 
-                        className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-contain transition-transform duration-700 scale-105 group-hover:scale-110 relative z-10 drop-shadow-xl"
                       />
                     </div>
                   )}
 
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-mono text-white/30 block mb-1">
-                      PRODUTO {model.num}
-                    </span>
-                    <h3 className="font-display font-semibold text-xl text-white group-hover:text-cobalt transition-colors truncate">
-                      {model.title}
-                    </h3>
-                    <p className="text-sm text-white/40 mt-2 line-clamp-2 leading-relaxed">
-                      {model.desc}
-                    </p>
+                  {/* Conteúdo de Texto e Botão */}
+                  <div className="flex flex-col flex-1 items-center justify-between w-full">
+                    <div className="mb-6">
+                      <h3 className="font-display font-semibold text-xl md:text-2xl text-white group-hover:text-cobalt transition-colors mb-3">
+                        {model.title}
+                      </h3>
+                      <p className="text-sm text-white/40 line-clamp-3 leading-relaxed">
+                        {model.desc}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto w-full pt-4">
+                      <span className="inline-flex items-center justify-center gap-2 w-full bg-white/5 text-white/70 py-3.5 rounded-lg group-hover:bg-cobalt group-hover:text-white transition-all duration-300 text-[11px] font-bold uppercase tracking-wider">
+                        Ver Produto <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="shrink-0 text-white/20 group-hover:text-cobalt transition-colors pl-2">
-                    <ArrowRight size={22} />
-                  </div>
                 </div>
               );
             })}
           </div>
 
           {category.addons && category.addons.length > 0 && (
-            <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-white/5">
+            <div className="max-w-7xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-white/5">
               {category.addons.map((addon, i) => {
                 const Icon = addon.icon;
                 return (
@@ -306,9 +276,6 @@ export default function CategoryPage() {
       <section className="py-24 bg-[#0a0b0e] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="text-xs font-mono tracking-widest text-white/20 uppercase block mb-3">
-              // Vamos Conversar
-            </span>
             <h2 className="font-display font-bold text-4xl md:text-5xl text-white tracking-tight mb-6">
               Interesse em {category.title}?
             </h2>

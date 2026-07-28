@@ -62,7 +62,7 @@ export function ProductComposition({ images, title }) {
         </div>
       </div>
 
-      {/* 💻 VISÃO DESKTOP */}
+      {/* VISÃO DESKTOP */}
       <div className="hidden md:flex">
         {images.length === 2 ? (
           <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-5xl mx-auto relative px-4">

@@ -17,7 +17,9 @@ export const catalogData = {
     ],
     models: [
       { id: "leitor-facial-f4", num: "01", title: "Leitor Facial F4 Topdata", desc: "Tecnologia de reconhecimento facial binocular (RGB + IR) com detecção de rosto vivo e máscara." },
-      { id: "inner-rep-plus", num: "02", title: "Inner REP Plus Biométrico", desc: "Relógio de ponto tradicional de alta durabilidade com opções de leitores biométricos LC e LFD." }
+      { id: "inner-rep-plus", num: "02", title: "Inner REP Plus Biométrico", desc: "Relógio de ponto tradicional de alta durabilidade com opções de leitores biométricos LC e LFD." },
+      { id: "idface", num: "03", title: "iDFace Control iD", desc: "Controle de acesso facial de alta tecnologia com tela touchscreen de 3.5\" e capacidade para até 10.000 faces." },
+      { id: "idclass", num: "04", title: "iDClass Control iD", desc: "Relógio de ponto (REP-C) homologado pelo MTE e Inmetro, com design compacto e touchscreen." }
     ],
     addons: [
       { icon: Fingerprint, title: "Módulos Biométricos Customizáveis", desc: "Leitor LFD antifraude de silicone (até 10.000 digitais) ou Módulo LC econômico (até 3.000 digitais)." }
@@ -45,12 +47,12 @@ export const catalogData = {
 
   "catracas": {
     id: "catracas",
-    tag: "03 // COOPERAÇÃO TOPDATA & CONTROL ID // BARREIRAS FÍSICAS",
+    tag: "03 // COOPERAÇÃO // BARREIRAS FÍSICAS",
     title: "Catracas Eletrônicas",
-    description: "Controle físico rigoroso de passagem para portarias corporativas, academias e escolas. Modelos que unem a mecânica robusta da Topdata com os eletrônicos modernos da Control iD.",
+    description: "Controle físico rigoroso de passagem para portarias corporativas, academias e setor food service. Soluções de barreira eficientes adaptáveis a qualquer tipo de negócio.",
     benefits: [
       { icon: ShieldCheck, title: "Mecânica Durável", desc: "Mecanismos de braços em inox projetados para suportar mais de 3.000.000 de giros sem fadiga." },
-      { icon: Layers, title: "Urna Coletora Integrada", desc: "Cofre inteligente opcional para recolhimento mecânico e retenção de cartões de visitantes." },
+      { icon: Layers, title: "Controle de Cartões", desc: "Cofres e urnas inteligentes para o recolhimento ou expedição mecânica de comandas e crachás." },
       { icon: Lock, title: "Segurança de Emergência", desc: "Opção de braço articulado (antipânico) que cai automaticamente em caso de queda de energia." },
       { icon: Users, title: "Acessibilidade Universal", desc: "Estruturas adaptadas para permitir a passagem confortável de cadeirantes e pessoas com mobilidade reduzida." }
     ],
@@ -58,7 +60,10 @@ export const catalogData = {
       { id: "catraca-revolution", num: "01", title: "Catraca Revolution Topdata", desc: "Pedestal em aço carbono com tampo em inox escovado. O melhor custo-benefício para fluxos corporativos." },
       { id: "catraca-box", num: "02", title: "Catraca Box Topdata", desc: "Gabinete reforçado tipo cofre, oferecendo maior barreira física e espaço para múltiplas integrações." },
       { id: "idblock-next", num: "03", title: "iDBlock Next Control iD", desc: "Catraca pedestal da Control iD equipada com display touchscreen, leitor biométrico e design ultra moderno." },
-      { id: "idblock-pne", num: "04", title: "iDBlock PNE Acessível", desc: "Modelo Control iD em conformidade com as normas de acessibilidade, com braço estendido ou pivotante." }
+      { id: "idblock-pne", num: "04", title: "iDBlock PNE Acessível", desc: "Modelo Control iD em conformidade com as normas de acessibilidade, com braço estendido ou pivotante." },
+      { id: "catraca-evo-expedidora", num: "05", title: "Catraca Expedidora EVO", desc: "Automação de entrada com dispensador de comandas. Ideal para padarias e restaurantes." },
+      { id: "catraca-evo-coletora", num: "06", title: "Catraca Coletora EVO", desc: "Recolhimento de comandas na saída com bloqueio inteligente de contas não pagas." },
+      { id: "catraca-fit", num: "07", title: "Catraca Fit Topdata", desc: "Design otimizado e compacto, perfeita para academias e ambientes com restrição de espaço." }
     ]
   },
 
@@ -78,25 +83,26 @@ export const catalogData = {
     ]
   },
   
-    "softwares": {
-      id: "softwares",
-      tag: "05 // LINHA INSPELL // ECOSSISTEMA DE GESTÃO",
-      title: "Softwares de Gestão",
-      description: "Sistemas completos, robustos e totalmente parametrizáveis para controle de jornada, segurança de acesso, automação escolar, clubes e gestão fitness.",
-      benefits: [
-        { icon: HardDrive, title: "Banco de Dados Firebird", desc: "Arquitetura com banco de dados gratuito, seguro, leve e otimizado para alto desempenho local." },
-        { icon: FileText, title: "Backup Automatizado", desc: "Rotina inteligente integrada nativamente para cópias de segurança locais ou salvamento automático na nuvem." },
-        { icon: Cpu, title: "Infraestrutura Simplificada", desc: "Instalação otimizada em estações de trabalho Windows, dispensando servidores dedicados complexos." }
-      ],
-      models: [
-        { id: "software-iponto", num: "01", title: "iPonto Plus (Controle de Ponto)", desc: "Tratamento de ponto completo de acordo com as regras da CLT, acordos sindicais e Portaria 671." },
-        { id: "software-ifitness", num: "02", title: "iFitness (Gestão de Academias)", desc: "Gerenciamento de studios, boxes e academias focado em retenção de alunos e acesso integrado." },
-        { id: "software-icontrol", num: "03", title: "iControl (Ambientes e Acesso)", desc: "Segurança de perímetros restritos com biometria on-line e monitoramento em tempo real." },
-        { id: "software-iclube", num: "04", title: "iClube (Clubes e Associações)", desc: "Controle financeiro de cotas, dependentes e validação visual de associados na portaria." },
-        { id: "software-school", num: "05", title: "School Control (Gestão Escolar)", desc: "Gestão pedagógica aliada à segurança com alertas automatizados de entrada e saída aos pais." },
-        { id: "software-refcontrol", num: "06", title: "RefControl (Refeitórios Corporativos)", desc: "Controle regressivo de consumo e bloqueios por escalas para refeitórios industriais." }
-      ]
-    },
+  "softwares": {
+    id: "softwares",
+    tag: "05 // LINHA INSPELL // ECOSSISTEMA DE GESTÃO",
+    title: "Softwares de Gestão",
+    description: "Sistemas completos, robustos e totalmente parametrizáveis para controle de jornada, segurança de acesso, automação escolar, clubes e gestão fitness.",
+    benefits: [
+      { icon: HardDrive, title: "Banco de Dados Firebird", desc: "Arquitetura com banco de dados gratuito, seguro, leve e otimizado para alto desempenho local." },
+      { icon: FileText, title: "Backup Automatizado", desc: "Rotina inteligente integrada nativamente para cópias de segurança locais ou salvamento automático na nuvem." },
+      { icon: Cpu, title: "Infraestrutura Simplificada", desc: "Instalação otimizada em estações de trabalho Windows, dispensando servidores dedicados complexos." }
+    ],
+    models: [
+      { id: "software-iponto", num: "01", title: "iPonto Plus (Controle de Ponto)", desc: "Tratamento de ponto completo de acordo com as regras da CLT, acordos sindicais e Portaria 671." },
+      { id: "software-ifitness", num: "02", title: "iFitness (Gestão de Academias)", desc: "Gerenciamento de studios, boxes e academias focado em retenção de alunos e acesso integrado." },
+      { id: "software-icontrol", num: "03", title: "iControl (Ambientes e Acesso)", desc: "Segurança de perímetros restritos com biometria on-line e monitoramento em tempo real." },
+      { id: "software-iclube", num: "04", title: "iClube (Clubes e Associações)", desc: "Controle financeiro de cotas, dependentes e validação visual de associados na portaria." },
+      { id: "software-school", num: "05", title: "School Control (Gestão Escolar)", desc: "Gestão pedagógica aliada à segurança com alertas automatizados de entrada e saída aos pais." },
+      { id: "software-refcontrol", num: "06", title: "RefControl (Refeitórios Corporativos)", desc: "Controle regressivo de consumo e bloqueios por escalas para refeitórios industriais." }
+    ]
+  },
+
   "crachas": {
     id: "crachas",
     tag: "06 // PRODACOM HARDWARE // IDENTIFICAÇÃO SEGURA",
@@ -111,5 +117,5 @@ export const catalogData = {
       { id: "crachas-pvc", num: "01", title: "Crachás PVC Customizados", desc: "Impressão de crachás com layouts personalizados, fotos em alta definição e dados funcionais." },
       { id: "crachas-rfid", num: "02", title: "Cartões de Proximidade RFID", desc: "Cartões e tags inteligentes com chips de radiofrequência para liberação mecânica de barreiras." }
     ]
-  },
+  }
 };

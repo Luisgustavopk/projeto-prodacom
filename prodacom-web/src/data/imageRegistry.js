@@ -2,7 +2,7 @@
 // 1. IMPORTAÇÕES - PASTA: catraca (src/assets/images/catraca/)
 // ============================================================================
 
-// --- Novas Imagens (Fundo Branco Puro - PNG) ---
+// --- Novas Imagens (Fundo Branco Puro - PNG/JPG) ---
 import catracaBalcao_Bg from "../assets/images/catraca/catraca-balcao.jpg";
 import catracaBiometrica_Bg from "../assets/images/catraca/catraca-biometrica.jpg";
 import catracaComUrnaColetora_Bg from "../assets/images/catraca/catraca-com-urna-coletora.jpg";
@@ -22,20 +22,32 @@ import idblockNextComIdface_Bg from "../assets/images/catraca/idblock-next-com-i
 import idblockNextSemIdface_Bg from "../assets/images/catraca/idblock-next-sem-idface.jpg";
 import idblockPcdFrontal_Bg from "../assets/images/catraca/idblock-pcd-frontal.jpg";
 import idblockPcdPerspectiva_Bg from "../assets/images/catraca/idblock-pcd-perspectiva.jpg";
+import evoExpedidora1_Bg from "../assets/images/catraca/catraca-de-acesso-expedidora-comanda-evo-combo-9x7-1-768x432.jpg";
+import evoExpedidora2_Bg from "../assets/images/catraca/catraca-de-acesso-expedidora-comanda-evo-combo-9x7-2-capa-768x768.jpg";
+import evoExpedidora5_Bg from "../assets/images/catraca/catraca-de-acesso-expedidora-comanda-evo-combo-9x7-5-768x432.jpg";
+import evoExpedidora6_Bg from "../assets/images/catraca/catraca-de-acesso-expedidora-comanda-evo-combo-9x7-6-768x432.jpg";
+import evoColetora2_Bg from "../assets/images/catraca/catraca-de-acesso-coletora-comanda-evo-combo-9x7-2-768x432.jpg";
+import evoColetora3_Bg from "../assets/images/catraca/catraca-de-acesso-coletora-comanda-evo-combo-9x7-3-768x432.jpg";
+import evoColetora4_Bg from "../assets/images/catraca/catraca-de-acesso-coletora-comanda-evo-combo-9x7-4-capa-768x768.jpg";
+import evoColetora5_Bg from "../assets/images/catraca/catraca-de-acesso-coletora-comanda-evo-combo-9x7-5-768x614.jpg";
+
 
 // --- Imagens Transparentes (no-bg - PNG) ---
 import catracaEletronicaLeitorFacial_NoBg from "../assets/images/catraca/no-bg/catraca-eletronica-com-leitor-facial-600x1024.png";
 import catracaInoxLeitorFacial_NoBg from "../assets/images/catraca/no-bg/catraca-inox-com-leitor-facial.png";
 import catracaParaAcademia_NoBg from "../assets/images/catraca/no-bg/catraca-para-academia-819x1024.png";
 import idblockNextSemIdface_NoBg from "../assets/images/catraca/no-bg/idblock-next-sem-idface.png";
+import idblockNextComIdface_NoBg from "../assets/images/catraca/no-bg/idblock-next-com-idface.png";
 import idblockPcdPerspectiva_NoBg from "../assets/images/catraca/no-bg/idblock-pcd-perspectiva.png";
+
+// IMPORTAÇÕES EVO SISTEMAS NO-BG
+import evoExpedidora_NoBg from "../assets/images/catraca/no-bg/catraca-de-acesso-expedidora-comanda-evo-combo-9x7-2-capa-768x768.png";
+import evoColetora_NoBg from "../assets/images/catraca/no-bg/catraca-de-acesso-coletora-comanda-evo-combo-9x7-4-capa-768x768.png";
 
 
 // ============================================================================
 // 2. IMPORTAÇÕES - PASTA: controle-de-acesso (src/assets/images/controle-de-acesso/)
 // ============================================================================
-
-// --- Novas Imagens (Fundo Branco Puro - PNG) ---
 import idfaceFrontalEn_Bg from "../assets/images/controle-de-acesso/idface-frontal-en.jpg";
 import idfaceMaxFrontal_Bg from "../assets/images/controle-de-acesso/idface-max-frontal.jpg";
 import idfaceMaxPerspectiva_Bg from "../assets/images/controle-de-acesso/idface-max-perspectiva.jpg";
@@ -47,8 +59,6 @@ import idlockInternoFrente_Bg from "../assets/images/controle-de-acesso/idlock-i
 import idlockInternoPerspectiva_Bg from "../assets/images/controle-de-acesso/idlock-interno-perspectiva.jpg";
 import idlockPerspectiva_Bg from "../assets/images/controle-de-acesso/idlock-perspectiva.jpg";
 
-
-// --- Imagens Transparentes (no-bg - PNG) ---
 import idfaceFrontalEn_NoBg from "../assets/images/controle-de-acesso/no-bg/idface-frontal-en.png";
 import idfaceMaxFrontal_NoBg from "../assets/images/controle-de-acesso/no-bg/idface-max-frontal.png";
 import idfaceMaxPerspectiva_NoBg from "../assets/images/controle-de-acesso/no-bg/idface-max-perspectiva.png";
@@ -58,12 +68,9 @@ import idlockBioPerspectiva_NoBg from "../assets/images/controle-de-acesso/no-bg
 import idlockFrente_NoBg from "../assets/images/controle-de-acesso/no-bg/idlock-frente.png";
 import idlockPerspectiva_NoBg from "../assets/images/controle-de-acesso/no-bg/idlock-perspectiva.png";
 
-
 // ============================================================================
 // 3. IMPORTAÇÕES - PASTA: relogio-de-ponto (src/assets/images/relogio-de-ponto/)
 // ============================================================================
-
-// --- Novas Imagens (Fundo Branco Puro - PNG) ---
 import controlePontoFacial_Bg from "../assets/images/relogio-de-ponto/controle-de-ponto-facial.jpg";
 import leitorFacial507_Bg from "../assets/images/relogio-de-ponto/leitor-facial-507x1024.jpg";
 import leitorFacialParaControlePonto_Bg from "../assets/images/relogio-de-ponto/leitor-facial-para-controle-de-ponto.jpg";
@@ -73,23 +80,22 @@ import relogioPontoDigital_Bg from "../assets/images/relogio-de-ponto/relogio-de
 import relogioPontoEletronico_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-eletronico.jpg";
 import relogioPontoHomologado_Bg from "../assets/images/relogio-de-ponto/relogio-de-ponto-homologado.jpg";
 
-
-// --- Imagens Transparentes (no-bg - PNG) ---
 import controlePontoFacial_NoBg from "../assets/images/relogio-de-ponto/no-bg/controle-de-ponto-facial.png";
 import relogioPontoEletronico_NoBg from "../assets/images/relogio-de-ponto/no-bg/relogio-de-ponto-eletronico.png";
+import repIdclass_Bg from "../assets/images/relogio-de-ponto/rep-idclass.png";
+import repIdclassFrontalBio_Bg from "../assets/images/relogio-de-ponto/rep-idclass-frontal-bio.jpg";
+import repIdclassPerspectivaBio_Bg from "../assets/images/relogio-de-ponto/rep-idclass-perspectiva-bio.jpg";
 
-
+import repIdclassPerspectivaBio_NoBg from "../assets/images/relogio-de-ponto/no-bg/rep-idclass-perspectiva-bio.png";
 // ============================================================================
 // 4. IMPORTAÇÕES - PASTA: bastao-de-ronda (src/assets/images/bastao-de-ronda/)
 // ============================================================================
 import bastaoDeRonda_NoBg from "../assets/images/bastao-de-ronda/no-bg/bastao-viggia.png";
 import controleDeVigia_NoBg from "../assets/images/bastao-de-ronda/no-bg/controle-de-vigias.png";
 
-
 // ============================================================================
 // 5. IMPORTAÇÕES - PASTA: software (src/assets/images/software/)
 // ============================================================================
-
 import softwareIponto_NoBg from "../assets/images/software/no-bg/software-iponto.png";
 import softwareIcontrol_NoBg from "../assets/images/software/no-bg/software-icontrol.png";
 import softwareIfitness_NoBg from "../assets/images/software/no-bg/software-ifitness.png";
@@ -103,14 +109,10 @@ import softwareSchool_NoBg from "../assets/images/software/no-bg/software-school
 import crachaPvc_NoBg from "../assets/images/cracha/no-bg/crachas-pvc.png";
 import crachaRfid_NoBg from "../assets/images/cracha/no-bg/crachas-rfid.png";
 
-
 // ============================================================================
 // CENTRAL DE REGISTRO - EXPORTAÇÃO E MAPEAMENTO ORGANIZADO
 // ============================================================================
 export const imageRegistry = {
-  // ----------------------------------------------------
-  // CATEGORIA: CATRACAS
-  // ----------------------------------------------------
   catraca: {
     newBg: {
       balcao: catracaBalcao_Bg,
@@ -132,6 +134,14 @@ export const imageRegistry = {
       idblockNextSemIdface: idblockNextSemIdface_Bg,
       idblockPcdFrontal: idblockPcdFrontal_Bg,
       idblockPcdPerspectiva: idblockPcdPerspectiva_Bg,
+      evoExpedidora1: evoExpedidora1_Bg,
+      evoExpedidora2: evoExpedidora2_Bg,
+      evoExpedidora5: evoExpedidora5_Bg,
+      evoExpedidora6: evoExpedidora6_Bg,
+      evoColetora2: evoColetora2_Bg,
+      evoColetora3: evoColetora3_Bg,
+      evoColetora4: evoColetora4_Bg,
+      evoColetora5: evoColetora5_Bg,
     },
     noBg: {
       eletronicaLeitorFacial: catracaEletronicaLeitorFacial_NoBg,
@@ -139,12 +149,12 @@ export const imageRegistry = {
       paraAcademia: catracaParaAcademia_NoBg,
       idblockNextSemIdface: idblockNextSemIdface_NoBg,
       idblockPcdPerspectiva: idblockPcdPerspectiva_NoBg,
+      idblockNextComIdface:  idblockNextComIdface_NoBg,
+      evoExpedidora: evoExpedidora_NoBg,
+      evoColetora: evoColetora_NoBg,
     }
   },
 
-  // ----------------------------------------------------
-  // CATEGORIA: CONTROLE DE ACESSO
-  // ----------------------------------------------------
   controleDeAcesso: {
     newBg: {
       idfaceFrontalEn: idfaceFrontalEn_Bg,
@@ -158,7 +168,6 @@ export const imageRegistry = {
       idlockInternoPerspectiva: idlockInternoPerspectiva_Bg,
       idlockPerspectiva: idlockPerspectiva_Bg,
     },
-  
     noBg: {
       idfaceFrontalEn: idfaceFrontalEn_NoBg,
       idfaceMaxFrontal: idfaceMaxFrontal_NoBg,
@@ -171,9 +180,6 @@ export const imageRegistry = {
     }
   },
 
-  // ----------------------------------------------------
-  // CATEGORIA: RELÓGIO DE PONTO
-  // ----------------------------------------------------
   relogioDePonto: {
     newBg: {
       controlePontoFacial: controlePontoFacial_Bg,
@@ -184,15 +190,16 @@ export const imageRegistry = {
       relogioPontoDigital: relogioPontoDigital_Bg,
       relogioPontoEletronico: relogioPontoEletronico_Bg,
       relogioPontoHomologado: relogioPontoHomologado_Bg,
+      idclass: repIdclass_Bg,
+      idclassFrontalBio: repIdclassFrontalBio_Bg,
+      idclassPerspectivaBio: repIdclassPerspectivaBio_Bg,
     },
     noBg: {
       controlePontoFacial: controlePontoFacial_NoBg,
       relogioPontoEletronico: relogioPontoEletronico_NoBg,
+      idclassPerspectivaBio: repIdclassPerspectivaBio_NoBg
     }
   },
-   // ----------------------------------------------------
-  // CATEGORIA: BASTÃO DE RONDA
-  // ----------------------------------------------------
 
   bastaoDeRonda: {
     noBg: {
@@ -200,10 +207,6 @@ export const imageRegistry = {
       controleDeVigia: controleDeVigia_NoBg,
     }
   },
-
-  // ----------------------------------------------------
-  // CATEGORIA: SOFTWARE
-  // ---------------------------------------------------- 
 
   software: {
     noBg: {
@@ -215,9 +218,7 @@ export const imageRegistry = {
       school: softwareSchool_NoBg,
     }
   },
-  // ----------------------------------------------------
-  // CATEGORIA: CRACHÁS 
-  // ----------------------------------------------------
+
   cracha: {
     noBg: {
       pvc: crachaPvc_NoBg,

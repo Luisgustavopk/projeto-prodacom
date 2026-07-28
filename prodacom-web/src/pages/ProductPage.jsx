@@ -129,7 +129,6 @@ export default function ProductPage() {
       <section className="py-24 bg-[#0a0b0e] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="text-xs font-mono tracking-widest text-white/20 uppercase block mb-3">// Vamos Conversar</span>
             <h2 className="font-display font-bold text-4xl md:text-5xl text-white tracking-tight mb-6">Interesse nesse Produto?</h2>
             <p className="text-base text-white/40 leading-relaxed max-w-md">Solicite seu orçamento sem compromisso. Nossa equipe de consultores está pronta para encontrar a solução ideal para sua empresa.</p>
           </div>

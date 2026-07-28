@@ -1,12 +1,15 @@
 import { 
   ShieldCheck, Fingerprint, Wifi, FileText, Lock, Users, Eye, Zap, 
-  HardDrive,Monitor,Printer, Box,Cpu, Layers, Radio, Sparkles, Accessibility, ScanFace 
+  HardDrive, Monitor, Printer, Box, Cpu, Layers, Radio, Sparkles, Accessibility, ScanFace, CreditCard 
 } from "lucide-react";
+
+import { imageRegistry } from "./imageRegistry"; 
 
 // --- IMPORTAÇÃO DAS IMAGENS LOCAIS (Evita bloqueio de servidores externos) ---
 // Certifique-se de salvar as imagens correspondentes com esses nomes na pasta assets
 import imgF4 from "../../src/assets/images/relogio-de-ponto/facial-f4.jpg";
 import imgRepPlus from "../../src/assets/images/relogio-de-ponto/inner-rep-plus.jpg";
+import imgIdClass from "../../src/assets/images/relogio-de-ponto/rep-idclass.png";
 import imgIdFace from "../../src/assets/images/controle-de-acesso/idface.jpg";
 import imgIdFaceMax from "../../src/assets/images/controle-de-acesso/idface-max.jpg";
 import imgIdLockBio from "../../src/assets/images/controle-de-acesso/idlock-bio.png";
@@ -14,9 +17,11 @@ import imgIdLock from "../../src/assets/images/controle-de-acesso/idlock.png";
 import imgRevolution from "../../src/assets/images/catraca/catraca-revolution.png";
 import imgIdBlockNext from "../../src/assets/images/catraca/idblock-next.jpg";
 import imgIdBlockPne from "../../src/assets/images/catraca/idblock-pne.jpg";
-import imgViggia from "../../src/assets/images/bastao-de-ronda/bastao-viggia.jpg";
 import imgFit from "../assets/images/catraca/catraca-fit.png";
 import imgBox from "../assets/images/catraca/catraca-box.jpg";
+import imgEvoExpedidora from "../assets/images/catraca/catraca-de-acesso-expedidora-9x7.png";
+import imgEvoColetora from "../assets/images/catraca/catraca-evo-coletora-combo-9×7.png";
+import imgViggia from "../../src/assets/images/bastao-de-ronda/bastao-viggia.jpg";
 import imgCrachaPvc from "../../src/assets/images/cracha/crachas-pvc.png";
 import imgCrachaRfid from "../../src/assets/images/cracha/crachas-rfid.jpg";
 import imgIponto from "../../src/assets/images/software/software-iponto.jpg";
@@ -38,6 +43,7 @@ export const productsData = {
     subtitle: "Reconhecimento Facial com Inteligência Artificial e Detecção de Rosto Vivo",
     description: "O Leitor Facial F4 representa o estado da arte em marcação de ponto e controle de acesso biométrico por imagem. Desenvolvido com algoritmos de Deep Learning e um sistema de câmera dupla binocular, ele é capaz de diferenciar com precisão absoluta um rosto humano real de fotografias em alta definição, vídeos em telas de celular ou máscaras de silicone, anulando qualquer tentativa de fraude no registro de jornada.",
     image: imgF4,
+    imageNoBg: imageRegistry.relogioDePonto?.noBg?.controlePontoFacial, 
     features: [
       { icon: ScanFace, title: "Tecnologia Liveness (Rosto Vivo)", desc: "Validação tridimensional em tempo real que exige a presença física do colaborador, impedindo o uso de mídias estáticas ou digitais de terceiros." },
       { icon: Sparkles, title: "Velocidade de Processamento", desc: "Varredura e identificação biométrica facial instantânea concluída em menos de 0,2 segundos, eliminando filas nas trocas de turno." },
@@ -65,6 +71,7 @@ export const productsData = {
     subtitle: "Relógio de Ponto Eletrônico Homologado pela Portaria 671 do MTE",
     description: "O Inner REP Plus é o equipamento de ponto eletrônico com impressora mais vendido e robusto do mercado. Projetado especificamente para cumprir com todas as exigências legais do Ministério do Trabalho e Emprego (MTE) e certificado pelo INMETRO, ele garante total segurança jurídica contra passivos trabalhistas. Conta com impressora térmica direta industrial de alta velocidade e um compartimento blindado para o rolo de papel de alta autonomia.",
     image: imgRepPlus,
+    imageNoBg: imageRegistry.relogioDePonto?.noBg?.relogioPontoEletronico, 
     features: [
       { icon: ShieldCheck, title: "Conformidade Legal Estrita", desc: "Geração automática do arquivo fiscal AFD e assinatura digital padrão ICP-Brasil em todos os tickets de ponto emitidos." },
       { icon: Printer, title: "Guilhotina de Corte Automático", desc: "Mecanismo térmico de alta velocidade que realiza o corte total do papel de forma automática, evitando travamentos ou rasgos pelo usuário." },
@@ -84,6 +91,31 @@ export const productsData = {
       { label: "Peso Líquido", value: "2,22 Kg (Chassi reforçado com furação em matriz para fixação firme em paredes)" }
     ]
   },
+  "idclass": {
+    id: "idclass",
+    tag: "23 // HARDWARE // CONTROL ID // PONTO JURÍDICO",
+    title: "iDClass",
+    subtitle: "Relógio Eletrônico de Ponto Homologado MTE e Inmetro",
+    description: "O iDClass é o Relógio Eletrônico de Ponto (REP-C) da Control iD, projetado para atender integralmente as exigências fiscais da Portaria 671 do MTE e as portarias do Inmetro. Com um design arrojado e super compacto, ele é equipado com display touchscreen colorido, biometria de alta resolução, impressora térmica com guilhotina e um compartimento inteligente que aceita bobinas de até 400 metros, reduzindo significativamente as interrupções para troca de papel pelo RH.",
+    image: imgIdClass,
+    imageNoBg: imageRegistry.relogioDePonto?.noBg?.idclassPerspectivaBio, 
+    features: [
+      { icon: ShieldCheck, title: "Homologação Oficial", desc: "Gera o Arquivo Fonte de Dados (AFD) assinado digitalmente, resguardando a empresa de acordo com as leis do Ministério do Trabalho." },
+      { icon: Printer, title: "Impressão Veloz com Guilhotina", desc: "Mecanismo térmico de alta velocidade (100 mm/s) que corta o comprovante automaticamente, otimizando o fluxo de batidas." },
+      { icon: FileText, title: "Capacidade de Bobina Extra", desc: "Suporta rolos de papel de até 400 metros de comprimento, permitindo imprimir mais de 10.000 tickets de ponto por recarga." },
+      { icon: Monitor, title: "Interação Touchscreen", desc: "Display LCD TFT colorido de 2.4 polegadas sensível ao toque para uma navegação e marcação mais agradável." }
+    ],
+    specs: [
+      { label: "Legislação Atendida", value: "Portaria 671 do MTE (REP-C) e certificado pelo Inmetro" },
+      { label: "Mecanismo Impressor", value: "Impressora térmica de 100 mm/s com guilhotina automática e sensor de papel" },
+      { label: "Capacidade de Usuários", value: "Até 15.000 funcionários cadastrados na memória do equipamento" },
+      { label: "Memória Fiscal (MRP)", value: "Capacidade massiva para armazenar até 400 milhões de registros inalteráveis" },
+      { label: "Módulo Biométrico", value: "Leitor óptico de 500 DPI com suporte para armazenamento de até 15.000 digitais" },
+      { label: "Tecnologias de Leitura", value: "Impressão Digital, Cartão de Proximidade (RFID), Código de Barras e Senha" },
+      { label: "Comunicação e Portas", value: "1 Porta Ethernet TCP/IP nativa e 2 portas USB 2.0 (Porta Fiscal e Porta de Usuário)" },
+      { label: "Dimensões e Gabinete", value: "246 mm (Largura) x 246 mm (Altura) x 104 mm (Profundidade) com estrutura resistente" }
+    ]
+  },
 
   // ==========================================================================
   // LINHA DE CONTROLE DE ACESSO BIOMÉTRICO (CONTROL ID)
@@ -96,6 +128,7 @@ export const productsData = {
     subtitle: "Controlador de Acesso por Reconhecimento Facial Stand-Alone",
     description: "O iDFace é o controlador de acesso por reconhecimento facial mais moderno do mercado nacional. Equipado com um processador potente e display touchscreen interativo, ele permite gerenciar a abertura de portas, cancelas e torniquetes de maneira totalmente autônoma. Sua interface de software embarcada é configurada nativamente em português (PT-BR), facilitando o cadastro de regras de acesso por horários de departamentos.",
     image: imgIdFace,
+    imageNoBg: imageRegistry.controleDeAcesso?.noBg?.idfaceFrontalEn, 
     features: [
       { icon: Cpu, title: "Processador Ultra Rápido", desc: "Hardware de alta performance capaz de processar e validar faces locais em frações de segundo." },
       { icon: Monitor, title: "Tela Touchscreen de 3.5\"", desc: "Display LCD TFT colorido que exibe mensagens interativas e permite cadastros rápidos direto no totem ou parede." },
@@ -123,6 +156,7 @@ export const productsData = {
     subtitle: "Acesso Facial de Alta Performance para Ambientes Severos",
     description: "O iDFace Max foi projetado para suprir as demandas mais severas de controle de fluxo de pessoas em ambientes industriais, universidades, canteiros de obras e condomínios de grande porte. Traz uma carcaça com engenharia estrutural reforçada e um processador gráfico otimizado para realizar varreduras em bancos de dados massivos com precisão cirúrgica, suportando intempéries e alto tráfego ininterrupto.",
     image: imgIdFaceMax,
+    imageNoBg: imageRegistry.controleDeAcesso?.noBg?.idfaceMaxFrontal, 
     features: [
       { icon: Cpu, title: "Unidade Gráfica Otimizada", desc: "Processador Quad-Core com aceleração por IA que realiza cruzamentos biométricos massivos instantaneamente." },
       { icon: ShieldCheck, title: "Gabinete de Alta Durabilidade", desc: "Construção externa resistente a desgastes físicos continuados e arranhões, ideal para fixação em totens expostos." },
@@ -148,6 +182,7 @@ export const productsData = {
     subtitle: "Fechadura Digital Inteligente de Embutir com Maçaneta Biométrica",
     description: "A iDLock Biométrica une a sofisticação do design contemporâneo com o rigor tecnológico da Control iD. Desenvolvida para portas de madeira ou metal de escritórios, salas de reunião e áreas diretivas, ela traz o leitor biométrico posicionado cirurgicamente na maçaneta, permitindo que a leitura da digital e a abertura da porta ocorram em um único movimento natural de mão.",
     image: imgIdLockBio,
+    imageNoBg: imageRegistry.controleDeAcesso?.noBg?.idlockBioFrente, 
     features: [
       { icon: Fingerprint, title: "Leitor Biométrico Anatômico", desc: "O sensor de impressões digitais fica localizado no apoio do polegar da maçaneta, oferecendo abertura ultra ergonômica." },
       { icon: Lock, title: "Mecanismo com Trinco Duplo", desc: "Máquina de embutir robusta em aço com travas mecânicas duplas que garantem proteção física de alto nível contra arrombamentos." },
@@ -173,6 +208,7 @@ export const productsData = {
     subtitle: "Fechadura Digital Inteligente por Senha e Cartão RFID",
     description: "A iDLock por teclado é a solução ideal para gerenciar a segurança de ambientes restritos como almoxarifados, salas de TI, clínicas e laboratórios. Com um acabamento espelhado elegante e chassi em liga metálica de alta densidade, ela permite criar senhas de acesso exclusivas para cada colaborador ou liberar a fechadura por aproximação de crachás corporativos.",
     image: imgIdLock,
+    imageNoBg: imageRegistry.controleDeAcesso?.noBg?.idlockFrente, 
     features: [
       { icon: Lock, title: "Senhas Numéricas Exclusivas", desc: "Permite configurar códigos numéricos de acesso individuais para cada funcionário, otimizando o controle." },
       { icon: Layers, title: "Compatibilidade com Crachás", desc: "Leitor de cartões embutido compatível com os cartões de aproximação RFID já existentes na empresa." },
@@ -192,7 +228,7 @@ export const productsData = {
   },
 
   // ==========================================================================
-  // LINHA DE CATRACAS ELETRÔNICAS (TOPDATA & CONTROL ID)
+  // LINHA DE CATRACAS ELETRÔNICAS E CONTROLE FÍSICO
   // ==========================================================================
 
   "catraca-revolution": {
@@ -202,6 +238,7 @@ export const productsData = {
     subtitle: "Catraca Eletrônica Pedestal de Alta Resistência Mecânica",
     description: "A Catraca Revolution é o equipamento ideal para controle de acesso físico em locais que exigem alta resistência mecânica e ótimo custo-benefício. Construída com pedestal em aço carbono com pintura eletrostática e tampo superior em aço inox escovado, ela suporta o tráfego pesado de portarias industriais, recepções de edifícios comerciais e academias sem apresentar desgastes.",
     image: imgRevolution,
+    imageNoBg: imageRegistry.catraca?.noBg?.eletronicaLeitorFacial, 
     features: [
       { icon: ShieldCheck, title: "Mecanismo com Amortecedor", desc: "Sistema interno hidráulico de amortecimento de giro que neutraliza impactos, tornando a passagem suave e silenciosa." },
       { icon: Users, title: "Bloqueio Anti-Carona", desc: "Sensores ópticos de precisão que travam o braço imediatamente após o giro da pessoa autorizada, impedindo passagens duplas." },
@@ -227,6 +264,7 @@ export const productsData = {
     subtitle: "Catraca Eletrônica Pedestal com Display Touchscreen e Giro Motorizado",
     description: "A iDBlock Next revoluciona o segmento de barreiras físicas corporativas. Trazendo um visual limpo e futurista, ela é equipada com um display touchscreen colorido e amigável em português (PT-BR) integrado ao tampo. Seu grande diferencial é o mecanismo de giro assistido por motor, que acompanha de forma suave o empurrão do usuário, tornando o fluxo de passagem extremamente leve e luxuoso.",
     image: imgIdBlockNext,
+    imageNoBg: imageRegistry.catraca?.noBg?.idblockNextComIdface, 
     features: [
       { icon: Monitor, title: "Display Touchscreen Colorido", desc: "Tela LCD colorida integrada que exibe mensagens institucionais claras e permite gerenciar o sistema diretamente na catraca." },
       { icon: Zap, title: "Giro Assistido Motorizado", desc: "Motor de passo silencioso de última geração que suaviza o movimento dos braços, eliminando o tranco físico tradicional." },
@@ -252,6 +290,7 @@ export const productsData = {
     subtitle: "Catraca Eletrônica de Acessibilidade Homologada NBR 9050",
     description: "A iDBlock PNE foi desenvolvida sob os mais rígidos critérios de acessibilidade arquitetônica para garantir a passagem digna e confortável de cadeirantes e pessoas com mobilidade reduzida. Em total conformidade com a norma ABNT NBR 9050, ela dispensa o pedestal tradicional, adotando uma estrutura estendida em aço inox escovado com braço longo pivotante motorizado bidirecional.",
     image: imgIdBlockPne,
+    imageNoBg: imageRegistry.catraca?.noBg?.idblockPcdPerspectiva, 
     features: [
       { icon: Accessibility, title: "Vão Livre Normatizado NBR 9050", desc: "Dimensões e raios de giro projetados de forma exata para a travessia segura de cadeiras de rodas e andadores." },
       { icon: ShieldCheck, title: "Barreira Anti-Esmagamento", desc: "Sensores ópticos infravermelhos inteligentes que monitoram o vão e impedem o fechamento do braço enquanto o usuário estiver passando." },
@@ -270,39 +309,6 @@ export const productsData = {
     ]
   },
 
-  // ==========================================================================
-  // LINHA DE BASTÕES DE RONDA ELETRÔNICOS (TOPDATA)
-  // ==========================================================================
-
-  "bastao-viggia": {
-    id: "bastao-viggia",
-    tag: "10 // BASTÃO DE RONDA // TOPDATA // AUDITORIA SEGURANÇA",
-    title: "Bastão de Ronda Viggia Topdata",
-    subtitle: "Sistema Eletrônico Portátil de Auditoria e Supervisão de Vigilantes",
-    description: "O Viggia é a ferramenta definitiva para garantir a eficiência das rotas de vigilância patrimonial em indústrias, condomínios e postos de segurança. Totalmente portátil e blindado, ele elimina fraudes e relatórios manuais de papel: o vigilante faz a leitura de botões metálicos inteligentes (iButtons) fixados nos locais de inspeção. Os dados são processados e consolidados em relatórios gerenciais claros que apontam horários exatos, atrasos ou postos pulados na rota.",
-    image: imgViggia,
-    features: [
-      { icon: HardDrive, title: "Blindagem Militar Anti-Choque", desc: "Corpo interno construído em liga de alumínio aeroespacial revestido por uma espessa luva de borracha que absorve quedas brutas." },
-      { icon: ShieldCheck, title: "Impermeabilidade Total IP67", desc: "Estrutura 100% selada contra a entrada de poeira ou água. Projetado para operar em patrulhas externas sob temporais intensos." },
-      { icon: FileText, title: "Memória Fiscal Anti-Fraude", desc: "Circuito interno inteligente que registra a data e hora exata caso o equipamento sofra impactos violentos ou tentativas de violação." },
-      { icon: Monitor, title: "Software TopRonda Oficial", desc: "Geração imediata de gráficos e relatórios detalhados das rondas executadas através de um software homologado de fácil operação." }
-    ],
-    specs: [
-      { label: "Tecnologia de Captação", value: "Leitura digital por contato mecânico físico em iButtons metálicos de código único em série" },
-      { label: "Capacidade de Eventos", value: "Memória flash interna não-volátil estável para reter até 4.094 registros de postos" },
-      { label: "Cabo de Comunicação", value: "Interface via Cabo USB com conector magnético blindado de alta velocidade" },
-      { label: "Sinalizações Operacionais", value: "Confirmação de leitura bem-sucedida por Alerta Sonoro (Bip) e indicação por LED luminoso" },
-      { label: "Tipo de Bateria", value: "Bateria interna de Lítio não-recarregável de altíssima autonomia (Substituível pela assistência)" },
-      { label: "Autonomia Estimada", value: "Capacidade de carga projetada para realizar até 350.000 leituras de postos de checagem" },
-      { label: "Peso do Equipamento", value: "Apenas 165 gramas (Desenho cilíndrico altamente portátil e ergonômico para o vigilante)" },
-      { label: "Acessórios Compatíveis", value: "Suporta fixação de iButtons em bases de parede, tags de identificação de vigias e coldres de nylon" }
-    ]
-  },
-
-  // ==========================================================================
-  // NOVAS CATRACAS ADICIONADAS (TOPDATA)
-  // ==========================================================================
-
   "catraca-fit": {
     id: "catraca-fit",
     tag: "11 // CATRACAS // TOPDATA // ACESSO COMPACTO",
@@ -310,6 +316,7 @@ export const productsData = {
     subtitle: "Catraca de Acesso Compacta e Versátil",
     description: "Com seu design atual e dimensões super compactas, a catraca Fit se adapta perfeitamente a qualquer ambiente, mesmo com restrição de espaço na portaria. É a solução de entrada com excelente custo-benefício para gerenciar e organizar o fluxo de pessoas em academias, escolas, clubes e condomínios com alta segurança.",
     image: imgFit,
+    imageNoBg: imageRegistry.catraca?.noBg?.paraAcademia, 
     features: [
       { icon: Layers, title: "Design Otimizado", desc: "Estrutura inteligente tipo pedestal que ocupa pouquíssimo espaço, ideal para recepções menores sem perder a eficiência de bloqueio." },
       { icon: Wifi, title: "Operação Autônoma", desc: "Funciona perfeitamente de forma integrada (online) ao seu sistema, ou de forma totalmente offline (stand-alone) mantendo as regras de acesso se a rede cair." },
@@ -332,6 +339,7 @@ export const productsData = {
     subtitle: "Catraca Balcão de Alta Segurança e Estética Premium",
     description: "A catraca Box une a estética sofisticada do aço inoxidável à confiabilidade mecânica extrema. Construída no formato balcão (tipo cofre), o seu visual imponente transmite uma forte percepção de segurança aos usuários, inibindo invasões. É a escolha definitiva para recepções corporativas de alto padrão, universidades, estádios e ambientes diferenciados.",
     image: imgBox,
+    imageNoBg: imageRegistry.catraca?.noBg?.inoxLeitorFacial, 
     features: [
       { icon: ShieldCheck, title: "Estrutura Tipo Cofre", desc: "Gabinete fechado de formato alongado que oferece uma barreira física mais robusta, inibindo com eficácia as tentativas de pular a catraca." },
       { icon: Eye, title: "Acabamento Premium", desc: "Linhas modernas que valorizam a arquitetura do local, contando com tampo em aço inox e opções de gabinete 100% inoxidável." },
@@ -346,6 +354,83 @@ export const productsData = {
       { label: "Módulo para Visitantes", value: "Pode receber uma urna coletora frontal de alta capacidade para o recolhimento e validação de crachás na saída" }
     ]
   },
+
+  "catraca-evo-expedidora": {
+    id: "catraca-evo-expedidora",
+    tag: "15 // CATRACAS // EVO SISTEMAS // ENTRADA",
+    title: "Catraca Expedidora EVO",
+    subtitle: "Catraca de Acesso com Expedição de Comandas",
+    description: "Desenvolvida especialmente para padarias, restaurantes, lanchonetes e lojas de conveniência, a Catraca Expedidora EVO automatiza a entrada de clientes. Com um simples toque no botão luminoso, o equipamento dispensa uma comanda (cartão) e libera o giro da catraca, garantindo que nenhum cliente entre no estabelecimento sem a sua ficha de consumo.",
+    image: imgEvoExpedidora,
+    imageNoBg: imageRegistry.catraca?.noBg?.evoExpedidora,
+    features: [
+      { icon: CreditCard, title: "Expedição Automática", desc: "Mecanismo rápido e anti-travamento que dispensa um cartão de consumo em fração de segundos após o clique." },
+      { icon: Layers, title: "Alta Capacidade Interna", desc: "Torre projetada para armazenar um alto volume de comandas, reduzindo a necessidade de reposição constante pela equipe." },
+      { icon: ShieldCheck, title: "Giro Sincronizado", desc: "A liberação do braço só ocorre se o cliente efetivamente retirar o cartão do bocal, evitando falhas de segurança na portaria." },
+      { icon: Wifi, title: "Integração com PDV", desc: "Comunicação nativa e transparente com os principais softwares de ponto de venda e gestão de food service do mercado." }
+    ],
+    specs: [
+      { label: "Mecanismo Dispensador", value: "Tracionamento de saída por roletes emborrachados de alta precisão e sensor óptico" },
+      { label: "Capacidade de Comandas", value: "Compartimento interno que suporta aproximadamente 250 a 300 cartões formato padrão (CR-80)" },
+      { label: "Sinalização e Operação", value: "Botão mecânico de acionamento luminoso e display de LED frontal indicativo de status" },
+      { label: "Material da Estrutura", value: "Torre fabricada em Aço Carbono com pintura epóxi de alta resistência e detalhes em acrílico" },
+      { label: "Interface de Conexão", value: "Comunicação e processamento local ágil integrados via rede Ethernet TCP/IP" }
+    ]
+  },
+
+  "catraca-evo-coletora": {
+    id: "catraca-evo-coletora",
+    tag: "16 // CATRACAS // EVO SISTEMAS // SAÍDA",
+    title: "Catraca Coletora EVO",
+    subtitle: "Catraca de Saída com Retenção de Comandas",
+    description: "A parceira ideal para fechar o ciclo de segurança em food service. A Catraca Coletora EVO é instalada na saída do estabelecimento e exige que o cliente insira a comanda no cofre. O sistema realiza a leitura do cartão, verifica diretamente no software do caixa se a conta foi paga e, caso positivo, engole a comanda e libera o giro. Se a conta estiver pendente, a comanda é devolvida e a saída permanece travada.",
+    image: imgEvoColetora,
+    imageNoBg: imageRegistry.catraca?.noBg?.evoColetora,
+    features: [
+      { icon: Box, title: "Cofre Coletor Inteligente", desc: "Mecanismo de sucção motorizado de cartões com leitura simultânea ultrarrápida de código de barras ou chip RFID." },
+      { icon: Lock, title: "Bloqueio Anti-Evasão", desc: "Rejeita e devolve comandas com saldo devedor pendente, bloqueando imediatamente a passagem e emitindo sinal." },
+      { icon: Sparkles, title: "Design Combo 9x7", desc: "Estética moderna e idêntica à catraca expedidora, padronizando visualmente todo o fluxo de entrada e saída do ambiente." },
+      { icon: Cpu, title: "Validação em Tempo Real", desc: "Processamento de status ultra ágil comunicando com o caixa, o que evita o acúmulo de filas na porta de saída em horários de pico." }
+    ],
+    specs: [
+      { label: "Leitor Integrado", value: "Scanner de Código de Barras direcional interno ou antena para leitura de cartões de aproximação RFID" },
+      { label: "Capacidade do Cofre", value: "Urna interna gaveta com capacidade para armazenar centenas de cartões recolhidos durante o turno" },
+      { label: "Sinalização Luminosa", value: "Avisos de fluxo em LED (Setas Verdes: Liberado e Pago / X Vermelho: Bloqueado ou Conta Pendente)" },
+      { label: "Material da Estrutura", value: "Chassi em Aço Carbono de alta durabilidade com tratamento químico anticorrosivo" },
+      { label: "Logística de Recolhimento", value: "Acesso frontal/lateral facilitado com chave de segurança para o gerente retirar os cartões para reutilização" }
+    ]
+  },
+
+  // ==========================================================================
+  // LINHA DE BASTÕES DE RONDA ELETRÔNICOS (TOPDATA)
+  // ==========================================================================
+
+  "bastao-viggia": {
+    id: "bastao-viggia",
+    tag: "10 // BASTÃO DE RONDA // TOPDATA // AUDITORIA SEGURANÇA",
+    title: "Bastão de Ronda Viggia Topdata",
+    subtitle: "Sistema Eletrônico Portátil de Auditoria e Supervisão de Vigilantes",
+    description: "O Viggia é a ferramenta definitiva para garantir a eficiência das rotas de vigilância patrimonial em indústrias, condomínios e postos de segurança. Totalmente portátil e blindado, ele elimina fraudes e relatórios manuais de papel: o vigilante faz a leitura de botões metálicos inteligentes (iButtons) fixados nos locais de inspeção. Os dados são processados e consolidados em relatórios gerenciais claros que apontam horários exatos, atrasos ou postos pulados na rota.",
+    image: imgViggia,
+    imageNoBg: imageRegistry.bastaoDeRonda?.noBg?.bastaoDeRonda, 
+    features: [
+      { icon: HardDrive, title: "Blindagem Militar Anti-Choque", desc: "Corpo interno construído em liga de alumínio aeroespacial revestido por uma espessa luva de borracha que absorve quedas brutas." },
+      { icon: ShieldCheck, title: "Impermeabilidade Total IP67", desc: "Estrutura 100% selada contra a entrada de poeira ou água. Projetado para operar em patrulhas externas sob temporais intensos." },
+      { icon: FileText, title: "Memória Fiscal Anti-Fraude", desc: "Circuito interno inteligente que registra a data e hora exata caso o equipamento sofra impactos violentos ou tentativas de violação." },
+      { icon: Monitor, title: "Software TopRonda Oficial", desc: "Geração imediata de gráficos e relatórios detalhados das rondas executadas através de um software homologado de fácil operação." }
+    ],
+    specs: [
+      { label: "Tecnologia de Captação", value: "Leitura digital por contato mecânico físico em iButtons metálicos de código único em série" },
+      { label: "Capacidade de Eventos", value: "Memória flash interna não-volátil estável para reter até 4.094 registros de postos" },
+      { label: "Cabo de Comunicação", value: "Interface via Cabo USB com conector magnético blindado de alta velocidade" },
+      { label: "Sinalizações Operacionais", value: "Confirmação de leitura bem-sucedida por Alerta Sonoro (Bip) e indicação por LED luminoso" },
+      { label: "Tipo de Bateria", value: "Bateria interna de Lítio não-recarregável de altíssima autonomia (Substituível pela assistência)" },
+      { label: "Autonomia Estimada", value: "Capacidade de carga projetada para realizar até 350.000 leituras de postos de checagem" },
+      { label: "Peso do Equipamento", value: "Apenas 165 gramas (Desenho cilíndrico altamente portátil e ergonômico para o vigilante)" },
+      { label: "Acessórios Compatíveis", value: "Suporta fixação de iButtons em bases de parede, tags de identificação de vigias e coldres de nylon" }
+    ]
+  },
+
   // ==========================================================================
   // CRACHÁS E CARTÕES DE PROXIMIDADE (PRODACOM)
   // ==========================================================================
@@ -357,6 +442,7 @@ export const productsData = {
     subtitle: "Identificação Visual Corporativa e Chave de Acesso Eletrônico",
     description: "A linha de crachás e cartões em PVC da Prodacom une alta qualidade de acabamento gráfico com o que há de mais confiável em tecnologia de radiofrequência (RFID). Ideais para transmitir profissionalismo e seriedade, eles atuam como a identidade física do colaborador dentro da empresa e servem como chave de liberação eletrônica para relógios de ponto, catracas e fechaduras digitais, garantindo auditoria e controle de fluxo.",
     image: imgCrachaPvc,
+    imageNoBg: imageRegistry.cracha?.noBg?.pvc, 
     features: [
       { icon: ShieldCheck, title: "PVC de Alta Durabilidade", desc: "Material resistente a dobras, umidade e atritos cotidianos, garantindo longa vida útil e menor taxa de reposição." },
       { icon: Radio, title: "Chips RF-ID de Aproximação", desc: "Integração nativa com antenas de rádio frequência nas frequências 125 kHz ou 13,56 MHz (Mifare) para leitura sem contato." },
@@ -372,13 +458,15 @@ export const productsData = {
       { label: "Acessórios Disponíveis", value: "Compatível com cordões personalizados, porta-crachás rígidos (Protetores) e clipes jacaré" }
     ]
   },
+
   "crachas-rfid": {
     id: "crachas-rfid",
     tag: "14 // HARDWARE // PRODACOM // ACESSO SEM CONTATO",
     title: "Cartões de Proximidade RFID",
     subtitle: "Tags, Chaveiros e Cartões Inteligentes de Radiofrequência",
     description: "Os cartões e tags de proximidade RFID (Radio-Frequency Identification) são os dispositivos de liberação mais práticos e seguros para o controle de tráfego diário. Diferente dos sistemas de tarja magnética ou código de barras, a tecnologia RFID realiza a leitura dos dados por indução eletromagnética sem a necessidade de contato físico com o leitor. Isso elimina o desgaste mecânico dos equipamentos e dos próprios cartões, garantindo uma operação ultra veloz em portarias, condomínios e almoxarifados.",
-    image: imgCrachaRfid, // Pode usar a mesma imagem de crachás ou criar um import específico para tags/chaveiros
+    image: imgCrachaRfid, 
+    imageNoBg: imageRegistry.cracha?.noBg?.rfid, 
     features: [
       { icon: Radio, title: "Leitura Sem Contato Físico", desc: "Aproximação rápida a uma distância de até 10cm do leitor para liberação mecânica imediata de catracas e fechaduras." },
       { icon: Lock, title: "Código Único Inviolável", desc: "Cada chip sai de fábrica com um número de ID exclusivo gravado em sua memória interna, impedindo clonagens e falsificações." },
@@ -406,6 +494,7 @@ export const productsData = {
     subtitle: "Sistema de Tratamento de Ponto Eletrônico e Gestão de Jornada",
     description: "O iPonto Plus oferece o mais alto nível de automação jurídica e operacional para o fechamento de folhas de ponto. Desenvolvido em total conformidade com a CLT e as exigências fiscais da Portaria 671 do MTE, o sistema simplifica o tratamento de exceções do dia a dia, automatiza cálculos complexos de horas extras e adicionais noturnos, e gera relatórios de auditoria transparentes para resguardar a empresa contra passivos trabalhistas.",
     image: imgIponto,
+    imageNoBg: imageRegistry.software?.noBg?.iponto, 
     features: [
       { icon: FileText, title: "Tratamento de Exceções Fácil", desc: "Painel intuitivo e centralizado para lançamentos rápidos de abonos, justificativas de faltas, atestados médicos e dispensas." },
       { icon: Sparkles, title: "Banco de Horas Avançado", desc: "Cálculo e compensação automatizada de saldos de créditos e débitos de horas com base nas regras do acordo sindical." },
@@ -428,10 +517,11 @@ export const productsData = {
     subtitle: "Gerenciamento Completo de Academias, Studios e Boxes de Crossfit",
     description: "O iFitness é uma solução completa desenvolvida para profissionalizar a gestão de negócios fitness. O software integra ferramentas financeiras avançadas com um controle de acesso rigoroso via catracas, automatizando tarefas administrativas e focando no aumento de receitas através de rotinas de retenção, controle de inadimplência e renovações de matrículas.",
     image: imgIfitness,
+    imageNoBg: imageRegistry.software?.noBg?.ifitness, 
     features: [
       { icon: Users, title: "Controle de Acesso Inteligente", desc: "Restrição automática baseada em planos de horários, modalidades contratadas ou mensagens de alerta no visor da catraca." },
       { icon: FileText, title: "Avaliação e Treinos", desc: "Módulo integrado para prescrição de fichas de musculação e avaliações físicas com envio automatizado por e-mail." },
-      { icon: Zap, title: "Gestão Antiinadimplência", desc: "Bloqueio automático de passagem física na barreira caso o aluno possua parcelas ou mensalidades vencidas." }
+      { icon: Zap, title: "Gestão Antiinadimplência", desc: "Bloqueio automático de passagem física na barreira caso o possua parcelas ou mensalidades vencidas." }
     ],
     specs: [
       { label: "Módulos Financeiros", value: "Controle de Caixa diário, contas a pagar/receber, cheques, cartões de crédito e controle de estoque de produtos" },
@@ -449,6 +539,7 @@ export const productsData = {
     subtitle: "Software de Segurança e Controle de Acesso de Pedestres e Veículos",
     description: "Focado em segurança de perímetros e alta velocidade de resposta, o iControl gerencia o fluxo de pessoas em ambientes de acesso restrito, tais como condomínios empresariais, indústrias e estacionamentos privados. O sistema realiza sincronizações biométricas on-line instantâneas, garantindo que cadastros efetuados na secretaria se reflitam nos terminais de barreira no mesmo segundo.",
     image: imgIcontrol,
+    imageNoBg: imageRegistry.software?.noBg?.icontrol, 
     features: [
       { icon: Fingerprint, title: "Biometria On-line Direta", desc: "Envio e exclusão de digitais e dados faciais direto para a memória das catracas sem necessidade de comandos manuais." },
       { icon: Users, title: "Cadastro Geral Unificado", desc: "Fichas completas com captura de fotos por webcam, documentos e agrupamento por empresas ou blocos." },
@@ -457,7 +548,7 @@ export const productsData = {
     specs: [
       { label: "Sincronização de Dispositivos", value: "Gerenciamento simultâneo e em rede de múltiplas catracas, cancelas de veículos e portas" },
       { label: "Monitoramento de Fluxo", value: "Painel operacional na tela exibe a foto, nome e local de passagem no exato momento do acesso" },
-      { icon: Lock, label: "Módulo Estacionamento", desc: "Controle de vagas associadas e fluxo de veículos não tarifado integrado à ficha de usuários" },
+      { label: "Módulo Estacionamento", value: "Controle de vagas associadas e fluxo de veículos não tarifado integrado à ficha de usuários" },
       { label: "Módulo Web Auxiliar", value: "Acesso opcional via navegador de internet para consultas de relatórios e manutenções cadastrais básicas" },
       { label: "Segurança de Arquivos", value: "Base de dados Firebird SQL estável contra quedas repentinas de energia e corrupção de arquivos" }
     ]
@@ -470,6 +561,7 @@ export const productsData = {
     subtitle: "Sistema Integrado de Gestão para Clubes, Agremiações e Associações",
     description: "O iClube foi meticulosamente desenhado para gerenciar os complexos fluxos administrativos de associações e agremiações de qualquer escala. Centraliza desde o controle de cotas de sócios e cobranças de mensalidades até a segurança rigorosa de portarias, impedindo o acesso de pessoas inadimplentes ou não autorizadas sem gerar atritos no fluxo social.",
     image: imgIclube,
+    imageNoBg: imageRegistry.software?.noBg?.iclube, 
     features: [
       { icon: Layers, title: "Gestão de Cotas e Títulos", desc: "Controle patrimonial completo de títulos, joias, transferências de propriedade e árvore de dependentes." },
       { icon: Monitor, title: "Validação Visual na Portaria", desc: "Interface gráfica de guarita que projeta instantaneamente a foto e a situação financeira do sócio ao girar a catraca." },
@@ -490,6 +582,7 @@ export const productsData = {
     subtitle: "Software de Gestão Pedagógica, Administrativa e Segurança Escolar",
     description: "O School Control oferece uma abordagem de 360 graus para instituições de ensino. O sistema unifica a gestão escolar tradicional (notas, faltas e boletins) com um ecossistema rígido de controle de portaria por catracas biométricas, trazendo tranquilidade aos gestores e gerando um diferencial competitivo de segurança percebida altamente valorizado pelos pais.",
     image: imgSchool,
+    imageNoBg: imageRegistry.software?.noBg?.school, 
     features: [
       { icon: Wifi, title: "Notificação de Fluxo aos Pais", desc: "Disparo automatizado de alertas de SMS ou e-mail notificando os responsáveis sobre o horário exato de entrada ou saída." },
       { icon: Lock, title: "Saída Restrita e Validada", desc: "Bloqueio inteligente que impede a saída de alunos menores de idade, liberando a catraca apenas com a digital do responsável." },
@@ -510,6 +603,7 @@ export const productsData = {
     subtitle: "Software de Gerenciamento e Controle de Refeitórios Industriais",
     description: "O RefControl é o sistema líder de mercado para auditoria e controle de consumo em refeitórios corporativos. Desenvolvido para empresas que fornecem refeições subsidiadas aos seus colaboradores, ele elimina desperdícios, fraudes de consumo duplo e erros de contagem, realizando a gestão através de restrições rígidas baseadas em escalas de trabalho, turnos e créditos pré-carregados.",
     image: imgRefcontrol,
+    imageNoBg: imageRegistry.software?.noBg?.refcontrol, 
     features: [
       { icon: ShieldCheck, title: "Bloqueio por Turnos e Férias", desc: "Lógica automatizada que impede o acesso ao refeitório caso o funcionário esteja de folga, férias ou fora do horário de refeição." },
       { icon: Box, title: "Controle Regressivo de Vendas", desc: "Subtração automática e em tempo real de créditos de refeições pré-carregados na ficha ou crachá do usuário a cada giro." },

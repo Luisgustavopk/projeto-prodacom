@@ -30,8 +30,12 @@ export const PRODUCT_GALLERY_MAPPING = {
     imageRegistry.relogioDePonto?.newBg?.relogioPontoHomologado,
     imageRegistry.relogioDePonto?.newBg?.relogioPontoEletronico
   ],
+  "idclass": [
+   
+    imageRegistry.relogioDePonto?.newBg?.idclassFrontalBio,
+    imageRegistry.relogioDePonto?.newBg?.idclassPerspectivaBio,
+  ],
 
-  // Catracas
   "catraca-revolution": [
     imageRegistry.catraca?.newBg?.eletronicaAntiPanico1024,
     imageRegistry.catraca?.newBg?.eletronicaLeitorFacial1024,
@@ -51,7 +55,25 @@ export const PRODUCT_GALLERY_MAPPING = {
     imageRegistry.catraca?.newBg?.idblockPcdPerspectiva,
   ],
   "catraca-fit": [
+    imageRegistry.catraca?.newBg?.antiPanico,
+    imageRegistry.catraca?.newBg?.comLeitorFacial,
+    imageRegistry.catraca?.newBg?.comReconhecimentoFacial,
     imageRegistry.catraca?.newBg?.paraAcademia1024,
+    imageRegistry.catraca?.newBg?.comUrnaColetora,
     imageRegistry.catraca?.newBg?.biometrica
+  ],
+
+  // Novas Catracas EVO
+  "catraca-evo-expedidora": [
+    imageRegistry.catraca?.newBg?.evoExpedidora2,
+    imageRegistry.catraca?.newBg?.evoExpedidora1,
+    imageRegistry.catraca?.newBg?.evoExpedidora5,
+    imageRegistry.catraca?.newBg?.evoExpedidora6,
+  ],
+  "catraca-evo-coletora": [
+    imageRegistry.catraca?.newBg?.evoColetora4,
+    imageRegistry.catraca?.newBg?.evoColetora3,
+    imageRegistry.catraca?.newBg?.evoColetora5,
+    imageRegistry.catraca?.newBg?.evoColetora2,
   ]
 };
