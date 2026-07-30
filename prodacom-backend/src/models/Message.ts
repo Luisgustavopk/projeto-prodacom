@@ -8,6 +8,8 @@ interface IMessage {
   content: string;
   hora: string;
   status: 'enviado' | 'entregue' | 'lido';
+  apagada?: boolean;   
+  arquivada?: boolean;
   createdAt: Date;
 }
 

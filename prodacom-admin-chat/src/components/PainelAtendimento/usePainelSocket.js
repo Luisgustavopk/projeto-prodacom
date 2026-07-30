@@ -139,45 +139,59 @@ export function usePainelSocket() {
       });
     });
 
+    socket.on("mensagem_enviada_sucesso", (dados) => {
+      setChats((prev) => {
+        const chat = prev[dados.contato];
+        if (!chat) return prev;
+        const msgs = [...chat.mensagens];
+        for (let i = msgs.length - 1; i >= 0; i--) {
+          if (msgs[i].role === "admin" && !msgs[i].id) {
+            msgs[i].id = dados.id; break;
+          }
+        }
+        return { ...prev, [dados.contato]: { ...chat, mensagens: msgs } };
+      });
+    });
+
+    socket.on("mensagem_apagada", (dados) => {
+      setChats((prev) => {
+        const chat = prev[dados.contato];
+        if (!chat) return prev;
+        return { ...prev, [dados.contato]: { ...chat, mensagens: chat.mensagens.map(m => m.id === dados.idMensagem ? { ...m, content: "🚫 Mensagem apagada", apagada: true } : m) } };
+      });
+    });
+
+    socket.on("conversa_removida", (dados) => {
+      setChats((prev) => { const n = { ...prev }; delete n[dados.contato]; return n; });
+      if (clienteAtivoRef.current === dados.contato) setClienteAtivo(null);
+    });
+
+    socket.on("restaurar_conversa", (conversa) => {
+      if (!conversa) return;
+      setChats((prev) => ({ ...prev, [conversa.contato]: conversa }));
+    });
+
     return () => {
-      socket.off("connect", entrarComoAdmin);
-      socket.off("sincronizar_conversas_existentes");
-      socket.off("status_cliente");
-      socket.off("nova_mensagem_cliente");
-      socket.off("status_mensagem_atualizado");
-      socket.disconnect();
+      socket.off("connect"); socket.off("sincronizar_conversas_existentes"); socket.off("status_cliente");
+      socket.off("nova_mensagem_cliente"); socket.off("status_mensagem_atualizado"); socket.off("mensagem_enviada_sucesso");
+      socket.off("mensagem_apagada"); socket.off("conversa_removida"); socket.off("restaurar_conversa"); socket.disconnect();
     };
   }, []);
 
-  // 5. Enviar Mensagem do Admin
   function handleSend(e) {
     e.preventDefault();
     if (!input.trim() || !clienteAtivo) return;
-
     const texto = input.trim();
     const hora = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     const chatId = clienteAtivo.replace(/\D/g, "");
-
+    
     socket.emit("enviar_mensagem", { autor: "Admin", texto, hora, salaDestino: chatId });
-
+    
     setChats((prev) => {
-      const chatAtual = prev[chatId];
-      if (!chatAtual) return prev;
-
-      return {
-        ...prev,
-        [chatId]: {
-          ...chatAtual,
-          unread: false,
-          lastMessageAt: new Date().toISOString(),
-          mensagens: [
-            ...chatAtual.mensagens,
-            { role: "admin", autor: "Admin", content: texto, hora, status: "enviado" }
-          ]
-        }
-      };
+      const chat = prev[chatId];
+      if (!chat) return prev;
+      return { ...prev, [chatId]: { ...chat, unread: false, lastMessageAt: new Date().toISOString(), mensagens: [ ...chat.mensagens, { role: "admin", content: texto, hora, status: "enviado" } ] } };
     });
-
     setInput("");
   }
 

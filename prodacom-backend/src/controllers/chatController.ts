@@ -32,7 +32,7 @@ export function configurarEventosChat(
     socket.emit('sincronizar_conversas_existentes', conversas);
   };
 
-  // 3. Cliente Reconectou (Identificação de Online ao dar F5 no site)
+  // 3. Cliente Reconectou
   const handleClienteReconectado = async (dados: { contato: string; nome: string }) => {
     const contatoLimpo = limparContato(dados.contato);
     const salaNome = `sala_${contatoLimpo}`;
@@ -67,7 +67,6 @@ export function configurarEventosChat(
       'Admin'
     );
 
-    // Transmite a mensagem para a sala do cliente
     io.to(`sala_${salaDestino}`).emit('receber_mensagem', { 
       autor: 'Admin', 
       texto, 
@@ -86,6 +85,7 @@ export function configurarEventosChat(
       console.log(`[STATUS] Cliente ${contato} ficou ONLINE.`);
     }
 
+    await chatService.desarquivarConversa(contato);
     const conversaExiste = await chatService.obterConversa(contato);
 
     chatService.criarConversaSeNaoExistir(contato, autor, socket.id);
@@ -126,13 +126,10 @@ export function configurarEventosChat(
   const handleMarcarComoLido = async (dados: { contato: string }) => {
     const contatoLimpo = limparContato(dados.contato);
     
-    // Zera notificações e timers pendentes
     await notificacaoService.marcarComoLido(contatoLimpo);
 
-    // Atualiza as mensagens enviadas pelo CLIENTE para 'lido' no MongoDB
     await chatService.atualizarStatusMensagens(contatoLimpo, 'user', 'lido');
 
-    // Avisa a sala do cliente que o admin visualizou as mensagens
     io.to(`sala_${contatoLimpo}`).emit('mensagens_visualizadas');
   };
 
@@ -142,13 +139,23 @@ export function configurarEventosChat(
 
     await chatService.atualizarStatusMensagens(contatoLimpo, dados.roleTarget, dados.status);
 
-    // Se o cliente visualizou as mensagens do admin, notifica a sala dos admins
     if (dados.roleTarget === 'admin') {
       io.to('admins').emit('status_mensagem_atualizado', {
         contato: contatoLimpo,
         status: dados.status
       });
     }
+  };
+
+  const handleApagarMensagem = async (dados: { idMensagem: string, contato: string }) => {
+    await chatService.apagarMensagem(dados.idMensagem);
+    io.to(`sala_${dados.contato}`).emit('mensagem_apagada', { idMensagem: dados.idMensagem });
+    io.to('admins').emit('mensagem_apagada', { contato: dados.contato, idMensagem: dados.idMensagem });
+  };
+
+  const handleRemoverConversa = async (dados: { contato: string }) => {
+    await chatService.arquivarConversa(dados.contato);
+    io.to('admins').emit('conversa_removida', { contato: dados.contato });
   };
 
   // 7. Desconexão
@@ -170,6 +177,7 @@ export function configurarEventosChat(
       }
     }
   };
+  
 
   // --- REGISTRO DOS EVENTOS ---
   socket.on('solicitar_status_admin', handleSolicitarStatusAdmin);
@@ -179,4 +187,6 @@ export function configurarEventosChat(
   socket.on('marcar_como_lido', handleMarcarComoLido);
   socket.on('atualizar_status_mensagem', handleAtualizarStatusMensagem);
   socket.on('disconnect', handleDisconnect);
+  socket.on('apagar_mensagem', handleApagarMensagem); 
+  socket.on('remover_conversa', handleRemoverConversa);
 }
