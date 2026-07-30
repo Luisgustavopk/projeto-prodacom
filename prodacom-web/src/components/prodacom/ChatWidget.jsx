@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Maximize2, Minimize2, Send, ChevronRight, Check, CheckCheck, Trash2, ChevronDown, Ban } from "lucide-react";
 import { WebChatContext } from "../../context/WebChatContext"; 
-import { socket } from "../../services/socket"; 
 
 const quickReplies = ["Solicitar orçamento", "Relógio de ponto", "Controle de acesso", "Falar com um consultor"];
 
@@ -16,13 +15,13 @@ function StatusMensagem({ status }) {
 
 export default function ChatWidget() {
   const [isOverContact, setIsOverContact] = useState(false);
-  const [menuMsgId, setMenuMsgId] = useState(null); // 👈 Controle do dropdown do cliente
+  const [menuMsgId, setMenuMsgId] = useState(null); 
   const location = useLocation();
 
   const {
     open, setOpen, expanded, setExpanded, input, setInput, messages,
     isAskingContact, isIdentified, leadForm, setLeadForm, messagesEndRef,
-    isAdminOnline, unreadCount, handleFirstMessage, handleStartChat, handleSend
+    isAdminOnline, unreadCount, handleFirstMessage, handleStartChat, handleSend, handleApagarMensagemCliente
   } = useContext(WebChatContext);
 
   useEffect(function () {
@@ -50,7 +49,7 @@ export default function ChatWidget() {
   }, [open, expanded]);
 
   return (
-    <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3">
+    <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3" onClick={() => setMenuMsgId(null)}>
       <AnimatePresence>
         {open && (
           <motion.div 
@@ -61,7 +60,6 @@ export default function ChatWidget() {
             `}
           >
             
-            {/* HEADER */}
             <div className="bg-obsidian text-white px-5 py-4 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-cobalt flex items-center justify-center"><MessageSquare size={16} strokeWidth={1.5} /></div>
@@ -79,37 +77,37 @@ export default function ChatWidget() {
               </div>
             </div>
 
-            {/* MENSAGENS */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-ghost">
+            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-ghost custom-scrollbar">
               {messages.map(function (msg, i) {
                 const isUser = msg.role === "user";
+                const msgIdentifier = msg.id || `temp-${i}`;
+                const isApagada = Boolean(msg.apagada) || msg.content === "Mensagem apagada";
+
                 return (
-                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex group relative ${isUser ? "justify-end" : "justify-start"}`}>
+                  <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex relative ${isUser ? "justify-end" : "justify-start"}`}>
                     {!isUser && (
-                      <div className="w-7 h-7 bg-obsidian text-white flex items-center justify-center mr-2 mt-1 shrink-0"><MessageSquare size={12} /></div>
+                      <div className="w-7 h-7 bg-obsidian text-white flex items-center justify-center mr-2 mt-1 shadow-md shrink-0"><MessageSquare size={12} /></div>
                     )}
                     
-                    <div 
-                      onMouseLeave={() => setMenuMsgId(null)}
-                      className="flex flex-col gap-1 max-w-[78%] relative"
-                    >
-                      <div className="relative flex items-center gap-2">
+                    <div className="flex flex-col gap-1 max-w-[85%] md:max-w-[78%] relative">
+                      
+                      <div className="relative flex items-center gap-1 group">
                         
-                        {/* 👇 Dropdown Excluir (APENAS PARA O CLIENTE/USER) */}
-                        {isUser && !msg.apagada && msg.id && (
-                          <div className="absolute top-1/2 -translate-y-1/2 -left-6 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        {isUser && !isApagada && msg.id && (
+                          <div className={`relative transition-opacity z-10 ${menuMsgId === msgIdentifier ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                             <button 
-                              onClick={() => setMenuMsgId(menuMsgId === msg.id ? null : msg.id)} 
-                              className="p-1 text-slate-400 hover:text-cobalt hover:bg-white rounded-full transition-colors"
+                              onClick={(e) => { e.stopPropagation(); setMenuMsgId(menuMsgId === msgIdentifier ? null : msgIdentifier); }} 
+                              className={`p-1.5 rounded-full transition-colors ${menuMsgId === msgIdentifier ? "bg-slate-200 text-cobalt" : "text-slate-400 hover:text-cobalt hover:bg-slate-200"}`}
                             >
-                              <ChevronDown size={14} />
+                              <ChevronDown size={14} className={`transition-transform duration-200 ${menuMsgId === msgIdentifier ? "rotate-180" : ""}`}/>
                             </button>
 
-                            {menuMsgId === msg.id && (
-                              <div className="absolute right-full top-full mr-1 mt-1 w-28 bg-white border border-slate_mist shadow-xl rounded-md z-20 py-1 overflow-hidden">
+                            {menuMsgId === msgIdentifier && (
+                              <div className="absolute right-0 top-full mt-1 w-28 bg-white border border-slate_mist shadow-xl rounded-md z-[70] py-1 overflow-hidden" onClick={(e) => e.stopPropagation()}>
                                 <button 
-                                  onClick={() => {
-                                    socket.emit("apagar_mensagem", { idMensagem: msg.id, contato: leadForm.contato.replace(/\D/g, "") });
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleApagarMensagemCliente(msg.id);
                                     setMenuMsgId(null);
                                   }}
                                   className="w-full text-left px-3 py-1.5 text-xs font-medium text-rose-500 hover:bg-rose-50 flex items-center gap-2"
@@ -121,16 +119,15 @@ export default function ChatWidget() {
                           </div>
                         )}
 
-                        {/* Balão da Mensagem */}
-                        <div className={`px-4 py-2.5 text-sm leading-relaxed shadow-sm flex items-center gap-2 ${
-                          msg.apagada 
-                            ? "italic text-obsidian/40 bg-[#f8fafc] border border-slate_mist rounded-lg" 
+                        <div className={`px-4 py-2.5 text-sm leading-relaxed shadow-sm flex items-center gap-2 rounded-lg ${
+                          isApagada 
+                            ? "italic text-slate-400 bg-slate-100 border border-slate-300" 
                             : isUser 
                               ? "bg-cobalt text-white" 
                               : "bg-white border border-slate_mist text-obsidian"
                         }`}>
-                          {msg.apagada && <Ban size={12} className="text-obsidian/40 shrink-0" />}
-                          {msg.content?.replace("🚫 ", "")}
+                          {isApagada && <Ban size={14} className="text-slate-400 shrink-0" />}
+                          {isApagada ? "Mensagem apagada" : msg.content}
                         </div>
                       </div>
 
@@ -145,7 +142,6 @@ export default function ChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* SUGESTÕES RÁPIDAS */}
             {messages.length === 1 && !isAskingContact && (
               <div className="px-5 py-3 border-t border-slate_mist bg-white flex flex-wrap gap-2">
                 {quickReplies.map((q) => (
@@ -156,9 +152,8 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {/* FORMULÁRIOS */}
             {isAskingContact ? (
-              <form onSubmit={handleStartChat} className="p-4 border-t border-slate_mist bg-white flex flex-col gap-3">
+              <form onSubmit={handleStartChat} className="p-4 border-t border-slate_mist bg-white flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
                 <p className="text-xs text-obsidian/60 font-medium">Por favor, informe os seus dados para iniciarmos:</p>
                 <div className="flex gap-2">
                   <input type="text" required placeholder="Seu nome" value={leadForm.nome} onChange={(e) => setLeadForm({ ...leadForm, nome: e.target.value })} className="flex-1 min-w-0 w-full bg-ghost border border-slate_mist px-3 py-2 text-sm focus:outline-none focus:border-cobalt" />
@@ -167,7 +162,7 @@ export default function ChatWidget() {
                 <button type="submit" className="w-full bg-cobalt text-white py-2 text-sm font-medium tracking-wider uppercase hover:bg-obsidian transition-colors">Iniciar Atendimento</button>
               </form>
             ) : (
-              <form onSubmit={handleSend} className="p-3 border-t border-slate_mist bg-white flex items-center gap-2">
+              <form onSubmit={handleSend} className="p-3 border-t border-slate_mist bg-white flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                 <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escreva a sua mensagem..." className="flex-1 bg-ghost border border-slate_mist px-4 py-2.5 text-sm focus:outline-none focus:border-cobalt" />
                 <button type="submit" className="bg-cobalt text-white p-2.5 hover:bg-obsidian"><Send size={16} /></button>
               </form>

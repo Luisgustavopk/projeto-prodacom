@@ -10,6 +10,7 @@ export interface ISocketMessage {
 
 export interface ServerToClientEvents {
   receber_mensagem: (dados: { 
+    id: string;
     autor: string; 
     texto: string; 
     hora: string; 
@@ -41,6 +42,7 @@ export interface ServerToClientEvents {
   mensagem_apagada: (dados: { contato?: string; idMensagem: string }) => void;
   conversa_removida: (dados: { contato: string }) => void;
   restaurar_conversa: (conversa: any) => void;
+  historico_mensagens_cliente: (mensagens: any[]) => void;
 
 }
 

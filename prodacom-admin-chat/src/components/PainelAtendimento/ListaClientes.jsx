@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Monitor, ChevronDown, Trash2 } from "lucide-react";
-import { socket } from "../../services/socket"; // 👈 Importamos o socket para poder emitir o evento daqui
+import { Monitor, ChevronDown, Trash2, Ban } from "lucide-react";
+import { socket } from "../../services/socket";
 
 function formatarTempoVisivel(isoString, fallbackHora) {
   if (!isoString) return fallbackHora || "--:--";
@@ -12,7 +12,6 @@ function formatarTempoVisivel(isoString, fallbackHora) {
 }
 
 export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
-  // 👈 Estado para controlar qual menu de contato está aberto
   const [menuAbertoId, setMenuAbertoId] = useState(null);
 
   const conversasOrdenadas = Object.entries(chats).sort((a, b) => {
@@ -22,7 +21,7 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
   });
 
   return (
-    <div className={`${clienteAtivo ? "hidden md:flex" : "flex"} w-full md:w-1/3 md:max-w-sm bg-[#1a1a1a] flex-col border-r border-white/5 shadow-2xl z-20`}>
+    <div className={`${clienteAtivo ? "hidden md:flex" : "flex"} w-full md:w-1/3 md:max-w-sm bg-[#1a1a1a] flex-col border-r border-white/5 shadow-2xl z-20`} onClick={() => setMenuAbertoId(null)}>
       <div className="p-4 md:p-6 bg-[#1a1a1a] border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
         <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
           <Monitor className="text-white" size={18} strokeWidth={1.5} />
@@ -42,16 +41,13 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
           conversasOrdenadas.map(([id, dados]) => {
             const isSelected = clienteAtivo === id;
             const ultimaMsg = dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1] : null;
+            const isApagada = Boolean(ultimaMsg?.apagada) || ultimaMsg?.content === "Mensagem apagada" || ultimaMsg?.content === "Mensagem apagada";
 
             return (
-              <div 
-                key={id}
-                onMouseLeave={() => setMenuAbertoId(null)} // Fecha o menu se o mouse sair da área do contato
-                className="relative"
-              >
+              <div key={id} className="relative group">
                 <button
                   onClick={() => setClienteAtivo(id)}
-                  className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 group ${isSelected ? "bg-sky-800" : "hover:bg-white/5"}`}
+                  className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 ${isSelected ? "bg-sky-800" : "hover:bg-white/5"}`}
                 >
                   <div className="flex justify-between items-start w-full pr-4">
                     <div className="flex items-center gap-2">
@@ -65,32 +61,22 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
                   </div>
                   
                   <div className="flex items-center justify-between w-full">
-                    <span className={`text-[10px] md:text-[11px] truncate pr-4 ${dados.unread ? "font-bold text-white" : isSelected ? "text-white/80" : "text-white/40"}`}>
-                      {ultimaMsg ? (ultimaMsg.apagada ? "Mensagem apagada" : ultimaMsg.content) : "Nova solicitação"}
-                    </span>
+                    <div className={`flex items-center gap-1.5 text-[10px] md:text-[11px] truncate pr-4 ${dados.unread ? "font-bold text-white" : isSelected ? "text-white/80" : "text-white/40"} ${isApagada ? "italic text-slate-400" : ""}`}>
+                      {isApagada && <Ban size={12} className="text-slate-400 shrink-0" />}
+                      <span className="truncate">{ultimaMsg ? (isApagada ? "Mensagem apagada" : ultimaMsg.content) : "Nova solicitação"}</span>
+                    </div>
                     
-                    {/* 👇 ÁREA DA SETINHA COM ANIMAÇÃO E MENU */}
+                
                     <div className="relative shrink-0 flex items-center">
                       <div 
-                        onClick={(e) => {
-                          e.stopPropagation(); // Evita que clicar na seta selecione o chat
-                          setMenuAbertoId(menuAbertoId === id ? null : id);
-                        }}
+                        onClick={(e) => { e.stopPropagation(); setMenuAbertoId(menuAbertoId === id ? null : id); }}
                         className={`p-1.5 rounded-full transition-colors ${isSelected ? "text-white hover:bg-black/20" : "text-white/20 group-hover:text-white/70 group-hover:bg-white/10"}`}
                       >
-                        {/* Animação: Começa em -90deg (apontando pro lado). No hover ou se aberto, gira pra 0deg (baixo) */}
-                        <ChevronDown 
-                          size={14} 
-                          className={`transition-transform duration-300 ${menuAbertoId === id ? "rotate-0" : "-rotate-90 group-hover:rotate-0"}`} 
-                        />
+                        <ChevronDown size={14} className={`transition-transform duration-300 ${menuAbertoId === id ? "rotate-0" : "-rotate-90 group-hover:rotate-0"}`} />
                       </div>
 
-                      {/* Dropdown Encerrar/Excluir */}
                       {menuAbertoId === id && (
-                        <div 
-                          className="absolute right-0 top-full mt-1 w-32 bg-[#2a2a2a] border border-white/10 shadow-2xl rounded-md z-[60] py-1 overflow-hidden"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-[#2a2a2a] border border-white/10 shadow-2xl rounded-md z-[60] py-1 overflow-hidden" onClick={(e) => e.stopPropagation()}>
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
@@ -100,12 +86,11 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
                             }}
                             className="w-full text-left px-4 py-2 text-xs font-medium text-rose-400 hover:bg-white/5 flex items-center gap-2 transition-colors"
                           >
-                            <Trash2 size={12} /> Excluir
+                            <Trash2 size={14} /> Remover Chat
                           </button>
                         </div>
                       )}
                     </div>
-                    {/* FIM DA ÁREA DA SETINHA */}
 
                   </div>
                 </button>

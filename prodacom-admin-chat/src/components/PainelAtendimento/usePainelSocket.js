@@ -8,24 +8,20 @@ export function usePainelSocket() {
   
   const clienteAtivoRef = useRef(clienteAtivo);
 
-  // 1. Marca mensagens do cliente como Lidas ao ABRIR o chat (Sem F5)
   useEffect(() => {
     clienteAtivoRef.current = clienteAtivo;
 
     if (clienteAtivo) {
       const contatoLimpo = clienteAtivo.replace(/\D/g, "");
       
-      // Avisa o backend para atualizar tudo no MongoDB
       socket.emit("marcar_como_lido", { contato: contatoLimpo });
 
-      // Atualiza na mesma hora a tela do React
       setChats((prev) => {
         const chatAtual = prev[contatoLimpo];
         if (!chatAtual) return prev;
 
         let teveMudanca = false;
         
-        // Transforma as mensagens recebidas em 'lido'
         const mensagensAtualizadas = chatAtual.mensagens.map(msg => {
           if (msg.role !== "admin" && msg.status !== "lido") {
             teveMudanca = true;
@@ -34,7 +30,6 @@ export function usePainelSocket() {
           return msg;
         });
 
-        // Só atualiza o estado se realmente havia algo não lido
         if (!teveMudanca && !chatAtual.unread) return prev;
 
         return {
@@ -49,7 +44,6 @@ export function usePainelSocket() {
     }
   }, [clienteAtivo]);
 
-  // 2. Eventos do Socket.IO
   useEffect(() => {
     function entrarComoAdmin() {
       socket.emit("entrar_como_admin");
@@ -79,17 +73,14 @@ export function usePainelSocket() {
       });
     });
 
-    // 3. Recebendo NOVA mensagem do cliente
     socket.on("nova_mensagem_cliente", (dados) => {
       if (!dados?.contato) return;
       const chatId = dados.contato.replace(/\D/g, "");
       const isChatAberto = clienteAtivoRef.current?.replace(/\D/g, "") === chatId;
 
       if (!isChatAberto) {
-        // Toca notificação apenas se o admin não estiver com a aba daquele cliente aberta
         new Audio(notificacaoAudio).play().catch(() => {});
       } else {
-        // Se o chat JÁ ESTIVER ABERTO, avisa o backend que foi lido instantaneamente
         socket.emit("marcar_como_lido", { contato: chatId });
       }
 
@@ -109,7 +100,6 @@ export function usePainelSocket() {
                 role: "user", 
                 content: dados.texto, 
                 hora: dados.hora, 
-                // Se a janela ta aberta, fica azul na hora. Se não, fica com status original.
                 status: isChatAberto ? "lido" : (dados.status || "enviado") 
               }
             ]
@@ -146,7 +136,8 @@ export function usePainelSocket() {
         const msgs = [...chat.mensagens];
         for (let i = msgs.length - 1; i >= 0; i--) {
           if (msgs[i].role === "admin" && !msgs[i].id) {
-            msgs[i].id = dados.id; break;
+           msgs[i] = { ...msgs[i], id: dados.id };
+           break;
           }
         }
         return { ...prev, [dados.contato]: { ...chat, mensagens: msgs } };
@@ -157,7 +148,7 @@ export function usePainelSocket() {
       setChats((prev) => {
         const chat = prev[dados.contato];
         if (!chat) return prev;
-        return { ...prev, [dados.contato]: { ...chat, mensagens: chat.mensagens.map(m => m.id === dados.idMensagem ? { ...m, content: "🚫 Mensagem apagada", apagada: true } : m) } };
+        return { ...prev, [dados.contato]: { ...chat, mensagens: chat.mensagens.map(m => m.id === dados.idMensagem ? { ...m, content: "Mensagem apagada", apagada: true } : m) } };
       });
     });
 

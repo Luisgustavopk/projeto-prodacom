@@ -4,11 +4,8 @@ const mapeamentoSockets: Record<string, string> = {};
 const socketParaContato = new Map<string, string>();
 const contatoParaSockets = new Map<string, Set<string>>();
 
-// --- GERENCIAMENTO DE CONEXÕES SOCKET ---
-
 function registrarConexaoCliente(contato: string, socketId: string): boolean {
   const contatoLimpo = contato.trim(); 
-  
   socketParaContato.set(socketId, contatoLimpo);
 
   if (!contatoParaSockets.has(contatoLimpo)) {
@@ -45,8 +42,6 @@ function isClienteOnline(contato: string): boolean {
   return sockets ? sockets.size > 0 : false;
 }
 
-// --- CONSULTAS E BANCO DE DADOS (MONGO) ---
-
 async function obterTodasAsConversas() {
   try {
     const conversasAgrupadas = await MessageModel.aggregate([
@@ -60,11 +55,12 @@ async function obterTodasAsConversas() {
           lastMessageAt: { $last: "$createdAt" },
           mensagens: {
             $push: { 
-              id: "$_id",
+              id: { $toString: "$_id" },
               role: "$role", 
               content: "$content", 
               hora: "$hora",
-              status: { $ifNull: ["$status", "enviado"] } 
+              status: { $ifNull: ["$status", "enviado"] },
+              apagada: { $ifNull: ["$apagada", false] }
             }
           }
         }
@@ -72,10 +68,8 @@ async function obterTodasAsConversas() {
     ]);
 
     const bancoDeConversas: Record<string, any> = {};
-    
     conversasAgrupadas.forEach(function (chat) {
       const contatoLimpo = chat.contato.trim();
-
       bancoDeConversas[contatoLimpo] = {
         nome: chat.nome,
         contato: contatoLimpo,
@@ -88,7 +82,7 @@ async function obterTodasAsConversas() {
 
     return bancoDeConversas;
   } catch (error) {
-    console.error("Erro ao obter todas as conversas do MongoDB:", error);
+    console.error("Erro ao obter conversas:", error);
     return {};
   }
 }
@@ -106,14 +100,15 @@ async function obterConversa(contato: string) {
       online: isClienteOnline(contatoLimpo),
       lastMessageAt: mensagens[mensagens.length - 1].createdAt,
       mensagens: mensagens.map(m => ({ 
+        id: m._id.toString(),
         role: m.role, 
         content: m.content, 
         hora: m.hora,
-        status: m.status || 'enviado'
+        status: m.status || 'enviado',
+        apagada: m.apagada || false
       }))
     };
   } catch (error) {
-    console.error(`Erro ao obter conversa:`, error);
     return null;
   }
 }
@@ -129,74 +124,57 @@ function atualizarIdDoCliente(contato: string, novoId: string) {
   mapeamentoSockets[contato.trim()] = novoId;
 }
 
-
 async function adicionarMensagem(
   contato: string, 
-  mensagem: { 
-    role: "user" | "admin"; 
-    content: string; 
-    hora: string; 
-    status?: "enviado" | "entregue" | "lido" 
-  }, 
+  mensagem: { role: "user" | "admin"; content: string; hora: string; status?: "enviado" | "entregue" | "lido" }, 
   clienteNome: string
 ) {
   try {
     const novaMsg = await MessageModel.create({
-      clienteId: contato.trim(), clienteNome: clienteNome, role: mensagem.role, content: mensagem.content,
-      hora: mensagem.hora, status: mensagem.status || 'enviado'
+      clienteId: contato.trim(),
+      clienteNome: clienteNome,
+      role: mensagem.role,
+      content: mensagem.content,
+      hora: mensagem.hora,
+      status: mensagem.status || 'enviado'
     });
-    console.log(`[MONGO] Mensagem de [${mensagem.role}] salva para: ${contato.trim()} com status: ${mensagem.status || 'enviado'}`);
-    return novaMsg._id.toString();
+    
+    return novaMsg._id.toString(); 
+
   } catch (error) {
-    console.error("Erro ao salvar mensagem no MongoDB:", error);
+    console.error("Erro ao salvar mensagem:", error);
+    return null;
   }
 }
- async function arquivarConversa(contato: string) {
-      await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: true });
-    }
 
-  async function desarquivarConversa(contato: string) {
-    await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: false });
+async function arquivarConversa(contato: string) {
+  await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: true });
+}
+
+async function desarquivarConversa(contato: string) {
+  await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: false });
+}
+
+async function apagarMensagem(idMensagem: string) {
+  try {
+    await MessageModel.findByIdAndUpdate(idMensagem, { apagada: true, content: "Mensagem apagada" });
+  } catch (error) {
+    console.error("Erro ao apagar:", error);
   }
+}
 
-  async function apagarMensagem(idMensagem: string) {
-    await MessageModel.findByIdAndUpdate(idMensagem, { apagada: true, content: "🚫 Mensagem apagada" });
-  }
-
-async function atualizarStatusMensagens(
-  contato: string, 
-  roleTarget: "user" | "admin", 
-  novoStatus: "entregue" | "lido"
-) {
+async function atualizarStatusMensagens(contato: string, roleTarget: "user" | "admin", novoStatus: "entregue" | "lido") {
   try {
     const contatoLimpo = contato.trim();
     await MessageModel.updateMany(
-      { 
-        clienteId: contatoLimpo, 
-        role: roleTarget,
-        status: { $ne: 'lido' }
-      },
+      { clienteId: contatoLimpo, role: roleTarget, status: { $ne: 'lido' } },
       { $set: { status: novoStatus } }
     );
-  
-  } catch (error) {
-    console.error("Erro ao atualizar status das mensagens no MongoDB:", error);
-  }
-
-   
+  } catch (error) {}
 }
 
 export const chatService = {
-  obterTodasAsConversas,
-  obterConversa,
-  criarConversaSeNaoExistir,
-  atualizarIdDoCliente,
-  adicionarMensagem,
-  atualizarStatusMensagens,
-  apagarMensagem,
-  registrarConexaoCliente,
-  removerConexaoCliente,
-  desarquivarConversa,
-  arquivarConversa,
-  isClienteOnline
+  obterTodasAsConversas, obterConversa, criarConversaSeNaoExistir, atualizarIdDoCliente,
+  adicionarMensagem, atualizarStatusMensagens, apagarMensagem, registrarConexaoCliente,
+  removerConexaoCliente, desarquivarConversa, arquivarConversa, isClienteOnline
 };

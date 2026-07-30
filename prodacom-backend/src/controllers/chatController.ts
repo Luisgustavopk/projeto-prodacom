@@ -52,6 +52,7 @@ export function configurarEventosChat(
         contato: contatoLimpo,
         novoId: socket.id
       });
+      socket.emit('historico_mensagens_cliente', conversaExiste.mensagens);
     }
   };
 
@@ -61,13 +62,21 @@ export function configurarEventosChat(
 
     const statusInicial = 'enviado';
 
-    await chatService.adicionarMensagem(
+   const msgId = await chatService.adicionarMensagem(
       salaDestino, 
       { role: 'admin', content: texto, hora, status: statusInicial }, 
       'Admin'
     );
 
+   io.to('admins').emit('mensagem_enviada_sucesso', { 
+      contato: salaDestino, 
+      id: msgId!, 
+      texto, 
+      hora 
+    });
+
     io.to(`sala_${salaDestino}`).emit('receber_mensagem', { 
+      id: msgId!,
       autor: 'Admin', 
       texto, 
       hora,
@@ -82,32 +91,33 @@ export function configurarEventosChat(
     const ficouOnline = chatService.registrarConexaoCliente(contato, socket.id);
     if (ficouOnline) {
       io.to('admins').emit('status_cliente', { contato, online: true });
-      console.log(`[STATUS] Cliente ${contato} ficou ONLINE.`);
     }
 
-    await chatService.desarquivarConversa(contato);
     const conversaExiste = await chatService.obterConversa(contato);
 
     chatService.criarConversaSeNaoExistir(contato, autor, socket.id);
     chatService.atualizarIdDoCliente(contato, socket.id);
     
-    // Salva no banco a mensagem do cliente com status 'enviado'
-    await chatService.adicionarMensagem(
+    // Captura o ID real do banco
+    const msgId = await chatService.adicionarMensagem(
       contato, 
       { role: 'user', content: texto, hora, status: 'enviado' }, 
       autor
     );
 
-    // Gerenciamento de Notificação / Timer de 15 Minutos
     if (!conversaExiste) {
       notificacaoService.registrarNovoCliente(contato, autor, texto);
     } else {
       notificacaoService.agendarAlerta15Minutos(contato, autor, texto);
     }
 
-    const pacoteParaAdmin = { idDoCliente: contato, autor, contato, texto, hora, status: 'enviado' as const };
+    const pacoteParaAdmin = { id: msgId!, idDoCliente: contato, autor, contato, texto, hora, status: 'enviado' as const };
     io.to('admins').emit('nova_mensagem_cliente', pacoteParaAdmin);
-    io.to(salaNome).emit('receber_mensagem', { autor, texto, hora, status: 'enviado' });
+    
+    // 👇 Envia o evento de sucesso DEVOLVENDO O ID para o Cliente!
+    socket.emit('mensagem_enviada_sucesso', { id: msgId!, texto, hora });
+
+    io.to(salaNome).emit('receber_mensagem', { id: msgId!, autor, texto, hora, status: 'enviado' });
   };
 
   const handleEnviarMensagem = async (dados: ISocketMessage) => {
@@ -148,6 +158,7 @@ export function configurarEventosChat(
   };
 
   const handleApagarMensagem = async (dados: { idMensagem: string, contato: string }) => {
+    console.log("=> [CONTROLLER] Pedido para apagar recebido!", dados);
     await chatService.apagarMensagem(dados.idMensagem);
     io.to(`sala_${dados.contato}`).emit('mensagem_apagada', { idMensagem: dados.idMensagem });
     io.to('admins').emit('mensagem_apagada', { contato: dados.contato, idMensagem: dados.idMensagem });
