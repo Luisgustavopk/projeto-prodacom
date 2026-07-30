@@ -1,4 +1,5 @@
 export interface ISocketMessage {
+  id?: string;
   texto: string;
   autor: string;
   contato: string;
@@ -35,6 +36,12 @@ export interface ServerToClientEvents {
     contato: string; 
     status: 'entregue' | 'lido' 
   }) => void; 
+
+  mensagem_enviada_sucesso: (dados: { contato?: string; id: string; texto: string; hora: string }) => void;
+  mensagem_apagada: (dados: { contato?: string; idMensagem: string }) => void;
+  conversa_removida: (dados: { contato: string }) => void;
+  restaurar_conversa: (conversa: any) => void;
+
 }
 
 export interface ClientToServerEvents {
@@ -48,4 +55,6 @@ export interface ClientToServerEvents {
     roleTarget: 'user' | 'admin'; 
     status: 'entregue' | 'lido' 
   }) => void; 
+  apagar_mensagem: (dados: { idMensagem: string; contato: string }) => void;
+  remover_conversa: (dados: { contato: string }) => void;
 }

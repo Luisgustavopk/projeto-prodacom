@@ -50,6 +50,7 @@ function isClienteOnline(contato: string): boolean {
 async function obterTodasAsConversas() {
   try {
     const conversasAgrupadas = await MessageModel.aggregate([
+      { $match: { arquivada: { $ne: true } } },
       { $sort: { createdAt: 1 } },
       {
         $group: {
@@ -59,6 +60,7 @@ async function obterTodasAsConversas() {
           lastMessageAt: { $last: "$createdAt" },
           mensagens: {
             $push: { 
+              id: "$_id",
               role: "$role", 
               content: "$content", 
               hora: "$hora",
@@ -139,20 +141,27 @@ async function adicionarMensagem(
   clienteNome: string
 ) {
   try {
-    await MessageModel.create({
-      clienteId: contato.trim(),
-      clienteNome: clienteNome,
-      role: mensagem.role,
-      content: mensagem.content,
-      hora: mensagem.hora,
-      status: mensagem.status || 'enviado'
+    const novaMsg = await MessageModel.create({
+      clienteId: contato.trim(), clienteNome: clienteNome, role: mensagem.role, content: mensagem.content,
+      hora: mensagem.hora, status: mensagem.status || 'enviado'
     });
     console.log(`[MONGO] Mensagem de [${mensagem.role}] salva para: ${contato.trim()} com status: ${mensagem.status || 'enviado'}`);
+    return novaMsg._id.toString();
   } catch (error) {
     console.error("Erro ao salvar mensagem no MongoDB:", error);
   }
 }
+ async function arquivarConversa(contato: string) {
+      await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: true });
+    }
 
+  async function desarquivarConversa(contato: string) {
+    await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: false });
+  }
+
+  async function apagarMensagem(idMensagem: string) {
+    await MessageModel.findByIdAndUpdate(idMensagem, { apagada: true, content: "🚫 Mensagem apagada" });
+  }
 
 async function atualizarStatusMensagens(
   contato: string, 
@@ -173,6 +182,8 @@ async function atualizarStatusMensagens(
   } catch (error) {
     console.error("Erro ao atualizar status das mensagens no MongoDB:", error);
   }
+
+   
 }
 
 export const chatService = {
@@ -182,7 +193,10 @@ export const chatService = {
   atualizarIdDoCliente,
   adicionarMensagem,
   atualizarStatusMensagens,
+  apagarMensagem,
   registrarConexaoCliente,
   removerConexaoCliente,
+  desarquivarConversa,
+  arquivarConversa,
   isClienteOnline
 };
