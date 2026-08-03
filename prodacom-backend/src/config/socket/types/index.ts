@@ -43,7 +43,7 @@ export interface ServerToClientEvents {
   conversa_removida: (dados: { contato: string }) => void;
   restaurar_conversa: (conversa: any) => void;
   historico_mensagens_cliente: (mensagens: any[]) => void;
-
+  status_atendimento_alterado: (dados: { contato: string; status: string }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -59,4 +59,5 @@ export interface ClientToServerEvents {
   }) => void; 
   apagar_mensagem: (dados: { idMensagem: string; contato: string }) => void;
   remover_conversa: (dados: { contato: string }) => void;
+  alterar_status_atendimento: (dados: { contato: string; status: string }) => void;
 }

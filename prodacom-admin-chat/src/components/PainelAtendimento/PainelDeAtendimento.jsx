@@ -4,7 +4,7 @@ import { ListaClientes } from "./ListaClientes";
 import { ConversaAtiva } from "./ConversaAtiva";
 
 export function PainelDeAtendimento() {
-  const { chats, clienteAtivo, setClienteAtivo, input, setInput, handleSend } = usePainelSocket();
+  const { chats, clienteAtivo, setClienteAtivo, input, setInput, handleSend, mudarStatusAtendimento } = usePainelSocket();
 
   return (
     <div className="flex h-screen w-screen bg-slate-50 font-sans selection:bg-[#2563eb] selection:text-white overflow-hidden">
@@ -22,6 +22,7 @@ export function PainelDeAtendimento() {
         input={input} 
         setInput={setInput} 
         handleSend={handleSend} 
+        mudarStatusAtendimento={mudarStatusAtendimento} 
       />
 
       <style dangerouslySetInnerHTML={{ __html: `

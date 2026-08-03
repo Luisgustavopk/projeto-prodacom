@@ -68,6 +68,12 @@ export function configurarEventosChat(
       'Admin'
     );
 
+    const conversaExiste = await chatService.obterConversa(salaDestino);
+    if (conversaExiste && conversaExiste.statusAtendimento === 'aberto') {
+      await chatService.atualizarStatusAtendimento(salaDestino, 'em_andamento');
+      io.to('admins').emit('status_atendimento_alterado', { contato: salaDestino, status: 'em_andamento' });
+    }
+    
    io.to('admins').emit('mensagem_enviada_sucesso', { 
       contato: salaDestino, 
       id: msgId!, 
@@ -109,6 +115,11 @@ export function configurarEventosChat(
       notificacaoService.registrarNovoCliente(contato, autor, texto);
     } else {
       notificacaoService.agendarAlerta15Minutos(contato, autor, texto);
+    }
+
+    if (conversaExiste && conversaExiste.statusAtendimento === 'finalizado') {
+      await chatService.atualizarStatusAtendimento(contato, 'aberto');
+      io.to('admins').emit('status_atendimento_alterado', { contato, status: 'aberto' });
     }
 
     const pacoteParaAdmin = { id: msgId!, idDoCliente: contato, autor, contato, texto, hora, status: 'enviado' as const };
@@ -165,8 +176,15 @@ export function configurarEventosChat(
   };
 
   const handleRemoverConversa = async (dados: { contato: string }) => {
-    await chatService.arquivarConversa(dados.contato);
-    io.to('admins').emit('conversa_removida', { contato: dados.contato });
+   const contatoLimpo = dados.contato.replace(/\D/g, '').trim();
+    await chatService.arquivarConversa(contatoLimpo);
+    io.to('admins').emit('conversa_removida', { contato: contatoLimpo });
+  };
+
+  const handleAlterarStatusAtendimento = async (dados: { contato: string, status: string }) => {
+    const contatoLimpo = limparContato(dados.contato);
+    await chatService.atualizarStatusAtendimento(contatoLimpo, dados.status);
+    io.to('admins').emit('status_atendimento_alterado', { contato: contatoLimpo, status: dados.status });
   };
 
   // 7. Desconexão
@@ -200,4 +218,5 @@ export function configurarEventosChat(
   socket.on('disconnect', handleDisconnect);
   socket.on('apagar_mensagem', handleApagarMensagem); 
   socket.on('remover_conversa', handleRemoverConversa);
+  socket.on('alterar_status_atendimento', handleAlterarStatusAtendimento);
 }

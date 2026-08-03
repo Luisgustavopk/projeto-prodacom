@@ -53,6 +53,7 @@ async function obterTodasAsConversas() {
           nome: { $first: "$clienteNome" },
           contato: { $first: "$clienteId" },
           lastMessageAt: { $last: "$createdAt" },
+          statusAtendimento: { $last: "$statusAtendimento" },
           mensagens: {
             $push: { 
               id: { $toString: "$_id" },
@@ -76,6 +77,7 @@ async function obterTodasAsConversas() {
         idDoCliente: mapeamentoSockets[contatoLimpo] || contatoLimpo,
         online: isClienteOnline(contatoLimpo),
         lastMessageAt: chat.lastMessageAt, 
+        statusAtendimento: chat.statusAtendimento || 'aberto',
         mensagens: chat.mensagens
       };
     });
@@ -99,6 +101,7 @@ async function obterConversa(contato: string) {
       idDoCliente: mapeamentoSockets[contatoLimpo] || contatoLimpo,
       online: isClienteOnline(contatoLimpo),
       lastMessageAt: mensagens[mensagens.length - 1].createdAt,
+      statusAtendimento: mensagens[mensagens.length - 1].statusAtendimento || 'aberto', 
       mensagens: mensagens.map(m => ({ 
         id: m._id.toString(),
         role: m.role, 
@@ -130,13 +133,16 @@ async function adicionarMensagem(
   clienteNome: string
 ) {
   try {
+    const ultimaMsg = await MessageModel.findOne({ clienteId: contato.trim() }).sort({ createdAt: -1 });
+    const statusAtual = ultimaMsg?.statusAtendimento || 'aberto';
     const novaMsg = await MessageModel.create({
       clienteId: contato.trim(),
       clienteNome: clienteNome,
       role: mensagem.role,
       content: mensagem.content,
       hora: mensagem.hora,
-      status: mensagem.status || 'enviado'
+      status: mensagem.status || 'enviado',
+      statusAtendimento: statusAtual
     });
     
     return novaMsg._id.toString(); 
@@ -148,11 +154,19 @@ async function adicionarMensagem(
 }
 
 async function arquivarConversa(contato: string) {
-  await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: true });
+  try {
+    const contatoLimpo = contato.trim();
+    await MessageModel.deleteMany({ clienteId: contatoLimpo });
+    console.log(`[MONGO] Conversa do cliente ${contatoLimpo} foi removida permanentemente.`);
+  } catch (error) {
+    console.error("Erro ao remover conversa:", error);
+  }
 }
 
 async function desarquivarConversa(contato: string) {
-  await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: false });
+  try {
+    await MessageModel.updateMany({ clienteId: contato.trim() }, { arquivada: false });
+  } catch (error) {}
 }
 
 async function apagarMensagem(idMensagem: string) {
@@ -172,9 +186,19 @@ async function atualizarStatusMensagens(contato: string, roleTarget: "user" | "a
     );
   } catch (error) {}
 }
+async function atualizarStatusAtendimento(contato: string, status: string) {
+  try {
+    await MessageModel.updateMany(
+      { clienteId: contato.trim() }, 
+      { $set: { statusAtendimento: status } }
+    );
+  } catch (error) {
+    console.error("Erro ao atualizar status do atendimento:", error);
+  }
+}
 
 export const chatService = {
   obterTodasAsConversas, obterConversa, criarConversaSeNaoExistir, atualizarIdDoCliente,
   adicionarMensagem, atualizarStatusMensagens, apagarMensagem, registrarConexaoCliente,
-  removerConexaoCliente, desarquivarConversa, arquivarConversa, isClienteOnline
+  removerConexaoCliente, desarquivarConversa, arquivarConversa, isClienteOnline, atualizarStatusAtendimento
 };

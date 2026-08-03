@@ -11,6 +11,18 @@ function formatarTempoVisivel(isoString, fallbackHora) {
   return msgDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+function BadgeStatus({ status }) {
+  const baseClasses = "px-2 py-[3px] rounded-full text-[8px] font-bold tracking-widest uppercase border shrink-0";
+  
+  if (status === 'em_andamento') {
+    return <span className={`${baseClasses} bg-blue-500/10 text-blue-400 border-blue-500/20`}>Em Atend.</span>;
+  }
+  if (status === 'finalizado') {
+    return <span className={`${baseClasses} bg-emerald-500/10 text-emerald-400 border-emerald-500/20`}>Finalizado</span>;
+  }
+  return <span className={`${baseClasses} bg-amber-500/10 text-amber-500 border-amber-500/20`}>Aberto</span>;
+}
+
 export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
   const [menuAbertoId, setMenuAbertoId] = useState(null);
 
@@ -23,7 +35,7 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
   return (
     <div className={`${clienteAtivo ? "hidden md:flex" : "flex"} w-full md:w-1/3 md:max-w-sm bg-[#1a1a1a] flex-col border-r border-white/5 shadow-2xl z-20`} onClick={() => setMenuAbertoId(null)}>
       <div className="p-4 md:p-6 bg-[#1a1a1a] border-b border-white/5 flex items-center gap-3 md:gap-4 shrink-0">
-        <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg">
+        <div className="w-8 h-8 md:w-10 md:h-10 bg-cobalt flex items-center justify-center shadow-lg rounded-md">
           <Monitor className="text-white" size={18} strokeWidth={1.5} />
         </div>
         <div>
@@ -41,21 +53,26 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
           conversasOrdenadas.map(([id, dados]) => {
             const isSelected = clienteAtivo === id;
             const ultimaMsg = dados.mensagens?.length > 0 ? dados.mensagens[dados.mensagens.length - 1] : null;
-            const isApagada = Boolean(ultimaMsg?.apagada) || ultimaMsg?.content === "Mensagem apagada" || ultimaMsg?.content === "Mensagem apagada";
+            const isApagada = Boolean(ultimaMsg?.apagada) || ultimaMsg?.content === "Mensagem apagada" || ultimaMsg?.content === "🚫 Mensagem apagada";
 
             return (
               <div key={id} className="relative group">
                 <button
                   onClick={() => setClienteAtivo(id)}
-                  className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2 ${isSelected ? "bg-sky-800" : "hover:bg-white/5"}`}
+                  className={`w-full text-left p-4 md:p-5 border-b border-white/5 transition-all flex flex-col gap-2.5 ${isSelected ? "bg-sky-800" : "hover:bg-white/5"}`}
                 >
-                  <div className="flex justify-between items-start w-full pr-4">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full transition-all duration-300 ${dados.online ? "bg-emerald-400 animate-pulse" : "bg-slate-500"}`} />
-                      <span className={`font-bold text-xs uppercase tracking-wider ${isSelected ? "text-white" : "text-white/90"}`}>{dados.nome}</span>
-                      {dados.unread && !isSelected && <span className="ml-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />}
+                  <div className="flex justify-between items-start w-full pr-2">
+                    
+                    <div className="flex items-center gap-2.5 overflow-hidden">
+                      <span className={`w-2 h-2 shrink-0 rounded-full transition-all duration-300 ${dados.online ? "bg-emerald-400 animate-pulse" : "bg-slate-500"}`} />
+                      <span className={`font-bold text-xs uppercase tracking-wider truncate ${isSelected ? "text-white" : "text-white/90"}`}>{dados.nome}</span>
+                      
+                      <BadgeStatus status={dados.statusAtendimento || 'aberto'} />
+
+                      {dados.unread && !isSelected && <span className="ml-1 w-2 h-2 shrink-0 bg-red-500 rounded-full animate-ping" />}
                     </div>
-                    <span className={`text-[9px] font-mono ${isSelected ? "text-white/60" : "text-white/30"}`}>
+
+                    <span className={`text-[9px] font-mono shrink-0 pl-2 ${isSelected ? "text-white/60" : "text-white/30"}`}>
                       {formatarTempoVisivel(dados.lastMessageAt, ultimaMsg?.hora)}
                     </span>
                   </div>
@@ -66,8 +83,7 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
                       <span className="truncate">{ultimaMsg ? (isApagada ? "Mensagem apagada" : ultimaMsg.content) : "Nova solicitação"}</span>
                     </div>
                     
-                
-                    <div className="relative shrink-0 flex items-center">
+                    <div className="relative shrink-0 flex items-center pr-2">
                       <div 
                         onClick={(e) => { e.stopPropagation(); setMenuAbertoId(menuAbertoId === id ? null : id); }}
                         className={`p-1.5 rounded-full transition-colors ${isSelected ? "text-white hover:bg-black/20" : "text-white/20 group-hover:text-white/70 group-hover:bg-white/10"}`}
@@ -91,7 +107,6 @@ export function ListaClientes({ chats, clienteAtivo, setClienteAtivo }) {
                         </div>
                       )}
                     </div>
-
                   </div>
                 </button>
               </div>

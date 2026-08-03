@@ -162,6 +162,13 @@ export function usePainelSocket() {
       setChats((prev) => ({ ...prev, [conversa.contato]: conversa }));
     });
 
+   socket.on("status_atendimento_alterado", (dados) => {
+      setChats((prev) => {
+        const chatAtual = prev[dados.contato];
+        if (!chatAtual) return prev;
+        return { ...prev, [dados.contato]: { ...chatAtual, statusAtendimento: dados.status } };
+      });
+    });
     return () => {
       socket.off("connect"); socket.off("sincronizar_conversas_existentes"); socket.off("status_cliente");
       socket.off("nova_mensagem_cliente"); socket.off("status_mensagem_atualizado"); socket.off("mensagem_enviada_sucesso");
@@ -186,5 +193,15 @@ export function usePainelSocket() {
     setInput("");
   }
 
-  return { chats, clienteAtivo, setClienteAtivo, input, setInput, handleSend };
+  function mudarStatusAtendimento(contato, novoStatus) {
+    const chatId = contato.replace(/\D/g, "");
+    socket.emit("alterar_status_atendimento", { contato: chatId, status: novoStatus });
+    setChats((prev) => {
+      const chat = prev[chatId];
+      if (!chat) return prev;
+      return { ...prev, [chatId]: { ...chat, statusAtendimento: novoStatus } };
+    });
+  }
+
+ return { chats, clienteAtivo, setClienteAtivo, input, setInput, handleSend, mudarStatusAtendimento };
 }
