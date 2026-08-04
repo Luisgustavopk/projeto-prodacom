@@ -43,11 +43,19 @@ export default function HeroSection() {
           Há mais de 10 anos provendo soluções integradas de controle de ponto e acesso para empresas de todos os portes. Tecnologia que transforma a gestão do seu negócio.
         </motion.p>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8 }} className="mt-8 lg:mt-10 flex flex-col sm:flex-row items-start gap-4">
-          <a href="#contato" onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} className="bg-cobalt text-white px-8 py-3 text-sm 2xl:text-base font-medium tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8 }} className="mt-8 lg:mt-10 flex flex-col sm:flex-row w-full sm:w-auto gap-4">
+          <a 
+            href="#contato" 
+            onClick={(e) => { e.preventDefault(); document.querySelector("#contato")?.scrollIntoView({ behavior: "smooth" }); }} 
+            className="w-full sm:w-auto text-center bg-cobalt text-white px-8 py-4 sm:py-3 text-xs sm:text-sm 2xl:text-base font-bold tracking-wider uppercase hover:bg-white hover:text-obsidian transition-all duration-300 sm:rounded-none shadow-lg sm:shadow-none"
+          >
             Solicite um Orçamento
           </a>
-          <a href="#solucoes" onClick={(e) => { e.preventDefault(); document.querySelector("#solucoes")?.scrollIntoView({ behavior: "smooth" }); }} className="border border-white/20 text-white/60 px-8 py-3 text-sm 2xl:text-base font-medium tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300">
+          <a 
+            href="#solucoes" 
+            onClick={(e) => { e.preventDefault(); document.querySelector("#solucoes")?.scrollIntoView({ behavior: "smooth" }); }} 
+            className="w-full sm:w-auto text-center border border-white/20 text-white/70 px-8 py-4 sm:py-3 text-xs sm:text-sm 2xl:text-base font-bold tracking-wider uppercase hover:border-white hover:text-white transition-all duration-300 sm:rounded-none"
+          >
             Nossas Soluções
           </a>
         </motion.div>

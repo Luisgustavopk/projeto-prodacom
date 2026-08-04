@@ -164,6 +164,11 @@ export default function CategoryPage() {
                               />
                             )}
                           </div>
+                          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 md:left-10 md:translate-x-0 pointer-events-none z-20 whitespace-nowrap">
+                          <span className="px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-black/20 backdrop-blur-md border border-white/5 text-[8px] md:text-[10px] font-mono text-white/50 uppercase tracking-[0.2em] shadow-lg">
+                            {model.title}
+                          </span>
+                        </div>
                         </motion.div>
                       );
                     })}
