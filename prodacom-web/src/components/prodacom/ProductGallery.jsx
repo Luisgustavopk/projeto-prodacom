@@ -88,18 +88,30 @@ export default function ProductGallery() { //
               <motion.div 
                 key={product.id} 
                 onClick={() => navigate(`/produto/${product.id}`)}
-                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }} 
-                className="relative shrink-0 w-72 sm:w-80 md:w-96 group cursor-pointer"
+                initial={{ opacity: 0, y: 40 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                viewport={{ once: true }} 
+                transition={{ delay: i * 0.1, duration: 0.6 }} 
+                className="relative shrink-0 w-72 sm:w-80 md:w-[22rem] group cursor-pointer flex flex-col bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] rounded-2xl p-6 md:p-8 transition-all duration-500"
               >
-                <div className="relative aspect-[3/2] overflow-hidden bg-white/5 flex items-center justify-center p-8">
-                  {/* mix-blend-screen e invert caso as fotos dos produtos precisem adaptar no fundo escuro */}
-                  <img src={product.image} alt={product.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 pointer-events-none drop-shadow-xl" />
+                <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 bg-cobalt/10 blur-[50px] rounded-full group-hover:bg-cobalt/20 transition-colors duration-700 pointer-events-none" />
+                <div className="relative h-48 md:h-56 flex items-center justify-center mb-8">
+                  <img 
+                    src={product.image} 
+                    alt={product.title} 
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 pointer-events-none drop-shadow-2xl relative z-10" 
+                  />
+                </div>
+                <div className="mt-auto flex items-end justify-between gap-4 border-t border-white/5 pt-4 group-hover:border-white/10 transition-colors">
+                  <h3 className="font-display font-semibold text-base md:text-lg text-white/90 group-hover:text-white transition-colors duration-300 leading-snug">
+                    {product.title}
+                  </h3>
                   
+                  <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-cobalt transition-colors duration-300">
+                    <ArrowRight size={16} strokeWidth={1.5} className="text-white/50 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" />
+                  </div>
                 </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <h3 className="font-display font-semibold text-base text-white group-hover:text-sky-600 transition-colors duration-300">{product.title}</h3>
-                  <ArrowRight size={14} strokeWidth={1} className="text-white/10 group-hover:text-sky-600 group-hover:translate-x-1 transition-all duration-300" />
-                </div>
+
               </motion.div>
             ))}
 
@@ -110,12 +122,10 @@ export default function ProductGallery() { //
       <div className="max-w-7xl mx-auto px-6 mt-12 md:mt-16">
         <div className="border-t border-white/10 pt-6 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
           
-          {/* 👇 TEXTO: Escondido no celular (hidden), aparece a partir de tablet/PC (md:block) */}
           <p className="hidden md:block text-sm text-white/30">
             Equipamentos homologados e certificados. Garantia e suporte técnico especializado.
           </p>
 
-          {/* 👇 BOTÃO: Ocupa a largura toda no celular (w-full) e fica com um clique mais confortável (py-3.5) */}
           <a 
             href="https://wa.me/5531993092473" 
             target="_blank" 

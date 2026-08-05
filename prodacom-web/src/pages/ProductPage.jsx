@@ -48,7 +48,7 @@ export default function ProductPage() {
               <h2 className="text-xl text-sky-600 font-medium mb-6">
                 {product.subtitle}
               </h2>
-              <p className="text-base text-white/50 leading-relaxed mb-10 max-w-lg text-justify">
+              <p className="text-base text-white/70 leading-relaxed mb-10 max-w-lg text-justify">
                 {product.description}
               </p>
               

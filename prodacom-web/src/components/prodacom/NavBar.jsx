@@ -137,7 +137,7 @@ export default function NavBar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-3 w-56 bg-white border border-slate_mist shadow-lg rounded-sm overflow-hidden"
+                    className="absolute right-0 mt-3 w-56 bg-white border border-slate_mist shadow-lg rounded-xl overflow-hidden"
                   >
                     <div className="py-2">
                       {webSolutions.map(function (solution, idx) {

@@ -26,8 +26,10 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AnimatedRoutes />
-      <ChatWidget />
+      <main className="overflow-x-hidden w-full relative min-h-screen bg-obsidian">
+        <AnimatedRoutes />
+        <ChatWidget />
+      </main>
     </BrowserRouter>
   );
 }

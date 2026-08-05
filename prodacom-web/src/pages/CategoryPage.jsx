@@ -43,7 +43,6 @@ export default function CategoryPage() {
     );
   }
 
-  // 👇 LÓGICA DO GRID ADAPTÁVEL: Define as classes baseadas na quantidade de produtos
   const gridClass = carouselItems.length === 1 
     ? "grid grid-cols-1 max-w-sm mx-auto" 
     : carouselItems.length === 2 
@@ -240,7 +239,7 @@ export default function CategoryPage() {
                   {/* Conteúdo de Texto e Botão */}
                   <div className="flex flex-col flex-1 items-center justify-between w-full">
                     <div className="mb-6">
-                      <h3 className="font-display font-semibold text-xl md:text-2xl text-white group-hover:text-cobalt transition-colors mb-3">
+                      <h3 className="font-display font-semibold text-xl md:text-2xl text-white group-hover:text-sky-600 transition-colors mb-3">
                         {model.title}
                       </h3>
                       <p className="text-sm text-white/40 line-clamp-3 leading-relaxed">

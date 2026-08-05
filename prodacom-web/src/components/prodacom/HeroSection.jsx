@@ -16,7 +16,7 @@ export default function HeroSection() {
     <section id="hero" className="relative min-h-screen flex flex-col justify-center pt-32 pb-16 overflow-hidden">
       <motion.div style={{ y: imgY }} className="absolute inset-0">
         <img src={HERO_IMAGE} alt="Scanner biométrico" className="w-full h-full object-cover object-[70%_center]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/90 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/80 to-transparent" />
       </motion.div>
 
       <div className="absolute inset-0 grid-overlay opacity-10" />
@@ -28,7 +28,7 @@ export default function HeroSection() {
         </div>
         
         <div className="overflow-hidden">
-          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-white/30 leading-tight tracking-tight pt-2">
+          <motion.h1 initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 0.6, duration: 1, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-gray-500/100 leading-tight tracking-tight pt-2">
             O CONTROLE 
           </motion.h1>
         </div>
