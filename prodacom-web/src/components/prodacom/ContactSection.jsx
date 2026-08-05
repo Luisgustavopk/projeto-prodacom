@@ -178,11 +178,11 @@ export default function ContactSection() {
                   {step === 1 && (
                     <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                       <div>
-                        <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Nome completo *</label>
+                        <label className="text-xs text-white/40 uppercase tracking-wider mb-2 block">Nome completo *</label>
                         <Input value={form.nome} onChange={function(e) { update("nome", e.target.value); }} required className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Seu nome" />
                       </div>
                       <div>
-                        <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Empresa</label>
+                        <label className="text-xs text-white/40 uppercase tracking-wider mb-2 block">Empresa</label>
                         <Input value={form.empresa} onChange={function(e) { update("empresa", e.target.value); }} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Nome da empresa" />
                       </div>
                       <div className="flex justify-end pt-4">
@@ -196,11 +196,11 @@ export default function ContactSection() {
                   {step === 2 && (
                     <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
                       <div>
-                        <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">E-mail *</label>
+                        <label className="text-xs text-white/40 uppercase tracking-wider mb-2 block">E-mail *</label>
                         <Input type="email" value={form.email} onChange={function(e) { update("email", e.target.value); }} required className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="seu@email.com" />
                       </div>
                       <div>
-                        <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Telefone</label>
+                        <label className="text-xs text-white/40 uppercase tracking-wider mb-2 block">Telefone</label>
                         <Input 
                           value={form.telefone} 
                           onChange={function(e) { update("telefone", e.target.value); }} 
@@ -210,7 +210,7 @@ export default function ContactSection() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-white/30 uppercase tracking-wider mb-2 block">Segmento</label>
+                        <label className="text-xs text-white/40 uppercase tracking-wider mb-2 block">Segmento</label>
                         <Input value={form.segmento} onChange={function(e) { update("segmento", e.target.value); }} className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-cobalt rounded-none h-11" placeholder="Ex: Academia, Escola, Indústria..." />
                       </div>
                       <div className="flex justify-between pt-4">

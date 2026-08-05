@@ -39,7 +39,7 @@ export default function HeroSection() {
           </motion.h1>
         </div>
 
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.8 }} className="mt-6 lg:mt-8 max-w-lg 2xl:max-w-xl text-sm md:text-base 2xl:text-lg text-white/50 leading-relaxed">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.8 }} className="mt-6 lg:mt-8 max-w-lg 2xl:max-w-xl text-sm md:text-base 2xl:text-lg text-white/60 leading-relaxed">
           Há mais de 10 anos provendo soluções integradas de controle de ponto e acesso para empresas de todos os portes. Tecnologia que transforma a gestão do seu negócio.
         </motion.p>
 
