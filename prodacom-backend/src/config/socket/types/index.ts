@@ -8,6 +8,14 @@ export interface ISocketMessage {
   status?: 'enviado' | 'entregue' | 'lido'; 
 }
 
+export interface IWhatsAppMessage {
+  id?: string;
+  texto: string;
+  contato: string;
+  hora: string;
+  status?: 'enviado' | 'entregue' | 'lido'; 
+}
+
 export interface ServerToClientEvents {
   receber_mensagem: (dados: { 
     id: string;
@@ -44,6 +52,8 @@ export interface ServerToClientEvents {
   restaurar_conversa: (conversa: any) => void;
   historico_mensagens_cliente: (mensagens: any[]) => void;
   status_atendimento_alterado: (dados: { contato: string; status: string }) => void;
+  nova_mensagem_whatsapp: (dados: IWhatsAppMessage) => void;
+  status_mensagem_whatsapp: (dados: { contato: string; status: 'entregue' | 'lido' }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -60,4 +70,5 @@ export interface ClientToServerEvents {
   apagar_mensagem: (dados: { idMensagem: string; contato: string }) => void;
   remover_conversa: (dados: { contato: string }) => void;
   alterar_status_atendimento: (dados: { contato: string; status: string }) => void;
+  enviar_mensagem_whatsapp: (dados: IWhatsAppMessage) => void;
 }

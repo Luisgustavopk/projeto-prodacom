@@ -5,26 +5,26 @@ import cors from 'cors';
 import routes from './routes';
 import { iniciarSocket } from './socket';
 import { connectDatabase } from "./config/database";
+import { whatsappController } from './controllers/whatsappController'; 
 
 const app = express();
 app.use(cors());
 app.use(express.json()); 
-app.use(routes);
 
-// Cria o servidor HTTP do Node
 const server = http.createServer(app);
 
-// Inicia o WebSocket passando o servidor HTTP
-iniciarSocket(server);
+const io = iniciarSocket(server);
+
+app.use('/webhook/whatsapp', whatsappController(io));
+
+app.use(routes);
 
 const PORT = process.env.PORT || 3001;
 
 async function startServer() {
   try {
-    
     await connectDatabase();
 
-   
     server.listen(PORT, () => {
       console.log(` [SERVER] Servidor modular da Prodacom rodando na porta ${PORT} `);
     });
@@ -32,6 +32,5 @@ async function startServer() {
     console.error(" Falha crítica ao iniciar o servidor:", error);
   }
 }
-
 
 startServer();
