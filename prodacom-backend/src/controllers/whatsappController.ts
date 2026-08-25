@@ -19,25 +19,26 @@ export function whatsappController(io: Server<ClientToServerEvents, ServerToClie
       res.sendStatus(403);
     }
   });
+  
+router.post('/', (req: Request, res: Response) => {
+  console.log('📩 Webhook recebido da Meta:', JSON.stringify(req.body, null, 2));
 
-  router.post('/', (req: Request, res: Response) => {
-    const body = req.body;
+  const body = req.body;
+  if (body.object && body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
+    const msgRecebida = body.entry[0].changes[0].value.messages[0];
+    const telefoneCliente = msgRecebida.from;
+    const textoMsg = msgRecebida.text?.body || '';
 
-    if (body.object && body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]) {
-      const msgRecebida = body.entry[0].changes[0].value.messages[0];
-      const telefoneCliente = msgRecebida.from;
-      const textoMsg = msgRecebida.text.body;
+    console.log(`💬 Mensagem de ${telefoneCliente}: ${textoMsg}`);
 
-      // Emite O EVENTO EXCLUSIVO do zap para o painel React
-      io.emit('nova_mensagem_whatsapp', {
-        contato: telefoneCliente,
-        texto: textoMsg,
-        hora: new Date().toISOString()
-      });
-    }
+    io.emit('nova_mensagem_whatsapp', {
+      contato: telefoneCliente,
+      texto: textoMsg,
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    });
+  }
 
-    res.sendStatus(200);
-  });
-
+  res.sendStatus(200);
+});
   return router;
 }

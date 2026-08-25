@@ -16,6 +16,8 @@ export interface IWhatsAppMessage {
   status?: 'enviado' | 'entregue' | 'lido'; 
 }
 
+export type TCanalAtendimento = 'site' | 'whatsapp';
+
 export interface ServerToClientEvents {
   receber_mensagem: (dados: { 
     id: string;
@@ -24,6 +26,7 @@ export interface ServerToClientEvents {
     hora: string; 
     status?: 'enviado' | 'entregue' | 'lido'; 
   }) => void;
+  
   
   sincronizar_conversas_existentes: (conversas: Record<string, any>) => void;
   cliente_atualizou_conexao: (dados: { contato: string; novoId: string }) => void;

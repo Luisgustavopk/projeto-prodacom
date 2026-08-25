@@ -1,19 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { socket } from "../../services/socket";
-import notificacaoAudio from "../../assets/sound/universfield-message-notification-199577.mp3"
+import notificacaoAudio from "../../assets/sound/universfield-message-notification-199577.mp3";
+
 export function usePainelSocket() {
   const [chats, setChats] = useState({});
   const [clienteAtivo, setClienteAtivo] = useState(null);
   const [input, setInput] = useState("");
+  const [canalAtivo, setCanalAtivo] = useState("site");
   
   const clienteAtivoRef = useRef(clienteAtivo);
+  const canalAtivoRef = useRef(canalAtivo); 
+
+  useEffect(() => {
+    canalAtivoRef.current = canalAtivo;
+  }, [canalAtivo]);
 
   useEffect(() => {
     clienteAtivoRef.current = clienteAtivo;
 
     if (clienteAtivo) {
       const contatoLimpo = clienteAtivo.replace(/\D/g, "");
-      
       socket.emit("marcar_como_lido", { contato: contatoLimpo });
 
       setChats((prev) => {
@@ -21,7 +27,6 @@ export function usePainelSocket() {
         if (!chatAtual) return prev;
 
         let teveMudanca = false;
-        
         const mensagensAtualizadas = chatAtual.mensagens.map(msg => {
           if (msg.role !== "admin" && msg.status !== "lido") {
             teveMudanca = true;
@@ -34,11 +39,7 @@ export function usePainelSocket() {
 
         return {
           ...prev,
-          [contatoLimpo]: { 
-            ...chatAtual, 
-            unread: false, 
-            mensagens: mensagensAtualizadas 
-          }
+          [contatoLimpo]: { ...chatAtual, unread: false, mensagens: mensagensAtualizadas }
         };
       });
     }
@@ -55,28 +56,33 @@ export function usePainelSocket() {
     socket.on("connect", entrarComoAdmin);
 
     socket.on("sincronizar_conversas_existentes", (historico) => {
-      setChats(historico || {});
+      const historicoComCanal = {};
+      Object.keys(historico || {}).forEach(key => {
+        historicoComCanal[key] = {
+          ...historico[key],
+          canal: historico[key].canal || 'site'
+        };
+      });
+      setChats(historicoComCanal);
     });
 
     socket.on("status_cliente", (dados) => {
       if (!dados?.contato) return;
       const contatoNumerico = dados.contato.replace(/\D/g, "");
-
       setChats((prev) => {
-        const chaveEncontrada = Object.keys(prev).find(key => key.replace(/\D/g, "") === contatoNumerico);
-        if (!chaveEncontrada || !prev[chaveEncontrada]) return prev;
-
-        return {
-          ...prev,
-          [chaveEncontrada]: { ...prev[chaveEncontrada], online: dados.online }
-        };
+        const chave = Object.keys(prev).find(key => key.replace(/\D/g, "") === contatoNumerico);
+        if (!chave || !prev[chave]) return prev;
+        return { ...prev, [chave]: { ...prev[chave], online: dados.online } };
       });
     });
 
+    // ==========================================
+    // ESCUTA O CHAT DO SITE
+    // ==========================================
     socket.on("nova_mensagem_cliente", (dados) => {
       if (!dados?.contato) return;
       const chatId = dados.contato.replace(/\D/g, "");
-      const isChatAberto = clienteAtivoRef.current?.replace(/\D/g, "") === chatId;
+      const isChatAberto = clienteAtivoRef.current?.replace(/\D/g, "") === chatId && canalAtivoRef.current === 'site';
 
       if (!isChatAberto) {
         new Audio(notificacaoAudio).play().catch(() => {});
@@ -85,47 +91,63 @@ export function usePainelSocket() {
       }
 
       setChats((prev) => {
-        const chatAtual = prev[chatId] || { nome: dados.autor, contato: chatId, online: true, mensagens: [] };
-        
+        const chatAtual = prev[chatId] || { nome: dados.autor, contato: chatId, online: true, mensagens: [], canal: 'site' };
         return {
           ...prev,
           [chatId]: {
             ...chatAtual,
+            canal: 'site', 
             online: true,
             unread: !isChatAberto,
             lastMessageAt: new Date().toISOString(),
             mensagens: [
               ...chatAtual.mensagens,
-              { 
-                role: "user", 
-                content: dados.texto, 
-                hora: dados.hora, 
-                status: isChatAberto ? "lido" : (dados.status || "enviado") 
-              }
+              { role: "user", content: dados.texto, hora: dados.hora, status: isChatAberto ? "lido" : (dados.status || "enviado") }
             ]
           }
         };
       });
     });
 
-    // 4. Recebendo confirmação de que o Cliente Leu (Virá do Widget no futuro)
+    // ==========================================
+    // ESCUTA O CHAT DO WHATSAPP 
+    // ==========================================
+    socket.on("nova_mensagem_whatsapp", (dados) => {
+      if (!dados?.contato) return;
+      const chatId = dados.contato.replace(/\D/g, "");
+      // Só considera aberto se o cliente estiver selecionado E a aba for whatsapp
+      const isChatAberto = clienteAtivoRef.current?.replace(/\D/g, "") === chatId && canalAtivoRef.current === 'whatsapp';
+
+      if (!isChatAberto) {
+        new Audio(notificacaoAudio).play().catch(() => {});
+      }
+
+      setChats((prev) => {
+        const chatAtual = prev[chatId] || { nome: dados.contato, contato: chatId, online: true, mensagens: [], canal: 'whatsapp' };
+        return {
+          ...prev,
+          [chatId]: {
+            ...chatAtual,
+            canal: 'whatsapp', // Marca a origem
+            unread: !isChatAberto,
+            lastMessageAt: new Date().toISOString(),
+            mensagens: [
+              ...chatAtual.mensagens,
+              { role: "user", content: dados.texto, hora: dados.hora || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), status: "lido" }
+            ]
+          }
+        };
+      });
+    });
+
     socket.on("status_mensagem_atualizado", (dados) => {
       if (!dados?.contato) return;
       const chatId = dados.contato.replace(/\D/g, "");
-
       setChats((prev) => {
         const chatAtual = prev[chatId];
         if (!chatAtual) return prev;
-
-        const mensagensAtualizadas = chatAtual.mensagens.map((msg) => {
-          if (msg.role === "admin") return { ...msg, status: dados.status };
-          return msg;
-        });
-
-        return {
-          ...prev,
-          [chatId]: { ...chatAtual, mensagens: mensagensAtualizadas }
-        };
+        const msgs = chatAtual.mensagens.map(msg => msg.role === "admin" ? { ...msg, status: dados.status } : msg);
+        return { ...prev, [chatId]: { ...chatAtual, mensagens: msgs } };
       });
     });
 
@@ -159,7 +181,7 @@ export function usePainelSocket() {
 
     socket.on("restaurar_conversa", (conversa) => {
       if (!conversa) return;
-      setChats((prev) => ({ ...prev, [conversa.contato]: conversa }));
+      setChats((prev) => ({ ...prev, [conversa.contato]: { ...conversa, canal: conversa.canal || 'site' } }));
     });
 
    socket.on("status_atendimento_alterado", (dados) => {
@@ -169,10 +191,12 @@ export function usePainelSocket() {
         return { ...prev, [dados.contato]: { ...chatAtual, statusAtendimento: dados.status } };
       });
     });
+
     return () => {
       socket.off("connect"); socket.off("sincronizar_conversas_existentes"); socket.off("status_cliente");
-      socket.off("nova_mensagem_cliente"); socket.off("status_mensagem_atualizado"); socket.off("mensagem_enviada_sucesso");
-      socket.off("mensagem_apagada"); socket.off("conversa_removida"); socket.off("restaurar_conversa"); socket.disconnect();
+      socket.off("nova_mensagem_cliente"); socket.off("nova_mensagem_whatsapp"); socket.off("status_mensagem_atualizado"); 
+      socket.off("mensagem_enviada_sucesso"); socket.off("mensagem_apagada"); socket.off("conversa_removida"); 
+      socket.off("restaurar_conversa"); socket.disconnect();
     };
   }, []);
 
@@ -183,7 +207,11 @@ export function usePainelSocket() {
     const hora = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     const chatId = clienteAtivo.replace(/\D/g, "");
     
-    socket.emit("enviar_mensagem", { autor: "Admin", texto, hora, salaDestino: chatId });
+    if (canalAtivoRef.current === 'whatsapp') {
+      socket.emit("enviar_mensagem_whatsapp", { contato: chatId, texto, hora });
+    } else {
+      socket.emit("enviar_mensagem", { autor: "Admin", texto, hora, salaDestino: chatId });
+    }
     
     setChats((prev) => {
       const chat = prev[chatId];
@@ -203,5 +231,8 @@ export function usePainelSocket() {
     });
   }
 
- return { chats, clienteAtivo, setClienteAtivo, input, setInput, handleSend, mudarStatusAtendimento };
+ return { 
+   chats, clienteAtivo, setClienteAtivo, input, setInput, handleSend, mudarStatusAtendimento,
+   canalAtivo, setCanalAtivo 
+ };
 }
